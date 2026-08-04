@@ -1,0 +1,1150 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A0A0A">
+<title>Reserva tu cita · Trend Nails Salon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Paleta de marca Trend Nails (la misma del tablero del equipo):
+     negro #0A0A0A · carbón #1F1F1F · crema #F0EBDB · dorado #E8C468 · taupe #ADA385 */
+  :root{
+    --paper:#0A0A0A; --card:#1F1F1F; --card2:#171717;
+    --ink:#F0EBDB; --ink-soft:#ADA385; --ink-faint:#7E7663;
+    --line:#33302A; --line-soft:#262420;
+    --lacquer:#E8C468; --lacquer-soft:rgba(232,196,104,.12);
+    --jade:#7BC9A6; --jade-soft:#20362C;
+    --rose:#E0A0A0;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 10px 26px -12px rgba(0,0,0,.8);
+    --r:14px;
+  }
+  /* Regla de oro del proyecto: que ninguna clase pueda anular el atributo hidden. */
+  [hidden]{display:none !important}
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--paper); color:var(--ink); min-height:100vh;
+    font-family:"Montserrat",ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    font-size:15px; line-height:1.45; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:560px; margin:0 auto; padding:0 16px calc(120px + env(safe-area-inset-bottom))}
+
+  /* ---------- cabecera ---------- */
+  header.brand{
+    padding:22px 0 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .logo{
+    font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-weight:500;
+    font-size:27px; letter-spacing:.01em; margin:0; color:var(--ink); line-height:1;
+  }
+  .logo small{
+    display:block; font-family:"Montserrat",sans-serif; font-style:normal; font-size:9px;
+    letter-spacing:.34em; text-transform:uppercase; color:var(--lacquer); margin-top:5px; font-weight:600;
+  }
+  .hdr-act{display:flex; gap:8px; align-items:center}
+
+  /* ---------- tipografía ---------- */
+  h2{
+    font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:26px;
+    margin:0 0 6px; letter-spacing:.01em;
+  }
+  h2 em{font-style:italic; color:var(--lacquer)}
+  .sub{color:var(--ink-soft); font-size:14px; margin:0 0 20px}
+  .eyebrow{
+    font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:700; margin:26px 0 9px;
+  }
+
+  /* ---------- controles ---------- */
+  label.lbl{
+    display:block; font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:700; margin:0 0 6px;
+  }
+  input[type=text],input[type=tel],input[type=email],input[type=search]{
+    width:100%; padding:14px 14px; font:inherit; font-size:16px; color:var(--ink);
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+  }
+  input::placeholder{color:var(--ink-faint)}
+  input:focus{outline:2px solid var(--lacquer); outline-offset:1px; border-color:transparent}
+  .row{display:flex; gap:10px}
+  .row>*{flex:1 1 0; min-width:0}
+  .fld{margin-bottom:14px}
+
+  button{font:inherit; cursor:pointer}
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    padding:15px 18px; border:0; border-radius:12px; font-weight:700; font-size:15px;
+    background:var(--lacquer); color:#1a1408; letter-spacing:.01em;
+    box-shadow:var(--shadow); transition:filter .15s, opacity .15s;
+  }
+  .btn:hover{filter:brightness(1.06)}
+  .btn:disabled{opacity:.45; cursor:default; filter:none}
+  .btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--lacquer); filter:none}
+  .btn.sm{width:auto; padding:9px 14px; font-size:13px; border-radius:10px}
+  .btn.danger{background:transparent; color:var(--rose); border:1px solid #4a3030}
+  .linkish{
+    display:block; width:100%; margin-top:16px; background:none; border:0; color:var(--ink-soft);
+    font-size:14px; text-decoration:underline; text-underline-offset:3px; padding:6px;
+  }
+  .linkish:hover{color:var(--lacquer)}
+  .back{
+    background:none; border:0; color:var(--ink-soft); font-size:13px; padding:6px 0; margin:0 0 4px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .back:hover{color:var(--lacquer)}
+
+  /* ---------- tarjetas ---------- */
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+    padding:16px; box-shadow:var(--shadow); margin-bottom:12px;
+  }
+  .card.quiet{background:var(--card2)}
+  .card-t{font-weight:700; font-size:15px; margin:0 0 3px}
+  .card-s{color:var(--ink-soft); font-size:13px; margin:0}
+  .card-acts{display:flex; gap:8px; margin-top:13px; padding-top:13px; border-top:1px solid var(--line-soft)}
+  .card-acts .btn{flex:1}
+
+  .cita-fecha{
+    display:inline-block; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--lacquer); background:var(--lacquer-soft); padding:5px 10px; border-radius:999px; margin-bottom:10px;
+  }
+
+  /* ---------- servicios ---------- */
+  .cats{display:flex; gap:7px; overflow-x:auto; padding:2px 0 12px; margin:0 -16px; padding-left:16px; padding-right:16px; scrollbar-width:none}
+  .cats::-webkit-scrollbar{display:none}
+  .cat{
+    flex:0 0 auto; padding:8px 13px; border-radius:999px; border:1px solid var(--line);
+    background:var(--card); color:var(--ink-soft); font-size:13px; font-weight:600; white-space:nowrap;
+  }
+  .cat[aria-pressed=true]{background:var(--lacquer); color:#1a1408; border-color:var(--lacquer)}
+  .svc-list{display:flex; flex-direction:column; gap:8px}
+  .svc{
+    display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:14px;
+    background:var(--card); border:1px solid var(--line); border-radius:12px; color:var(--ink);
+  }
+  .svc:hover{border-color:var(--lacquer)}
+  .svc[aria-pressed=true]{border-color:var(--lacquer); background:var(--lacquer-soft)}
+  .svc-i{flex:1 1 auto; min-width:0}
+  .svc-n{font-weight:600; font-size:14px; display:block}
+  .svc-m{color:var(--ink-soft); font-size:12.5px; margin-top:2px; display:block}
+  .svc-x{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%; border:1px solid var(--line);
+    display:grid; place-items:center; color:var(--ink-faint); font-size:15px; line-height:1;
+  }
+  .svc[aria-pressed=true] .svc-x{background:var(--lacquer); color:#1a1408; border-color:var(--lacquer)}
+
+  /* ---------- chips de lo elegido ---------- */
+  .chips{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px}
+  .chip{
+    display:inline-flex; align-items:center; gap:7px; padding:7px 9px 7px 12px; border-radius:999px;
+    background:var(--lacquer-soft); border:1px solid rgba(232,196,104,.35); color:var(--ink); font-size:13px;
+  }
+  .chip button{background:none; border:0; color:var(--ink-soft); font-size:15px; line-height:1; padding:0 2px}
+  .chip button:hover{color:var(--rose)}
+
+  /* ---------- técnicas ---------- */
+  .tec{
+    display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:14px;
+    background:var(--card); border:1px solid var(--line); border-radius:12px; color:var(--ink); margin-bottom:8px;
+  }
+  .tec[aria-pressed=true]{border-color:var(--lacquer); background:var(--lacquer-soft)}
+  .av{
+    flex:0 0 auto; width:40px; height:40px; border-radius:50%; display:grid; place-items:center;
+    background:var(--lacquer-soft); color:var(--lacquer); font-weight:700; font-size:15px;
+    font-family:"Cormorant Garamond",serif;
+  }
+  .tag{
+    font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--jade); background:var(--jade-soft); padding:3px 8px; border-radius:999px;
+  }
+
+  /* ---------- días y horas ---------- */
+  .days{display:flex; gap:8px; overflow-x:auto; padding:2px 0 4px; margin:0 -16px 4px; padding-left:16px; padding-right:16px; scrollbar-width:none}
+  .days::-webkit-scrollbar{display:none}
+  .day{
+    flex:0 0 auto; width:58px; padding:9px 0; border-radius:12px; border:1px solid var(--line);
+    background:var(--card); color:var(--ink); text-align:center; line-height:1.25;
+  }
+  .day b{display:block; font-size:17px; font-weight:700}
+  .day span{display:block; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint)}
+  .day[aria-pressed=true]{background:var(--lacquer); border-color:var(--lacquer); color:#1a1408}
+  .day[aria-pressed=true] span{color:#5a4a20}
+  .day:disabled{opacity:.3; cursor:default}
+  .day .dot{width:4px; height:4px; border-radius:50%; background:var(--jade); margin:3px auto 0}
+  .day[aria-pressed=true] .dot{background:#1a1408}
+  .day:disabled .dot{visibility:hidden}
+
+  .hgroup{margin-top:18px}
+  .hgroup h3{
+    font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint);
+    font-weight:700; margin:0 0 9px;
+  }
+  .hours{display:grid; grid-template-columns:repeat(auto-fill,minmax(86px,1fr)); gap:8px}
+  .hour{
+    padding:12px 4px; border-radius:11px; border:1px solid var(--line); background:var(--card);
+    color:var(--ink); font-size:14px; font-weight:600; font-variant-numeric:tabular-nums;
+  }
+  .hour:hover{border-color:var(--lacquer)}
+  .hour[aria-pressed=true]{background:var(--lacquer); border-color:var(--lacquer); color:#1a1408}
+
+  /* ---------- barra fija ---------- */
+  .barra{
+    position:fixed; left:0; right:0; bottom:0; z-index:60;
+    background:linear-gradient(180deg, rgba(10,10,10,.7), var(--paper) 34%);
+    padding:14px 16px calc(16px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--line-soft); backdrop-filter:blur(8px);
+  }
+  .barra-in{max-width:560px; margin:0 auto; display:flex; align-items:center; gap:12px}
+  .barra-i{flex:1 1 auto; min-width:0}
+  .barra-t{font-weight:700; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .barra-s{color:var(--ink-soft); font-size:12px}
+  .barra .btn{width:auto; flex:0 0 auto; padding:14px 22px}
+
+  /* ---------- avisos y estados ---------- */
+  .aviso{
+    display:flex; gap:10px; padding:12px 14px; border-radius:12px; font-size:13.5px;
+    background:var(--card2); border:1px solid var(--line); color:var(--ink-soft); margin-bottom:14px;
+  }
+  .aviso.err{border-color:#5a3535; background:#2a1c1c; color:#F0D6D6}
+  .aviso.ok{border-color:#2f4f3f; background:var(--jade-soft); color:#CFEBDD}
+  .estado{text-align:center; padding:44px 20px; color:var(--ink-soft); font-size:14px}
+  .spin{
+    width:26px; height:26px; margin:0 auto 14px; border-radius:50%;
+    border:2px solid var(--line); border-top-color:var(--lacquer); animation:g .8s linear infinite;
+  }
+  @keyframes g{to{transform:rotate(360deg)}}
+  .vacio{text-align:center; padding:26px 16px; color:var(--ink-faint); font-size:13.5px}
+
+  /* ---------- confirmación / listo ---------- */
+  .resumen{border:1px solid var(--line); border-radius:var(--r); overflow:hidden; margin-bottom:18px}
+  .resumen div{
+    display:flex; justify-content:space-between; gap:14px; padding:13px 15px;
+    border-bottom:1px solid var(--line-soft); background:var(--card); font-size:14px;
+  }
+  .resumen div:last-child{border-bottom:0}
+  .resumen dt{color:var(--ink-soft); font-size:12.5px; margin:0; flex:0 0 auto}
+  .resumen dd{margin:0; text-align:right; font-weight:600}
+  .tick{
+    width:62px; height:62px; margin:8px auto 18px; border-radius:50%; display:grid; place-items:center;
+    background:var(--jade-soft); color:var(--jade); font-size:30px; border:1px solid #2f4f3f;
+  }
+  .modal{
+    position:fixed; inset:0; z-index:90; background:rgba(0,0,0,.72); display:grid; place-items:end center;
+    padding:16px; backdrop-filter:blur(3px);
+  }
+  .modal-c{
+    width:100%; max-width:520px; background:var(--card); border:1px solid var(--line);
+    border-radius:18px; padding:20px; box-shadow:var(--shadow);
+  }
+  footer.pie{text-align:center; color:var(--ink-faint); font-size:11.5px; padding:26px 0 6px; line-height:1.7}
+  footer.pie a{color:var(--ink-faint)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="brand">
+    <h1 class="logo">Trend Nails<small>Salon · Caguas</small></h1>
+    <div class="hdr-act">
+      <button class="btn ghost sm" id="btnSalir" hidden>Salir</button>
+    </div>
+  </header>
+
+  <main>
+
+  <!-- ============ 1. teléfono ============ -->
+  <section class="scr" id="scr-hola">
+    <h2>Reserva tu <em>cita</em></h2>
+    <p class="sub">Escribe tu teléfono y te reconocemos al instante. Sin contraseñas, sin llenar formularios otra vez.</p>
+    <div class="fld">
+      <label class="lbl" for="inPh">Tu teléfono</label>
+      <input type="tel" id="inPh" inputmode="tel" autocomplete="tel" placeholder="(787) 123-4567" maxlength="16">
+    </div>
+    <div class="aviso err" id="errPh" hidden></div>
+    <button class="btn" id="btnPh">Continuar</button>
+    <button class="linkish" id="btnNueva">Es mi primera vez aquí</button>
+  </section>
+
+  <!-- ============ 2. nombre ============ -->
+  <section class="scr" id="scr-nombre" hidden>
+    <button class="back" data-go="scr-hola">← Cambiar el número</button>
+    <h2>¿Cómo te <em>llamas</em>?</h2>
+    <p class="sub">Solo para asegurarnos de que esta cuenta es tuya. Con tu primer nombre basta.</p>
+    <div class="fld">
+      <label class="lbl" for="inNm">Tu nombre</label>
+      <input type="text" id="inNm" autocomplete="given-name" placeholder="María">
+    </div>
+    <div class="aviso err" id="errNm" hidden></div>
+    <button class="btn" id="btnNm">Entrar</button>
+    <button class="linkish" id="btnNueva2">No tengo cuenta — soy nueva</button>
+  </section>
+
+  <!-- ============ 3. clienta nueva ============ -->
+  <section class="scr" id="scr-nueva" hidden>
+    <button class="back" data-go="scr-hola">← Volver</button>
+    <h2>Bienvenida a <em>Trend Nails</em></h2>
+    <p class="sub">Con esto creamos tu perfil. La próxima vez entras solo con tu teléfono.</p>
+    <div class="row fld">
+      <div>
+        <label class="lbl" for="nvFn">Nombre</label>
+        <input type="text" id="nvFn" autocomplete="given-name" placeholder="María">
+      </div>
+      <div>
+        <label class="lbl" for="nvLn">Apellido</label>
+        <input type="text" id="nvLn" autocomplete="family-name" placeholder="Rivera">
+      </div>
+    </div>
+    <div class="fld">
+      <label class="lbl" for="nvPh">Teléfono</label>
+      <input type="tel" id="nvPh" inputmode="tel" autocomplete="tel" placeholder="(787) 123-4567" maxlength="16">
+    </div>
+    <div class="fld">
+      <label class="lbl" for="nvEm">Correo <span style="text-transform:none;letter-spacing:0">(para tu confirmación)</span></label>
+      <input type="email" id="nvEm" inputmode="email" autocomplete="email" placeholder="maria@correo.com">
+    </div>
+    <div class="aviso err" id="errNv" hidden></div>
+    <button class="btn" id="btnNv">Crear mi perfil</button>
+  </section>
+
+  <!-- ============ 4. inicio ============ -->
+  <section class="scr" id="scr-inicio" hidden>
+    <h2>Hola, <em id="miNombre">…</em></h2>
+    <p class="sub" id="miSub"></p>
+
+    <div id="proxWrap">
+      <p class="eyebrow">Tus próximas citas</p>
+      <div id="proxLista"></div>
+    </div>
+
+    <p class="eyebrow">Reservar</p>
+    <div id="usualWrap" hidden></div>
+    <button class="btn" id="btnReservar">Ver todos los servicios</button>
+  </section>
+
+  <!-- ============ 5. servicios ============ -->
+  <section class="scr" id="scr-svc" hidden>
+    <button class="back" data-go="scr-inicio">← Volver</button>
+    <h2>¿Qué te vas a <em>hacer</em>?</h2>
+    <p class="sub">Puedes elegir más de uno y te lo dejamos todo en la misma cita.</p>
+    <div class="fld">
+      <input type="search" id="svcQ" placeholder="Buscar un servicio…" autocomplete="off">
+    </div>
+    <div class="chips" id="svcChips" hidden></div>
+    <div class="cats" id="svcCats"></div>
+    <div class="svc-list" id="svcList"></div>
+    <div class="vacio" id="svcVacio" hidden>No encontramos ese servicio. Prueba con otra palabra.</div>
+  </section>
+
+  <!-- ============ 6. técnica ============ -->
+  <section class="scr" id="scr-tec" hidden>
+    <button class="back" data-go="scr-svc">← Cambiar servicios</button>
+    <h2>¿Con <em>quién</em>?</h2>
+    <p class="sub" id="tecSub">Si no tienes preferencia, te damos la primera disponible.</p>
+    <div id="tecLista"></div>
+  </section>
+
+  <!-- ============ 7. día y hora ============ -->
+  <section class="scr" id="scr-hora" hidden>
+    <button class="back" id="horaBack">← Volver</button>
+    <h2 id="horaTitulo">Elige tu <em>hora</em></h2>
+    <p class="sub" id="horaSub"></p>
+    <div class="days" id="dias"></div>
+    <div id="horasWrap"></div>
+  </section>
+
+  <!-- ============ 8. confirmar ============ -->
+  <section class="scr" id="scr-conf" hidden>
+    <button class="back" data-go="scr-hora">← Cambiar la hora</button>
+    <h2 id="confTitulo">Confirma tu <em>cita</em></h2>
+    <p class="sub">Revisa que todo esté bien y la reservamos al instante.</p>
+    <div class="resumen" id="confResumen"></div>
+    <div class="aviso" id="confNota">Te llegará la confirmación por correo. Si necesitas cambiarla, puedes hacerlo desde aquí mismo.</div>
+    <div class="aviso err" id="errConf" hidden></div>
+    <button class="btn" id="btnConf">Confirmar mi cita</button>
+  </section>
+
+  <!-- ============ 9. listo ============ -->
+  <section class="scr" id="scr-ok" hidden>
+    <div class="tick">✓</div>
+    <h2 style="text-align:center" id="okTitulo">¡Cita <em>confirmada</em>!</h2>
+    <p class="sub" style="text-align:center" id="okSub"></p>
+    <div class="resumen" id="okResumen"></div>
+    <a class="btn ghost" id="btnIcs" download="cita-trend-nails.ics" href="#" style="text-decoration:none; margin-bottom:10px">📅 Añadir a mi calendario</a>
+    <button class="btn" id="btnVolver">Listo</button>
+  </section>
+
+  </main>
+
+  <footer class="pie">
+    Trend Nails Salon · Caguas, Puerto Rico<br>
+    <a href="https://www.trendnails-salon.com" target="_blank" rel="noopener">trendnails-salon.com</a>
+  </footer>
+</div>
+
+<!-- barra fija de continuar (servicios / hora) -->
+<div class="barra" id="barra" hidden>
+  <div class="barra-in">
+    <div class="barra-i">
+      <div class="barra-t" id="barraT"></div>
+      <div class="barra-s" id="barraS"></div>
+    </div>
+    <button class="btn" id="barraBtn">Continuar</button>
+  </div>
+</div>
+
+<!-- confirmación de cancelar -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-c">
+    <h2 style="font-size:22px" id="modalT">¿Cancelar la cita?</h2>
+    <p class="sub" id="modalS" style="margin-bottom:18px"></p>
+    <div class="aviso err" id="modalErr" hidden></div>
+    <button class="btn danger" id="modalSi" style="margin-bottom:9px">Sí, cancelar</button>
+    <button class="btn ghost" id="modalNo">No, dejarla</button>
+  </div>
+</div>
+
+<script>
+/* ===================== configuración ===================== */
+const DATA = {"staff":{"BQsJfxc8p7gXwVbXN996":"Rosemarie","3L3JPYqRxqqhMKJMnlDP":"Karelys","J4QowXcetly14EtpDQ2X":"Kristi","YQdq6AMAxLwyq15DMnLn":"Jahaira","ruG3xOXEKMFefGysrUUW":"Delianis","TkM2wOYinB8E1F0cugjf":"Elvys","Y0ntiN7amJipExCQKvws":"Rosa","vBnLPd8Y0paHajwj4CYK":"Daneysha","EoEoF89oUzZMEiPUKfGt":"Brenda"},"services":[{"id":"Hx1Zoy1sawYoo5SZMysC","n":"Acrílico en dedito gordo del pie","d":15,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"8X2uRNOG4VCBsWgVwdBy","n":"Aplicación de parafina","d":15,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"EezPB3sITJuJSzrRYoW9","n":"Arreglo de una (1) uña en acrílico","d":30,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"mRJvYqrjm2ua43v5rUFq","n":"Arreglo de uña en gel","d":20,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"qEhkAcZFgWoJQ9FAemJW","n":"Cortes de uñas de pies","d":15,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"gPMjdoKgYxBfeiWwcLzG","n":"Diseños elaborado en todas las uñas","d":45,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"qMbHXWozStOI9d8HGdlA","n":"Diseños en relieve (2 uñas) sencillo","d":20,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"CZpZF1TjztJIf7p9ZkXN","n":"Diseños en relieve elaborado (todas)","d":30,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"ybhkR0zscmcTqtEB5AYV","n":"Diseños personalizados (animados, etc.)","d":60,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"icjh1tVET66Z01537Wuo","n":"Diseños sencillos en dos uñas","d":15,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"g36RaezJv7mpr25eCRpU","n":"Diseños sencillos en todas las uñas","d":30,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"aoEm0pl0DZVHJRu5yh8s","n":"Dos tonos en pies","d":80,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"9NrzbWzFWcLi5aoPIoJ5","n":"Esmaltado de gel clear","d":25,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"mHR0N7KD6F0AERAPq6p9","n":"Esmaltado de gel en pies","d":30,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"Ez5uHFB94nW8Y97m5mc1","n":"Esmaltado en gel en manos con Builder","d":80,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"lkL37TRj1Kl1JgFuEALH","n":"Esmaltado regular en manos","d":15,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"qCcAONbuDombNG0Zxp1O","n":"Esmaltado regular en pies","d":15,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"iFTIlSN50BZ3Fu840Eyh","n":"Full set baby boomer (ombré)","d":105,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"beBgKZovv7Ff64cNySiw","n":"Full set cortas almond/coffin","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"8Dpm5uidS3s3b9WKEp2g","n":"Full set cortas en acrílico de color","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"WTkToNpniEBxpfQvkFSl","n":"Full set cortas en acrílico de color — OFERTA","d":75,"g":"ofGTPF77E8xlplWW9JJ5","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","Y0ntiN7amJipExCQKvws"]},{"id":"nPPZX2YnjM5NvNb8vCjx","n":"Full set de acrílico de color en pies","d":80,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"pBFwHIArqgsyaaXuqy83","n":"Full set dos tonos cortas","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"D92UuxcnIIIiWQkboc8n","n":"Full set en pies sencillo (acrílico regular)","d":60,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"ARFI4hy7jZp1PVOeBwGT","n":"Full set esculturales medianas","d":105,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"Bp2loHDTJk54PLL3tuYA","n":"Full set gel tips cortas","d":80,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996","3L3JPYqRxqqhMKJMnlDP","YQdq6AMAxLwyq15DMnLn"]},{"id":"RV1uhwh4E0KHqkdG7AZl","n":"Full set gel tips largas","d":105,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn"]},{"id":"N0xlx7HF1swl6xG7Z6EI","n":"Full set gel tips medianas","d":90,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn"]},{"id":"LeBl4UWcZ0B5jm0xnklM","n":"Full set largas acrílico de color","d":140,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"dkaIGgCvndiYkh9YQhAn","n":"Full set largas almond/coffin","d":120,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"LADpMPGYHsRHlZlUca1v","n":"Full set medianas almond/coffin","d":90,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"WkSvlK7a52WGdejjwHy0","n":"Full set medianas en acrílico de color","d":110,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"bxQ82vpM4AnSV1LHLYVj","n":"Full set regular cortas con esmaltado en gel","d":30,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"pwPUQqHl0ZUgasIkwURV","n":"Full set sencillo cortas cuadradas","d":75,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"Sxv2mlMxsfWCwyigN1SB","n":"Full set sencillo largas cuadradas","d":105,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"GtuYTWr3EAWSJpm9FSe7","n":"Full set sencillo medianas cuadradas","d":100,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"FOe7WXIxIJz6WURq8X73","n":"Full set sencillo XL cuadradas","d":150,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"6vwMRZmxKYCBKviNyZep","n":"Full set XL acrílico de color","d":170,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"DtjP0K6mgYHjrtzEz0JZ","n":"Head Spa","d":120,"g":"PFd221GFOa663WjwOJXz","tm":["vBnLPd8Y0paHajwj4CYK","BQsJfxc8p7gXwVbXN996"]},{"id":"gUqhOrD1oRxDyBILQFCf","n":"Manicura con gel clear","d":45,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"eGe9PYICNx0cGoHcFmnH","n":"Manicura en seco con esmaltado en gel","d":60,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"yXEl9MSGuUE3CBJa4osZ","n":"Manicura sencilla con esmalte clear regular","d":45,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW"]},{"id":"aBNT8juNjHCiWNyeP77c","n":"Manicura sencilla con esmalte regular","d":45,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW"]},{"id":"CBZW9ulf4PCajsdLBPeR","n":"Manicura Spa — OFERTA","d":60,"g":"fT0sXptFVjHBh5NXRncJ","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"avtlL5MRbaddOnvKrhAQ","n":"Manicura spa con esmaltado en gel en color","d":60,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"1x6JRye2SFhLFoOAa87j","n":"Manicura spa con esmaltado regular","d":70,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"cD4dawqBzxW4QbrMdkNX","n":"Manicura y Pedicura — OFERTA","d":120,"g":"ofGTPF77E8xlplWW9JJ5","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"hnpIXeiI3sSkalYU2XuN","n":"Parafina","d":20,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"ToQbIYacEvAQgWgKGrKe","n":"Pedicura deluxe","d":105,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"22rzDXrEGL04Nkcof6Ia","n":"Pedicura deluxe con esmaltado en gel","d":105,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"adP4ePXrCRnUpJEF75yN","n":"Pedicura sencilla","d":60,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"wu9pvYRkckJDgmCy4lqy","n":"Pedicura sencilla con esmaltado de gel","d":90,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"sRwJjdMQ1YsvkERKMAp8","n":"Pedicura spa","d":60,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"Kw76D0PFGGx4vO0IBY5B","n":"Pedicura Spa — OFERTA","d":60,"g":"Ie8nCrazRqN34JtWb6S1","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"Gx3i4M1pv69zqBpi03N1","n":"Pedicura spa con esmaltado en gel","d":105,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"dNLv41IF9boLAksKczIP","n":"Remoción de acrílico","d":25,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"kAeKnqoJrT5gIQWsOM2s","n":"Remoción de gel","d":20,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"4VT3qJkcujmIjYhqMWpU","n":"Remoción de gel tips","d":20,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996","3L3JPYqRxqqhMKJMnlDP","YQdq6AMAxLwyq15DMnLn","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"3jV9KtHYF25GsYqjZ5il","n":"Remoción de uñeros","d":15,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"jOVGwRWT4yWWNKY38nPX","n":"Retoque de acrílico de color nuevo","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"CxIvpmCa1vHvCiBhRNxQ","n":"Retoque de acrílico en pies","d":60,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"xicaGPKmYL6fcxfuF5bw","n":"Retoque de acrílico sencillo con esmaltado en gel","d":75,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"n9mew9JrgjOiGgTLTIQj","n":"Retoque de acrílico, gel y parafina — OFERTA","d":70,"g":"fT0sXptFVjHBh5NXRncJ","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","EoEoF89oUzZMEiPUKfGt"]},{"id":"YPqpcCo9nEPnwCHf4PG5","n":"Retoque de dedito gordo en acrílico (ambos)","d":20,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"AuODJ11avkPJ7ls9tVic","n":"Retoque de dos tonos nuevo","d":100,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"RFReaX7pmFEbZyC94zqY","n":"Retoque de gel tip con esmaltado en gel","d":90,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996","3L3JPYqRxqqhMKJMnlDP","YQdq6AMAxLwyq15DMnLn","EoEoF89oUzZMEiPUKfGt"]},{"id":"7zeNjsutWO7bwiN10qwn","n":"Retoque en dedito gordo (ambos) con gel","d":45,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"egdNu5KMi6vBCQ6kgcb4","n":"Retoque sencillo con esmalte regular","d":60,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"fbVJ7kIyGm8xxrCIGAie","n":"Retoque sencillo de acrílico de color","d":60,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"7tuGa7ycIYAp4tkRScjq","n":"Servicio extra SPA","d":30,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]}]};
+const PRICE={"1x6JRye2SFhLFoOAa87j":38,"22rzDXrEGL04Nkcof6Ia":75,"3jV9KtHYF25GsYqjZ5il":5,"4VT3qJkcujmIjYhqMWpU":15,"6vwMRZmxKYCBKviNyZep":75,"7tuGa7ycIYAp4tkRScjq":15,"7zeNjsutWO7bwiN10qwn":29,"8Dpm5uidS3s3b9WKEp2g":55,"8X2uRNOG4VCBsWgVwdBy":10,"9NrzbWzFWcLi5aoPIoJ5":25,"ARFI4hy7jZp1PVOeBwGT":75,"AuODJ11avkPJ7ls9tVic":60,"Bp2loHDTJk54PLL3tuYA":60,"CBZW9ulf4PCajsdLBPeR":50,"CZpZF1TjztJIf7p9ZkXN":20,"CxIvpmCa1vHvCiBhRNxQ":30,"D92UuxcnIIIiWQkboc8n":35,"EezPB3sITJuJSzrRYoW9":3,"Ez5uHFB94nW8Y97m5mc1":40,"FOe7WXIxIJz6WURq8X73":75,"GtuYTWr3EAWSJpm9FSe7":55,"Gx3i4M1pv69zqBpi03N1":65,"Hx1Zoy1sawYoo5SZMysC":10,"Kw76D0PFGGx4vO0IBY5B":50,"LADpMPGYHsRHlZlUca1v":60,"LeBl4UWcZ0B5jm0xnklM":70,"N0xlx7HF1swl6xG7Z6EI":65,"RFReaX7pmFEbZyC94zqY":50,"RV1uhwh4E0KHqkdG7AZl":70,"Sxv2mlMxsfWCwyigN1SB":65,"ToQbIYacEvAQgWgKGrKe":65,"WTkToNpniEBxpfQvkFSl":50,"WkSvlK7a52WGdejjwHy0":65,"YPqpcCo9nEPnwCHf4PG5":4,"aBNT8juNjHCiWNyeP77c":25,"adP4ePXrCRnUpJEF75yN":45,"aoEm0pl0DZVHJRu5yh8s":50,"avtlL5MRbaddOnvKrhAQ":50,"beBgKZovv7Ff64cNySiw":55,"bxQ82vpM4AnSV1LHLYVj":55,"cD4dawqBzxW4QbrMdkNX":85,"dNLv41IF9boLAksKczIP":15,"dkaIGgCvndiYkh9YQhAn":75,"eGe9PYICNx0cGoHcFmnH":45,"egdNu5KMi6vBCQ6kgcb4":35,"fbVJ7kIyGm8xxrCIGAie":40,"g36RaezJv7mpr25eCRpU":10,"gPMjdoKgYxBfeiWwcLzG":15,"gUqhOrD1oRxDyBILQFCf":30,"hnpIXeiI3sSkalYU2XuN":10,"iFTIlSN50BZ3Fu840Eyh":60,"icjh1tVET66Z01537Wuo":5,"jOVGwRWT4yWWNKY38nPX":60,"kAeKnqoJrT5gIQWsOM2s":10,"lkL37TRj1Kl1JgFuEALH":15,"mHR0N7KD6F0AERAPq6p9":25,"mRJvYqrjm2ua43v5rUFq":3,"n9mew9JrgjOiGgTLTIQj":50,"nPPZX2YnjM5NvNb8vCjx":45,"pBFwHIArqgsyaaXuqy83":60,"pwPUQqHl0ZUgasIkwURV":45,"qCcAONbuDombNG0Zxp1O":15,"qEhkAcZFgWoJQ9FAemJW":10,"qMbHXWozStOI9d8HGdlA":8,"sRwJjdMQ1YsvkERKMAp8":55,"wu9pvYRkckJDgmCy4lqy":55,"xicaGPKmYL6fcxfuF5bw":45,"yXEl9MSGuUE3CBJa4osZ":20};
+/* Categorías con nombre de verdad (GHL solo nos da el id del grupo). */
+const CATS = [
+  ["ofertas",              "Ofertas",              ["fT0sXptFVjHBh5NXRncJ","Ie8nCrazRqN34JtWb6S1","ofGTPF77E8xlplWW9JJ5"]],
+  ["acrilico",             "Uñas acrílicas",       ["BcIF9jkT2zu23pNuUO6U"]],
+  ["geltips",              "Gel tips",             ["bfbJjjtFPSgfgZ8IWyb2"]],
+  ["manicura",             "Manicura",             ["wFzMzHU9ecEmSDdBxwnc"]],
+  ["pedicura",             "Pedicura",             ["fzOC2zNF91UNsCtsiQ7i"]],
+  ["pies",                 "Área de los pies",     ["GceGdaCTfwrkVLp7neyI"]],
+  ["esmaltado",            "Esmaltado y parafina", ["cRY5s0ltQKkVzMp2olCv"]],
+  ["disenos",              "Diseños y extras",     ["9ZtC5GQBfAAw0VxyROLX"]],
+  ["headspa",              "Head Spa",             ["PFd221GFOa663WjwOJXz"]]
+];
+const API = "__API__";                     // Apps Script de esta página (el token vive allá)
+const TZ = "America/Puerto_Rico", OFFSET = "-04:00", DIAS = 21;
+const DOW = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+const MES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const SVC = {}; DATA.services.forEach(s => SVC[s.id] = s);
+
+/* ===================== estado ===================== */
+const S = {
+  tok:null, me:null,
+  citas:[], usualCal:"", usualTec:"", visitas:0,
+  svcs:[], tec:null,
+  dias:null, dia:null, hora:null, tecHora:null,
+  modo:"reservar",            // "reservar" | "mover"
+  mover:null,                 // la cita que se está moviendo
+  pantalla:"scr-hola", pila:[],
+  telefono:""
+};
+const $ = id => document.getElementById(id);
+
+/* ===================== utilidades ===================== */
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function digitos(s){ return String(s||"").replace(/\D/g,""); }
+function fmtTel(v){
+  const d = digitos(v).slice(0,10);
+  if(d.length <= 3) return d;
+  if(d.length <= 6) return `(${d.slice(0,3)}) ${d.slice(3)}`;
+  return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+}
+function fmtDur(m){ const h = Math.floor(m/60), mi = m%60; return h ? (mi ? `${h} h ${mi} min` : `${h} h`) : `${mi} min`; }
+function fmtHora(min){
+  let h = Math.floor(min/60), m = min%60, ap = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return `${h}:${String(m).padStart(2,"0")} ${ap}`;
+}
+function hoyPR(){
+  const p = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+  return p;
+}
+function ahoraMin(){
+  const p = new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date());
+  return (+p.slice(0,2))*60 + (+p.slice(3,5));
+}
+function masDias(iso,n){ const d = new Date(iso+"T12:00:00Z"); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); }
+function fechaLarga(iso){
+  const d = new Date(iso+"T12:00:00Z");
+  const hoy = hoyPR();
+  const corta = `${DOW[d.getUTCDay()]} ${d.getUTCDate()}`;
+  if(iso === hoy) return "Hoy, " + corta;
+  // "Mañana" a secas se confunde con la franja de la mañana: siempre con el día al lado.
+  if(iso === masDias(hoy,1)) return "Mañana, " + corta;
+  return `${corta} de ${MES[d.getUTCMonth()]}`;
+}
+function minDeISO(iso){ const m = iso.match(/T(\d{2}):(\d{2})/); return (+m[1])*60 + (+m[2]); }
+function iso(fecha, min){
+  const h = String(Math.floor(min/60)).padStart(2,"0"), m = String(min%60).padStart(2,"0");
+  return `${fecha}T${h}:${m}:00${OFFSET}`;
+}
+function totDur(){ return S.svcs.reduce((n,s) => n + s.d, 0); }
+function totPrecio(){
+  let suma = 0, todos = true;
+  for(const s of S.svcs){ const p = PRICE[s.id]; if(p) suma += p; else todos = false; }
+  return {suma, todos};
+}
+function titulo(){ return S.svcs.map(s => s.n).join(" + "); }
+function equipo(){
+  if(!S.svcs.length) return [];
+  let t = S.svcs[0].tm.slice();
+  for(const s of S.svcs.slice(1)) t = t.filter(u => s.tm.includes(u));
+  return t;
+}
+function inicial(n){ return (n||"?").trim().charAt(0).toUpperCase(); }
+
+/* ===================== navegación ===================== */
+function ir(p, sinPila){
+  if(!sinPila && p !== S.pantalla) S.pila.push(S.pantalla);
+  document.querySelectorAll(".scr").forEach(s => s.hidden = (s.id !== p));
+  S.pantalla = p;
+  window.scrollTo(0,0);
+  pintarBarra();
+}
+function atras(){
+  const p = S.pila.pop() || "scr-inicio";
+  ir(p, true);
+}
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => ir(b.dataset.go, true)));
+
+function error(id, msg){
+  const e = $(id);
+  if(!msg){ e.hidden = true; return; }
+  e.textContent = msg; e.hidden = false;
+}
+function cargando(btn, si, txt){
+  btn.disabled = si;
+  if(si){ btn.dataset.txt = btn.textContent; btn.textContent = txt || "Un momento…"; }
+  else if(btn.dataset.txt){ btn.textContent = btn.dataset.txt; }
+}
+
+/* ===================== llamadas al backend ===================== */
+async function api(accion, params, msTimeout){
+  if(API.indexOf("__") === 0) throw new Error("La página todavía no está conectada al salón.");
+  const u = new URL(API);
+  u.searchParams.set("action", accion);
+  for(const k in params) if(params[k] != null && params[k] !== "") u.searchParams.set(k, params[k]);
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), msTimeout || 20000);
+  try{
+    const r = await fetch(u.toString(), {signal:ctrl.signal});
+    const j = await r.json();
+    if(j && j.expirado){ salir(true); throw new Error(j.error); }
+    return j;
+  } finally { clearTimeout(t); }
+}
+/* Apps Script tarda 1-3 s en despertar: lo calentamos al abrir la página. */
+function calentar(){ if(API.indexOf("__") !== 0) fetch(API + "?action=ping").catch(()=>{}); }
+
+/* ===================== huecos (endpoint público de GHL, sin token) ===================== */
+/* Una sola consulta trae las 3 semanas completas, y con un máximo de 4 a la vez
+   no disparamos el límite de GHL (el 429 que ya nos mordió en el tablero). */
+let q429 = 0, qVivas = 0; const qCola = [], Q_MAX = 4;
+function qFetch(url){ return new Promise((res,rej) => { qCola.push({url,res,rej}); qBomba(); }); }
+async function qBomba(){
+  if(qVivas >= Q_MAX || !qCola.length) return;
+  const job = qCola.shift(); qVivas++;
+  try{
+    let r, intentos = 0;
+    for(;;){
+      const esperar = q429 - Date.now();
+      if(esperar > 0) await new Promise(z => setTimeout(z, esperar));
+      r = await fetch(job.url, {headers:{accept:"application/json"}});
+      if(r.status !== 429 || intentos >= 3) break;
+      intentos++; q429 = Date.now() + 2800 + Math.floor(Math.random()*700);
+    }
+    job.res(r);
+  }catch(e){ job.rej(e); }
+  finally{ qVivas--; qBomba(); }
+}
+const memoria = {};   // calId|userId -> {at, dias:{iso:[minutos]}}
+async function huecos(calId, userId){
+  const clave = calId + "|" + (userId||"");
+  const hit = memoria[clave];
+  if(hit && Date.now() - hit.at < 60000) return hit.dias;
+  const hoy = hoyPR();
+  const a = Date.parse(hoy + "T00:00:00" + OFFSET);
+  const b = Date.parse(masDias(hoy, DIAS-1) + "T23:59:59" + OFFSET);
+  let url = `https://backend.leadconnectorhq.com/calendars/${calId}/free-slots`
+          + `?startDate=${a}&endDate=${b}&timezone=${encodeURIComponent(TZ)}&sendSeatsPerSlot=false`;
+  if(userId) url += `&userId=${userId}`;
+  const r = await qFetch(url);
+  if(!r.ok) throw new Error("HTTP " + r.status);
+  const j = await r.json();
+  const dias = {};
+  for(const k in j){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(k)) continue;
+    const sl = (j[k] && Array.isArray(j[k].slots)) ? j[k].slots : [];
+    dias[k] = sl.map(minDeISO).sort((x,y) => x-y);
+  }
+  memoria[clave] = {at:Date.now(), dias};
+  return dias;
+}
+function olvidar(){ for(const k in memoria) delete memoria[k]; }
+
+/* Calcula, para cada día, las horas de comienzo que sirven — y con qué técnica.
+   · 1 servicio y sin preferencia -> una sola consulta (GHL asigna la técnica).
+   · varios servicios -> cada uno tiene que caber justo después del anterior CON LA MISMA
+     técnica, así que hay que preguntar por técnica (igual que en el tablero). */
+async function calcular(){
+  const svcs = S.svcs;
+  if(!svcs.length) return {dias:{}, tecs:{}};
+  const team = S.tec ? [S.tec] : equipo();
+  if(!team.length) return {dias:{}, tecs:{}, sinEquipo:true};
+
+  const hoy = hoyPR(), ahora = ahoraMin();
+  const limpiar = (fecha, mins) => (fecha === hoy ? mins.filter(m => m >= ahora + 30) : mins);
+
+  /* Reagendar una cita que dura MÁS que su calendario (las combinadas "A + B" se crean
+     en el calendario del primer servicio). Los huecos de ese calendario solo garantizan
+     la duración del primer servicio, así que hay que exigir que TODA la ventana esté
+     libre: cada comienzo intermedio tiene que existir también. Sin esto, mover una cita
+     de 2h20 la podría encajar en un hueco de 1h20 y pisar la cita de al lado. */
+  const extra = (S.modo === "mover" && S.moverDur > (svcs[0].d || 0)) ? S.moverDur - svcs[0].d : 0;
+  const cabe = (mins) => {
+    if(!extra) return mins;
+    const set = new Set(mins);
+    const paso = mins.length > 1 ? Math.min(...mins.slice(1).map((m,i) => m - mins[i])) : 5;
+    return mins.filter(t => {
+      for(let k = paso; k <= extra; k += paso) if(!set.has(t + k)) return false;
+      return true;
+    });
+  };
+
+  if(svcs.length === 1 && !S.tec){
+    const d = await huecos(svcs[0].id, null);
+    const dias = {};
+    for(const f in d){ const m = limpiar(f, cabe(d[f])); if(m.length) dias[f] = m; }
+    return {dias, tecs:{}};
+  }
+  const offs = []; let acc = 0;
+  for(const s of svcs){ offs.push(acc); acc += s.d; }
+
+  const porTec = {};
+  for(let k = 0; k < svcs.length; k++){
+    const filas = await Promise.all(team.map(async u => [u, await huecos(svcs[k].id, u)]));
+    filas.forEach(([u, d]) => { (porTec[u] = porTec[u] || [])[k] = d; });
+  }
+  const dias = {}, tecs = {};      // tecs["fecha|min"] = [userIds]
+  for(const u of team){
+    const sets = (porTec[u] || []).map(d => {
+      const m = {}; for(const f in d) m[f] = new Set(d[f]); return m;
+    });
+    if(sets.length !== svcs.length) continue;
+    for(const f in sets[0]){
+      const orden = [...sets[0][f]].sort((a,b) => a-b);
+      const buenas = cabe(orden).filter(t =>
+        svcs.every((s,k) => sets[k][f] && sets[k][f].has(t + offs[k])));
+      for(const t of limpiar(f, buenas)){
+        (dias[f] = dias[f] || []).push(t);
+        (tecs[f+"|"+t] = tecs[f+"|"+t] || []).push(u);
+      }
+    }
+  }
+  for(const f in dias) dias[f] = [...new Set(dias[f])].sort((a,b) => a-b);
+  return {dias, tecs};
+}
+
+/* ===================== 1-3. entrar ===================== */
+$("inPh").addEventListener("input", e => { e.target.value = fmtTel(e.target.value); error("errPh",""); });
+$("nvPh").addEventListener("input", e => { e.target.value = fmtTel(e.target.value); });
+$("inPh").addEventListener("keydown", e => { if(e.key === "Enter") $("btnPh").click(); });
+$("inNm").addEventListener("keydown", e => { if(e.key === "Enter") $("btnNm").click(); });
+
+$("btnPh").addEventListener("click", async () => {
+  const d = digitos($("inPh").value);
+  if(d.length < 10) return error("errPh","Escribe los 10 dígitos de tu teléfono.");
+  S.telefono = d;
+  cargando($("btnPh"), true, "Buscando…");
+  try{
+    const j = await api("me", {ph:d});
+    if(!j.ok) return error("errPh", j.error || "No pudimos consultar. Inténtalo otra vez.");
+    if(j.existe){ error("errPh",""); ir("scr-nombre"); setTimeout(() => $("inNm").focus(), 120); }
+    else{ $("nvPh").value = fmtTel(d); ir("scr-nueva"); setTimeout(() => $("nvFn").focus(), 120); }
+  }catch(e){ error("errPh", e.message || "No pudimos conectar. Revisa tu internet."); }
+  finally{ cargando($("btnPh"), false); }
+});
+
+$("btnNm").addEventListener("click", async () => {
+  const nm = $("inNm").value.trim();
+  if(nm.length < 2) return error("errNm","Escribe tu nombre.");
+  cargando($("btnNm"), true, "Entrando…");
+  try{
+    const j = await api("me", {ph:S.telefono, nm});
+    if(!j.ok) return error("errNm", j.error || "No pudimos entrar.");
+    entrar(j);
+  }catch(e){ error("errNm", e.message || "No pudimos conectar."); }
+  finally{ cargando($("btnNm"), false); }
+});
+
+$("btnNueva").addEventListener("click", () => { $("nvPh").value = fmtTel($("inPh").value); ir("scr-nueva"); });
+$("btnNueva2").addEventListener("click", () => { $("nvPh").value = fmtTel(S.telefono); ir("scr-nueva"); });
+
+$("btnNv").addEventListener("click", async () => {
+  const fn = $("nvFn").value.trim(), ln = $("nvLn").value.trim();
+  const ph = digitos($("nvPh").value), em = $("nvEm").value.trim();
+  if(!fn) return error("errNv","Necesitamos tu nombre.");
+  if(ph.length < 10) return error("errNv","Escribe los 10 dígitos de tu teléfono.");
+  cargando($("btnNv"), true, "Creando tu perfil…");
+  try{
+    const j = await api("new", {fn, ln, ph, em});
+    if(!j.ok){
+      if(j.yaExiste){ S.telefono = ph; $("inPh").value = fmtTel(ph); ir("scr-nombre"); error("errNm", j.error); return; }
+      return error("errNv", j.error || "No se pudo crear tu perfil.");
+    }
+    entrar(j);
+  }catch(e){ error("errNv", e.message || "No pudimos conectar."); }
+  finally{ cargando($("btnNv"), false); }
+});
+
+function entrar(j){
+  S.tok = j.tok;
+  S.me = {id:j.id, fn:j.fn, ln:j.ln, ph:j.ph, em:j.em};
+  try{ localStorage.setItem("tn-sesion", JSON.stringify({tok:S.tok, me:S.me, at:Date.now()})); }catch(e){}
+  $("btnSalir").hidden = false;
+  S.pila = [];
+  ir("scr-inicio", true);
+  cargarInicio();
+}
+function salir(callado){
+  try{ localStorage.removeItem("tn-sesion"); }catch(e){}
+  S.tok = null; S.me = null; S.citas = []; S.svcs = []; S.tec = null; S.pila = [];
+  $("btnSalir").hidden = true;
+  $("inNm").value = "";
+  ir("scr-hola", true);
+  if(!callado) error("errPh","");
+}
+$("btnSalir").addEventListener("click", () => salir());
+
+/* ===================== 4. inicio ===================== */
+async function cargarInicio(){
+  $("miNombre").textContent = (S.me.fn || "").trim().split(" ")[0] || "bienvenida";
+  $("proxLista").innerHTML = `<div class="estado"><div class="spin"></div>Buscando tus citas…</div>`;
+  $("miSub").textContent = "";
+  try{
+    const j = await api("mine", {tok:S.tok});
+    if(!j.ok) throw new Error(j.error || "No pudimos consultar tus citas.");
+    S.citas = j.citas || []; S.usualCal = j.usualCal || ""; S.usualTec = j.usualTec || ""; S.visitas = j.visitas || 0;
+    pintarInicio();
+  }catch(e){
+    $("proxLista").innerHTML = `<div class="aviso err">${esc(e.message)}</div>`;
+  }
+}
+function nombreTec(u){ return DATA.staff[u] || ""; }
+function nombreSvc(calId, titulo){
+  if(titulo && titulo.indexOf(" + ") > 0) return titulo;          // cita combinada
+  const s = SVC[calId];
+  return s ? s.n : (titulo || "Tu servicio");
+}
+function pintarInicio(){
+  $("miNombre").textContent = (S.me.fn || "").trim().split(" ")[0] || "bienvenida";
+  // próximas citas
+  if(!S.citas.length){
+    $("proxLista").innerHTML = `<div class="card quiet"><p class="card-s">No tienes citas próximas. ¿Reservamos una?</p></div>`;
+  }else{
+    $("proxLista").innerHTML = S.citas.map(c => {
+      const f = c.s.slice(0,10), m = minDeISO(c.s);
+      const tec = nombreTec(c.u);
+      return `<div class="card">
+        <span class="cita-fecha">${esc(fechaLarga(f))} · ${esc(fmtHora(m))}</span>
+        <p class="card-t">${esc(nombreSvc(c.c, c.t))}</p>
+        <p class="card-s">${tec ? "Con " + esc(tec) : "Técnica por asignar"}</p>
+        <div class="card-acts">
+          <button class="btn ghost sm" data-mover="${esc(c.id)}">Reagendar</button>
+          <button class="btn danger sm" data-cancelar="${esc(c.id)}">Cancelar</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+  // saludo
+  $("miSub").textContent = S.visitas
+    ? (S.visitas === 1 ? "Nos alegra tenerte de vuelta." : `Ya llevas ${S.visitas} visitas con nosotras. Gracias 💛`)
+    : "Nos alegra tenerte aquí.";
+
+  // "lo de siempre"
+  const s = SVC[S.usualCal];
+  if(s){
+    const tec = nombreTec(S.usualTec);
+    const p = PRICE[s.id];
+    $("usualWrap").hidden = false;
+    $("usualWrap").innerHTML = `<button class="card" id="btnUsual" style="width:100%;text-align:left;cursor:pointer">
+        <span class="tag">Lo de siempre</span>
+        <p class="card-t" style="margin-top:9px">${esc(s.n)}</p>
+        <p class="card-s">${tec ? "Con " + esc(tec) + " · " : ""}${esc(fmtDur(s.d))}${p ? " · desde $" + p : ""}</p>
+      </button>`;
+    $("btnUsual").addEventListener("click", () => {
+      S.modo = "reservar"; S.mover = null;
+      S.svcs = [s];
+      S.tec = (S.usualTec && s.tm.includes(S.usualTec)) ? S.usualTec : null;
+      abrirHoras();
+    });
+  }else{
+    $("usualWrap").hidden = true;
+  }
+}
+$("btnReservar").addEventListener("click", () => {
+  S.modo = "reservar"; S.mover = null; S.svcs = []; S.tec = null;
+  $("svcQ").value = "";
+  catActiva = null;
+  pintarSvc();
+  ir("scr-svc");
+});
+$("proxLista").addEventListener("click", e => {
+  const b = e.target.closest("[data-cancelar]"); if(b) return abrirCancelar(b.dataset.cancelar);
+  const m = e.target.closest("[data-mover]");    if(m) return abrirMover(m.dataset.mover);
+});
+
+/* ===================== 5. servicios ===================== */
+let catActiva = null;
+function pintarCats(){
+  $("svcCats").innerHTML = CATS.map(([k,n]) =>
+    `<button class="cat" data-cat="${k}" aria-pressed="${catActiva===k}">${esc(n)}</button>`).join("");
+}
+function pintarSvc(){
+  pintarCats();
+  const q = $("svcQ").value.trim().toLowerCase()
+              .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const elegidos = S.svcs.map(s => s.id);
+  // si ya hay algo elegido, solo ofrecemos lo que una MISMA técnica pueda hacer junto a eso
+  const team = S.svcs.length ? equipo() : null;
+  let lista = DATA.services.filter(s => {
+    if(elegidos.includes(s.id)) return false;
+    if(team && !s.tm.some(u => team.includes(u))) return false;
+    if(catActiva){
+      const grupos = (CATS.find(c => c[0] === catActiva) || [])[2] || [];
+      if(!grupos.includes(s.g)) return false;
+    }
+    if(q){
+      const n = s.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+      if(!n.includes(q)) return false;
+    }
+    return true;
+  });
+  $("svcVacio").hidden = lista.length > 0;
+  $("svcList").innerHTML = lista.map(s => {
+    const p = PRICE[s.id];
+    return `<button class="svc" data-svc="${s.id}">
+      <span class="svc-i">
+        <span class="svc-n">${esc(s.n)}</span>
+        <span class="svc-m">${esc(fmtDur(s.d))}${p ? " · desde $" + p : ""}</span>
+      </span>
+      <span class="svc-x">+</span>
+    </button>`;
+  }).join("");
+  pintarChips();
+  pintarBarra();
+}
+function pintarChips(){
+  const c = $("svcChips");
+  c.hidden = !S.svcs.length;
+  c.innerHTML = S.svcs.map(s =>
+    `<span class="chip">${esc(s.n)} <button data-quitar="${s.id}" aria-label="Quitar">×</button></span>`).join("");
+}
+$("svcQ").addEventListener("input", pintarSvc);
+$("svcCats").addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if(!b) return;
+  catActiva = (catActiva === b.dataset.cat) ? null : b.dataset.cat;
+  pintarSvc();
+});
+$("svcList").addEventListener("click", e => {
+  const b = e.target.closest("[data-svc]"); if(!b) return;
+  const s = SVC[b.dataset.svc]; if(!s) return;
+  S.svcs.push(s);
+  $("svcQ").value = "";
+  pintarSvc();
+});
+$("svcChips").addEventListener("click", e => {
+  const b = e.target.closest("[data-quitar]"); if(!b) return;
+  S.svcs = S.svcs.filter(s => s.id !== b.dataset.quitar);
+  pintarSvc();
+});
+
+/* ===================== 6. técnica ===================== */
+function pintarTec(){
+  const team = equipo();
+  const usual = (S.usualTec && team.includes(S.usualTec)) ? S.usualTec : null;
+  $("tecSub").textContent = S.svcs.length > 1
+    ? "La misma técnica te hará todos los servicios, uno detrás del otro."
+    : "Si no tienes preferencia, te damos la primera disponible.";
+  const orden = team.slice().sort((a,b) =>
+    (b === usual) - (a === usual) || (DATA.staff[a]||"").localeCompare(DATA.staff[b]||"", "es"));
+  $("tecLista").innerHTML =
+    `<button class="tec" data-tec="" aria-pressed="${S.tec===null}">
+       <span class="av">✦</span>
+       <span class="svc-i"><span class="svc-n">Cualquiera disponible</span>
+       <span class="svc-m">Verás más horas para escoger</span></span>
+     </button>` +
+    orden.map(u => `<button class="tec" data-tec="${u}" aria-pressed="${S.tec===u}">
+       <span class="av">${esc(inicial(DATA.staff[u]))}</span>
+       <span class="svc-i"><span class="svc-n">${esc(DATA.staff[u]||"Técnica")}</span>
+       ${u===usual ? '<span class="svc-m">Tu técnica de siempre</span>' : ""}</span>
+       ${u===usual ? '<span class="tag">Tuya</span>' : ""}
+     </button>`).join("");
+}
+$("tecLista").addEventListener("click", e => {
+  const b = e.target.closest("[data-tec]"); if(!b) return;
+  S.tec = b.dataset.tec || null;
+  abrirHoras();
+});
+
+/* ===================== 7. día y hora ===================== */
+function abrirHoras(){
+  S.dia = null; S.hora = null; S.tecHora = null; S.dias = null;
+  ir("scr-hora");
+  $("horaTitulo").innerHTML = S.modo === "mover" ? 'Nueva <em>hora</em>' : 'Elige tu <em>hora</em>';
+  const nom = S.modo === "mover" ? nombreSvc(S.mover.c, S.mover.t) : titulo();
+  const tec = S.tec ? " · con " + (DATA.staff[S.tec]||"") : "";
+  $("horaSub").textContent = nom + " · " + fmtDur(S.modo === "mover" ? S.moverDur : totDur()) + tec;
+  $("dias").innerHTML = "";
+  $("horasWrap").innerHTML = `<div class="estado"><div class="spin"></div>Buscando espacios libres…</div>`;
+  pintarBarra();
+  calcular().then(r => {
+    if(S.pantalla !== "scr-hora") return;
+    S.dias = r;
+    if(r.sinEquipo){
+      $("horasWrap").innerHTML = `<div class="aviso err">Ninguna técnica hace todos esos servicios juntos. Quita alguno y prueba otra vez.</div>`;
+      return;
+    }
+    pintarDias();
+    const primero = Object.keys(r.dias).sort().find(f => r.dias[f] && r.dias[f].length);
+    if(!primero){
+      $("horasWrap").innerHTML = `<div class="aviso">No quedan espacios en las próximas ${DIAS} noches para esa combinación. Prueba con otra técnica o escríbenos.</div>`;
+      return;
+    }
+    elegirDia(primero);
+  }).catch(e => {
+    if(S.pantalla !== "scr-hora") return;
+    $("horasWrap").innerHTML = `<div class="aviso err">${/429/.test(e.message)
+      ? "Muchas consultas seguidas. Espera unos segundos y vuelve a entrar."
+      : "No pudimos consultar la disponibilidad. Revisa tu internet."}</div>`;
+  });
+}
+$("horaBack").addEventListener("click", atras);
+
+function pintarDias(){
+  const hoy = hoyPR();
+  let h = "";
+  for(let i = 0; i < DIAS; i++){
+    const f = masDias(hoy, i);
+    const libre = (S.dias.dias[f] || []).length;
+    const d = new Date(f+"T12:00:00Z");
+    h += `<button class="day" data-dia="${f}" ${libre ? "" : "disabled"} aria-pressed="${S.dia===f}">
+            <span>${DOW[d.getUTCDay()]}</span><b>${d.getUTCDate()}</b><span class="dot"></span>
+          </button>`;
+  }
+  $("dias").innerHTML = h;
+}
+$("dias").addEventListener("click", e => {
+  const b = e.target.closest("[data-dia]"); if(!b || b.disabled) return;
+  elegirDia(b.dataset.dia);
+});
+function elegirDia(f){
+  S.dia = f; S.hora = null; S.tecHora = null;
+  pintarDias();
+  const el = $("dias").querySelector(`[data-dia="${f}"]`);
+  if(el) el.scrollIntoView({inline:"center", block:"nearest", behavior:"smooth"});
+  /* GHL ofrece comienzos cada 5 minutos: 34 botones para un servicio corto es ruido.
+     Enseñamos los cuartos en punto, y si ese día quedan menos de 3 así, mostramos todos
+     (nunca escondemos el único hueco que queda). Cambia PASO a 5 para verlos todos. */
+  const PASO = 15;
+  const todas = S.dias.dias[f] || [];
+  const limpias = todas.filter(m => m % PASO === 0);
+  const mins = limpias.length >= 3 ? limpias : todas;
+  const grupos = [["Mañana", m => m < 12*60], ["Tarde", m => m >= 12*60 && m < 17*60], ["Noche", m => m >= 17*60]];
+  let h = "";
+  for(const [nom, filtro] of grupos){
+    const ms = mins.filter(filtro);
+    if(!ms.length) continue;
+    h += `<div class="hgroup"><h3>${nom}</h3><div class="hours">` +
+         ms.map(m => `<button class="hour" data-min="${m}" aria-pressed="false">${fmtHora(m)}</button>`).join("") +
+         `</div></div>`;
+  }
+  $("horasWrap").innerHTML = h || `<div class="vacio">Ese día ya está lleno. Prueba con otro.</div>`;
+  pintarBarra();
+}
+$("horasWrap").addEventListener("click", e => {
+  const b = e.target.closest("[data-min]"); if(!b) return;
+  S.hora = +b.dataset.min;
+  const tecs = S.dias.tecs[S.dia+"|"+S.hora];
+  S.tecHora = S.tec || (tecs && tecs[0]) || null;
+  $("horasWrap").querySelectorAll(".hour").forEach(x => x.setAttribute("aria-pressed", x === b));
+  pintarBarra();
+});
+
+/* ===================== barra fija ===================== */
+function pintarBarra(){
+  const b = $("barra");
+  if(S.pantalla === "scr-svc"){
+    if(!S.svcs.length){ b.hidden = true; return; }
+    const {suma, todos} = totPrecio();
+    b.hidden = false;
+    $("barraT").textContent = S.svcs.length === 1 ? S.svcs[0].n : `${S.svcs.length} servicios`;
+    $("barraS").textContent = fmtDur(totDur()) + (suma ? ` · desde $${suma}${todos ? "" : "+"}` : "");
+    $("barraBtn").textContent = "Continuar";
+    return;
+  }
+  if(S.pantalla === "scr-hora"){
+    if(S.hora == null){ b.hidden = true; return; }
+    b.hidden = false;
+    $("barraT").textContent = `${fechaLarga(S.dia)} · ${fmtHora(S.hora)}`;
+    const t = S.tecHora ? DATA.staff[S.tecHora] : null;
+    $("barraS").textContent = t ? "Con " + t : "Te asignamos técnica";
+    $("barraBtn").textContent = "Continuar";
+    return;
+  }
+  b.hidden = true;
+}
+$("barraBtn").addEventListener("click", () => {
+  if(S.pantalla === "scr-svc"){
+    if(!equipo().length){
+      alert("Ninguna técnica hace todos esos servicios juntos. Quita alguno, por favor.");
+      return;
+    }
+    S.tec = null;
+    pintarTec();
+    ir("scr-tec");
+    return;
+  }
+  if(S.pantalla === "scr-hora") abrirConfirmar();
+});
+
+/* ===================== 8. confirmar ===================== */
+function filas(pares){
+  return pares.filter(p => p[1]).map(p => `<div><dt>${esc(p[0])}</dt><dd>${esc(p[1])}</dd></div>`).join("");
+}
+function abrirConfirmar(){
+  error("errConf","");
+  const mover = S.modo === "mover";
+  $("confTitulo").innerHTML = mover ? 'Confirma el <em>cambio</em>' : 'Confirma tu <em>cita</em>';
+  $("btnConf").textContent = mover ? "Mover mi cita" : "Confirmar mi cita";
+  const dur = mover ? S.moverDur : totDur();
+  const {suma, todos} = totPrecio();
+  const tec = S.tecHora ? DATA.staff[S.tecHora] : (mover ? nombreTec(S.mover.u) : "");
+  $("confResumen").innerHTML = filas([
+    ["Servicio", mover ? nombreSvc(S.mover.c, S.mover.t) : titulo()],
+    ["Día",      fechaLarga(S.dia)],
+    ["Hora",     fmtHora(S.hora) + " – " + fmtHora(S.hora + dur)],
+    ["Duración", fmtDur(dur)],
+    ["Técnica",  tec || "Te asignamos la disponible"],
+    ["Desde",    (!mover && suma) ? `$${suma}${todos ? "" : " +"}` : ""],
+    ["A nombre de", `${S.me.fn} ${S.me.ln}`.trim()]
+  ]);
+  $("confNota").textContent = mover
+    ? "Tu cita se mueve a la hora nueva y te avisamos por correo. Nadie pierde el turno."
+    : "Te llegará la confirmación por correo. Si necesitas cambiarla, puedes hacerlo desde aquí mismo.";
+  ir("scr-conf");
+}
+$("btnConf").addEventListener("click", async () => {
+  error("errConf","");
+  cargando($("btnConf"), true, "Reservando…");
+  try{
+    const mover = S.modo === "mover";
+    const dur = mover ? S.moverDur : totDur();
+    const ini = iso(S.dia, S.hora), fin = iso(S.dia, S.hora + dur);
+    let j;
+    if(mover){
+      j = await api("move", {tok:S.tok, eventId:S.mover.id, start:ini, end:fin, userId:S.tecHora || S.mover.u}, 30000);
+    }else{
+      j = await api("book", {tok:S.tok, calId:S.svcs[0].id, start:ini, end:fin,
+                             title:titulo(), userId:S.tecHora || ""}, 30000);
+    }
+    if(!j.ok) return error("errConf", j.error || "No se pudo completar. Inténtalo otra vez.");
+    if(j.u && !S.tecHora) S.tecHora = j.u;
+    olvidar();
+    mostrarOk(mover, ini, fin, dur);
+  }catch(e){
+    error("errConf", e.message || "No pudimos conectar. Revisa tu internet.");
+  }finally{ cargando($("btnConf"), false); }
+});
+
+/* ===================== 9. listo ===================== */
+function mostrarOk(mover, ini, fin, dur){
+  const nom = mover ? nombreSvc(S.mover.c, S.mover.t) : titulo();
+  const tec = S.tecHora ? DATA.staff[S.tecHora] : "";
+  $("okTitulo").innerHTML = mover ? '¡Cita <em>movida</em>!' : '¡Cita <em>confirmada</em>!';
+  $("okSub").textContent = "Te esperamos en Trend Nails Salon.";
+  $("okResumen").innerHTML = filas([
+    ["Servicio", nom],
+    ["Día",      fechaLarga(S.dia)],
+    ["Hora",     fmtHora(S.hora) + " – " + fmtHora(S.hora + dur)],
+    ["Técnica",  tec || "Te asignamos la disponible"]
+  ]);
+  $("btnIcs").href = URL.createObjectURL(new Blob([ics(nom, ini, fin)], {type:"text/calendar"}));
+  ir("scr-ok", true);
+  S.pila = [];
+}
+function ics(nom, ini, fin){
+  const z = s => new Date(s).toISOString().replace(/[\u0300-\u036f]/g,"").replace(/\.\d{3}/,"");
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Trend Nails//ES","BEGIN:VEVENT",
+    "UID:" + Date.now() + "@trendnails",
+    "DTSTAMP:" + z(new Date().toISOString()),
+    "DTSTART:" + z(ini), "DTEND:" + z(fin),
+    "SUMMARY:" + nom + " · Trend Nails",
+    "LOCATION:Trend Nails Salon, Caguas, PR",
+    "END:VEVENT","END:VCALENDAR"].join("\r\n");
+}
+$("btnVolver").addEventListener("click", () => { ir("scr-inicio", true); cargarInicio(); });
+
+/* ===================== cancelar y reagendar ===================== */
+let cancelando = null;
+function abrirCancelar(id){
+  const c = S.citas.find(x => x.id === id); if(!c) return;
+  cancelando = c;
+  $("modalErr").hidden = true;
+  $("modalS").textContent = `${nombreSvc(c.c, c.t)} · ${fechaLarga(c.s.slice(0,10))} a las ${fmtHora(minDeISO(c.s))}.`;
+  $("modal").hidden = false;
+}
+$("modalNo").addEventListener("click", () => { $("modal").hidden = true; cancelando = null; });
+$("modal").addEventListener("click", e => { if(e.target === $("modal")) $("modalNo").click(); });
+$("modalSi").addEventListener("click", async () => {
+  if(!cancelando) return;
+  cargando($("modalSi"), true, "Cancelando…");
+  try{
+    const j = await api("cancel", {tok:S.tok, eventId:cancelando.id});
+    if(!j.ok){ $("modalErr").textContent = j.error || "No se pudo cancelar."; $("modalErr").hidden = false; return; }
+    $("modal").hidden = true; cancelando = null;
+    olvidar();
+    cargarInicio();
+  }catch(e){
+    $("modalErr").textContent = e.message || "No pudimos conectar."; $("modalErr").hidden = false;
+  }finally{ cargando($("modalSi"), false); }
+});
+
+function abrirMover(id){
+  const c = S.citas.find(x => x.id === id); if(!c) return;
+  const s = SVC[c.c];
+  if(!s){
+    alert("Esa cita hay que moverla con el salón. Escríbenos y te ayudamos enseguida.");
+    return;
+  }
+  S.modo = "mover"; S.mover = c;
+  S.moverDur = Math.max(15, Math.round((Date.parse(c.e) - Date.parse(c.s))/60000)) || s.d;
+  S.svcs = [s];
+  S.tec = (c.u && s.tm.includes(c.u)) ? c.u : null;   // conservamos su técnica
+  abrirHoras();
+}
+
+/* ===================== arranque ===================== */
+(function inicio(){
+  calentar();
+  pintarCats();
+  try{
+    const g = JSON.parse(localStorage.getItem("tn-sesion") || "null");
+    if(g && g.tok && g.me && Date.now() - g.at < 11.5*3600*1000){
+      S.tok = g.tok; S.me = g.me;
+      $("btnSalir").hidden = false;
+      ir("scr-inicio", true);
+      cargarInicio();
+      return;
+    }
+  }catch(e){}
+  ir("scr-hola", true);
+  setTimeout(() => { if(S.pantalla === "scr-hola" && window.innerWidth > 700) $("inPh").focus(); }, 200);
+})();
+</script>
+</body>
+</html>
