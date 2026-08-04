@@ -477,7 +477,20 @@ function fechaLarga(iso){
   if(iso === masDias(hoy,1)) return "Mañana, " + corta;
   return `${corta} de ${MES[d.getUTCMonth()]}`;
 }
-function minDeISO(iso){ const m = iso.match(/T(\d{2}):(\d{2})/); return (+m[1])*60 + (+m[2]); }
+/* ⚠️ GHL devuelve las horas en DOS formatos distintos según el endpoint:
+   · /calendars/events            -> "2026-08-05T17:15:00-04:00"  (ISO con zona)
+   · /contacts/{id}/appointments  -> "2026-08-05 17:15:00"        (espacio y SIN zona)
+   Todo lo que entre se normaliza aquí antes de tocarlo. */
+function normISO(s){
+  s = String(s || "").trim();
+  if(!s) return "";
+  s = s.replace(" ", "T");
+  return /[+-]\d{2}:?\d{2}$|Z$/.test(s) ? s : s + OFFSET;   // sin zona = hora de Puerto Rico
+}
+function minDeISO(s){
+  const m = String(s || "").match(/[T ](\d{2}):(\d{2})/);
+  return m ? (+m[1])*60 + (+m[2]) : 0;
+}
 function iso(fecha, min){
   const h = String(Math.floor(min/60)).padStart(2,"0"), m = String(min%60).padStart(2,"0");
   return `${fecha}T${h}:${m}:00${OFFSET}`;
@@ -728,7 +741,15 @@ async function cargarInicio(){
   try{
     const j = await api("mine", {tok:S.tok});
     if(!j.ok) throw new Error(j.error || "No pudimos consultar tus citas.");
-    S.citas = j.citas || []; S.usualCal = j.usualCal || ""; S.usualTec = j.usualTec || ""; S.visitas = j.visitas || 0;
+    /* El backend ya separó pasadas de próximas, pero lo hace con Date.parse sobre una hora
+       SIN zona, así que Google la lee con SU zona, no con la de Puerto Rico. Volvemos a
+       filtrar aquí con la hora normalizada para que nunca se le cuele una cita ya pasada. */
+    const corte = Date.now() - 30*60*1000;
+    S.citas = (j.citas || [])
+      .map(c => ({ ...c, s:normISO(c.s), e:normISO(c.e) }))
+      .filter(c => Date.parse(c.s) >= corte)
+      .sort((a,b) => Date.parse(a.s) - Date.parse(b.s));
+    S.usualCal = j.usualCal || ""; S.usualTec = j.usualTec || ""; S.visitas = j.visitas || 0;
     pintarInicio();
   }catch(e){
     $("proxLista").innerHTML = `<div class="aviso err">${esc(e.message)}</div>`;
