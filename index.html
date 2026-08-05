@@ -761,7 +761,10 @@ function entrar(j){
   $("btnSalir").hidden = false;
   S.pila = [];
   ir("scr-inicio", true);
-  cargarInicio();
+  // El backend rápido manda las citas en la MISMA respuesta: si vienen, no hay
+  // segunda consulta y su pantalla sale completa de golpe.
+  if(Array.isArray(j.citas)){ aplicarResumen(j); pintarInicio(); }
+  else cargarInicio();
 }
 function salir(callado){
   try{ localStorage.removeItem("tn-sesion"); }catch(e){}
@@ -774,6 +777,17 @@ function salir(callado){
 $("btnSalir").addEventListener("click", () => salir());
 
 /* ===================== 4. inicio ===================== */
+/* El backend ya separa pasadas de próximas, pero lo hace sobre una hora SIN zona, que
+   el servidor lee con la SUYA y no con la de Puerto Rico. Volvemos a filtrar aquí con la
+   hora normalizada para que nunca se le cuele una cita ya pasada. */
+function aplicarResumen(j){
+  const corte = Date.now() - 30*60*1000;
+  S.citas = (j.citas || [])
+    .map(c => ({ ...c, s:normISO(c.s), e:normISO(c.e) }))
+    .filter(c => Date.parse(c.s) >= corte)
+    .sort((a,b) => Date.parse(a.s) - Date.parse(b.s));
+  S.usualCal = j.usualCal || ""; S.usualTec = j.usualTec || ""; S.visitas = j.visitas || 0;
+}
 async function cargarInicio(){
   $("miNombre").textContent = (S.me.fn || "").trim().split(" ")[0] || "bienvenida";
   $("proxLista").innerHTML = `<div class="estado"><div class="spin"></div>Buscando tus citas…</div>`;
@@ -781,15 +795,7 @@ async function cargarInicio(){
   try{
     const j = await api("mine", {tok:S.tok});
     if(!j.ok) throw new Error(j.error || "No pudimos consultar tus citas.");
-    /* El backend ya separó pasadas de próximas, pero lo hace con Date.parse sobre una hora
-       SIN zona, así que Google la lee con SU zona, no con la de Puerto Rico. Volvemos a
-       filtrar aquí con la hora normalizada para que nunca se le cuele una cita ya pasada. */
-    const corte = Date.now() - 30*60*1000;
-    S.citas = (j.citas || [])
-      .map(c => ({ ...c, s:normISO(c.s), e:normISO(c.e) }))
-      .filter(c => Date.parse(c.s) >= corte)
-      .sort((a,b) => Date.parse(a.s) - Date.parse(b.s));
-    S.usualCal = j.usualCal || ""; S.usualTec = j.usualTec || ""; S.visitas = j.visitas || 0;
+    aplicarResumen(j);
     pintarInicio();
   }catch(e){
     $("proxLista").innerHTML = `<div class="aviso err">${esc(e.message)}</div>`;
