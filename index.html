@@ -266,31 +266,28 @@
 
   <main>
 
-  <!-- ============ 1. teléfono ============ -->
+  <!-- ============ 1. entrar (teléfono + nombre, UNA sola consulta) ============ -->
   <section class="scr" id="scr-hola">
     <h2>Reserva tu <em>cita</em></h2>
-    <p class="sub">Escribe tu teléfono y te reconocemos al instante.</p>
+    <p class="sub">Escribe tu teléfono y tu nombre, y te reconocemos al instante.</p>
     <div class="fld">
       <label class="lbl" for="inPh">Tu teléfono</label>
       <input type="tel" id="inPh" inputmode="tel" autocomplete="tel" placeholder="(787) 123-4567" maxlength="16">
     </div>
-    <div class="aviso err" id="errPh" hidden></div>
-    <button class="btn" id="btnPh">Continuar</button>
-    <button class="linkish" id="btnNueva">Es mi primera vez aquí</button>
-  </section>
-
-  <!-- ============ 2. nombre ============ -->
-  <section class="scr" id="scr-nombre" hidden>
-    <button class="back" data-go="scr-hola">← Cambiar el número</button>
-    <h2>¿Cómo te <em>llamas</em>?</h2>
-    <p class="sub">Solo para asegurarnos de que esta cuenta es tuya. Con tu primer nombre basta.</p>
     <div class="fld">
       <label class="lbl" for="inNm">Tu nombre</label>
       <input type="text" id="inNm" autocomplete="given-name" placeholder="María">
     </div>
+    <div class="aviso err" id="errPh" hidden></div>
+    <button class="btn" id="btnPh">Entrar</button>
+    <button class="linkish" id="btnNueva">Es mi primera vez aquí</button>
+  </section>
+
+  <!-- ============ 2. (fusionada con la anterior — se conserva oculta por compatibilidad) ============ -->
+  <section class="scr" id="scr-nombre" hidden>
     <div class="aviso err" id="errNm" hidden></div>
-    <button class="btn" id="btnNm">Entrar</button>
-    <button class="linkish" id="btnNueva2">No tengo cuenta — soy nueva</button>
+    <button class="btn" id="btnNm" hidden>Entrar</button>
+    <button class="linkish" id="btnNueva2" hidden>Soy nueva</button>
   </section>
 
   <!-- ============ 3. clienta nueva ============ -->
@@ -703,33 +700,34 @@ async function calcular(){
 /* ===================== 1-3. entrar ===================== */
 $("inPh").addEventListener("input", e => { e.target.value = fmtTel(e.target.value); error("errPh",""); });
 $("nvPh").addEventListener("input", e => { e.target.value = fmtTel(e.target.value); });
-$("inPh").addEventListener("keydown", e => { if(e.key === "Enter") $("btnPh").click(); });
-$("inNm").addEventListener("keydown", e => { if(e.key === "Enter") $("btnNm").click(); });
+$("inPh").addEventListener("keydown", e => { if(e.key === "Enter") $("inNm").focus(); });
+$("inNm").addEventListener("keydown", e => { if(e.key === "Enter") $("btnPh").click(); });
+/* Despertamos el backend en cuanto toca un campo: mientras teclea, el servidor arranca. */
+$("inPh").addEventListener("focus", calentar, {once:true});
+$("inNm").addEventListener("focus", calentar, {once:true});
 
+/* UNA sola consulta para entrar. Antes eran tres seguidas (teléfono → nombre → citas)
+   y cada viaje a Apps Script cuesta más de un segundo aunque no haga nada: 5 s de espera
+   para la clienta. Ahora el teléfono y el nombre van juntos, y sus citas se piden en
+   paralelo mientras ya está viendo su pantalla. */
 $("btnPh").addEventListener("click", async () => {
   const d = digitos($("inPh").value);
-  if(d.length < 10) return error("errPh","Escribe los 10 dígitos de tu teléfono.");
+  const nm = $("inNm").value.trim();
+  if(d.length < 10){ error("errPh","Escribe los 10 dígitos de tu teléfono."); $("inPh").focus(); return; }
+  if(nm.length < 2){ error("errPh","Escribe tu nombre."); $("inNm").focus(); return; }
   S.telefono = d;
-  cargando($("btnPh"), true, "Buscando…");
+  error("errPh","");
+  cargando($("btnPh"), true, "Entrando…");
   try{
-    const j = await api("me", {ph:d});
-    if(!j.ok) return error("errPh", j.error || "No pudimos consultar. Inténtalo otra vez.");
-    if(j.existe){ error("errPh",""); ir("scr-nombre"); setTimeout(() => $("inNm").focus(), 120); }
-    else{ $("nvPh").value = fmtTel(d); ir("scr-nueva"); setTimeout(() => $("nvFn").focus(), 120); }
+    const j = await api("me", {ph:d, nm});
+    if(!j.ok){
+      // No decimos si el número existe o no (privacidad): mismo mensaje, y salida clara si es nueva.
+      error("errPh", (j.error || "No pudimos entrar.") + " Si es tu primera vez, toca «Es mi primera vez aquí».");
+      return;
+    }
+    entrar(j);
   }catch(e){ error("errPh", e.message || "No pudimos conectar. Revisa tu internet."); }
   finally{ cargando($("btnPh"), false); }
-});
-
-$("btnNm").addEventListener("click", async () => {
-  const nm = $("inNm").value.trim();
-  if(nm.length < 2) return error("errNm","Escribe tu nombre.");
-  cargando($("btnNm"), true, "Entrando…");
-  try{
-    const j = await api("me", {ph:S.telefono, nm});
-    if(!j.ok) return error("errNm", j.error || "No pudimos entrar.");
-    entrar(j);
-  }catch(e){ error("errNm", e.message || "No pudimos conectar."); }
-  finally{ cargando($("btnNm"), false); }
 });
 
 $("btnNueva").addEventListener("click", () => { $("nvPh").value = fmtTel($("inPh").value); ir("scr-nueva"); });
@@ -744,7 +742,11 @@ $("btnNv").addEventListener("click", async () => {
   try{
     const j = await api("new", {fn, ln, ph, em});
     if(!j.ok){
-      if(j.yaExiste){ S.telefono = ph; $("inPh").value = fmtTel(ph); ir("scr-nombre"); error("errNm", j.error); return; }
+      if(j.yaExiste){
+        S.telefono = ph; $("inPh").value = fmtTel(ph); $("inNm").value = fn;
+        ir("scr-hola", true); error("errPh", j.error); setTimeout(() => $("inNm").focus(), 120);
+        return;
+      }
       return error("errNv", j.error || "No se pudo crear tu perfil.");
     }
     entrar(j);
