@@ -544,19 +544,49 @@ function cargando(btn, si, txt){
 }
 
 /* ===================== llamadas al backend ===================== */
+/* Solo se reintentan las LECTURAS. Reservar o mover jamás se repite solo: si la
+   respuesta se pierde, la cita puede haberse creado igual y saldría duplicada. */
+const LECTURAS = new Set(["me", "mine", "ping"]);
+
 async function api(accion, params, msTimeout){
   if(API.indexOf("__") === 0) throw new Error("La página todavía no está conectada al salón.");
   const u = new URL(API);
   u.searchParams.set("action", accion);
   for(const k in params) if(params[k] != null && params[k] !== "") u.searchParams.set(k, params[k]);
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), msTimeout || 20000);
-  try{
-    const r = await fetch(u.toString(), {signal:ctrl.signal});
-    const j = await r.json();
-    if(j && j.expirado){ salir(true); throw new Error(j.error); }
-    return j;
-  } finally { clearTimeout(t); }
+  const vueltas = LECTURAS.has(accion) ? 2 : 1;
+  let ultimo = null;
+  for(let n = 0; n < vueltas; n++){
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), msTimeout || 35000);
+    try{
+      const r = await fetch(u.toString(), {signal:ctrl.signal});
+      const txt = await r.text();
+      let j;
+      // Google devuelve su propia página de error de vez en cuando, en HTML
+      try{ j = JSON.parse(txt); } catch(e){ throw new Error("__google__"); }
+      if(j && j.expirado){ const x = new Error(j.error); x.fatal = true; throw x; }
+      return j;
+    }catch(e){
+      if(e && e.fatal){ salir(true); throw e; }
+      ultimo = e;
+      if(n < vueltas - 1) await new Promise(z => setTimeout(z, 1000));
+    }finally{ clearTimeout(t); }
+  }
+  throw new Error(enCristiano(ultimo, accion));
+}
+/* Nada de errores técnicos en inglés en la cara de la clienta. */
+function enCristiano(e, accion){
+  const m = String((e && e.message) || "");
+  const escritura = (accion === "book" || accion === "move");
+  if(/abort/i.test(m) || m === "__google__"){
+    // Si era una reserva, NO la invitamos a repetir: pudo haberse guardado igual.
+    return escritura
+      ? "Tardó más de lo normal y no recibimos la confirmación. Revisa «Tus próximas citas» antes de volver a intentarlo — puede que sí haya quedado."
+      : "Está tardando más de lo normal. Vuelve a tocar, por favor.";
+  }
+  if(/failed to fetch|networkerror|load failed/i.test(m))
+    return "No pudimos conectar. Revisa tu internet e inténtalo otra vez.";
+  return m || "Algo no salió bien. Inténtalo otra vez.";
 }
 /* Apps Script tarda 1-3 s en despertar: lo calentamos al abrir la página. */
 function calentar(){ if(API.indexOf("__") !== 0) fetch(API + "?action=ping").catch(()=>{}); }
@@ -1076,10 +1106,10 @@ $("btnConf").addEventListener("click", async () => {
     const ini = iso(S.dia, S.hora), fin = iso(S.dia, S.hora + dur);
     let j;
     if(mover){
-      j = await api("move", {tok:S.tok, eventId:S.mover.id, start:ini, end:fin, userId:S.tecHora || S.mover.u}, 30000);
+      j = await api("move", {tok:S.tok, eventId:S.mover.id, start:ini, end:fin, userId:S.tecHora || S.mover.u}, 45000);
     }else{
       j = await api("book", {tok:S.tok, calId:S.svcs[0].id, start:ini, end:fin,
-                             title:titulo(), userId:S.tecHora || ""}, 30000);
+                             title:titulo(), userId:S.tecHora || ""}, 45000);
     }
     if(!j.ok) return error("errConf", j.error || "No se pudo completar. Inténtalo otra vez.");
     if(j.u && !S.tecHora) S.tecHora = j.u;
@@ -1087,6 +1117,10 @@ $("btnConf").addEventListener("click", async () => {
     mostrarOk(mover, ini, fin, dur);
   }catch(e){
     error("errConf", e.message || "No pudimos conectar. Revisa tu internet.");
+    // Si se perdió la respuesta, la cita pudo crearse igual: refrescamos su lista
+    // por lo bajo para que al volver al inicio vea la verdad, no una suposición.
+    olvidar();
+    if(S.tok) cargarInicio();
   }finally{ cargando($("btnConf"), false); }
 });
 
