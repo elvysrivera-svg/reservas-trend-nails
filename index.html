@@ -650,11 +650,80 @@ async function qBomba(){
   }catch(e){ job.rej(e); }
   finally{ qVivas--; qBomba(); }
 }
+/* ⚡ Pintado instantáneo (lo mismo que el tablero del equipo).
+   MEDIDO el 6-ago: una consulta de 21 días tarda 0.8-1.5 s, y con técnica elegida son 8
+   consultas a la vez (3 s en caliente, hasta 16 s en frío si GHL se atasca con una).
+   Guardamos en el propio teléfono lo último que se vio: al volver, se pinta ESO al instante
+   y se consulta a GHL por detrás. La clienta nunca mira una pantalla en blanco.
+   ⚠️ El refresco NO borra lo viejo hasta tener lo nuevo (ese bug ya nos costó 13.9 s). */
+const MEM_KEY = "tn-huecos-citas";
+const FRESCO  = 120000;             // 2 min: se usa tal cual, sin consultar
+const SIRVE   = 12*3600*1000;       // 12 h: se pinta YA y se refresca por detrás
+const MEM_MAX = 24;                 // no llenar el almacenamiento del teléfono
+
 const memoria = {};   // calId|userId -> {at, dias:{iso:[minutos]}}
+function guardarMemoria(){
+  try{
+    const claves = Object.keys(memoria).sort((a,b) => memoria[b].at - memoria[a].at).slice(0, MEM_MAX);
+    const chico = {};
+    for(const k of claves) chico[k] = memoria[k];
+    localStorage.setItem(MEM_KEY, JSON.stringify(chico));
+  }catch(e){}
+}
+function cargarMemoria(){
+  try{
+    const g = JSON.parse(localStorage.getItem(MEM_KEY) || "null");
+    if(!g) return;
+    for(const k in g) if(g[k] && g[k].dias && Date.now() - g[k].at < SIRVE) memoria[k] = g[k];
+  }catch(e){}
+}
+cargarMemoria();
+
+const refrescando = new Set();
+function refrescarPorDetras(calId, userId){
+  const clave = calId + "|" + (userId||"");
+  if(refrescando.has(clave)) return;
+  refrescando.add(clave);
+  traerHuecos(calId, userId)
+    .then(dias => { memoria[clave] = {at:Date.now(), dias}; guardarMemoria(); revalidarPantalla(); })
+    .catch(() => {})
+    .finally(() => refrescando.delete(clave));
+}
+
+/* Repinta con lo fresco SOLO si sigue en la pantalla de horas y todavía no eligió hora:
+   si ya eligió, no le movemos nada bajo los pies. */
+let revalTimer = 0;
+function revalidarPantalla(){
+  if(S.pantalla !== "scr-hora" || S.hora) return;
+  clearTimeout(revalTimer);
+  revalTimer = setTimeout(() => {
+    if(S.pantalla !== "scr-hora" || S.hora) return;
+    calcular().then(r => {
+      if(S.pantalla !== "scr-hora" || S.hora || r.sinEquipo) return;
+      S.dias = r;
+      pintarDias();
+      const dia = (S.dia && (r.dias[S.dia]||[]).length) ? S.dia
+                : Object.keys(r.dias).sort().find(f => (r.dias[f]||[]).length);
+      if(dia) elegirDia(dia);
+    }).catch(() => {});
+  }, 250);
+}
+
 async function huecos(calId, userId){
   const clave = calId + "|" + (userId||"");
   const hit = memoria[clave];
-  if(hit && Date.now() - hit.at < 60000) return hit.dias;
+  if(hit && hit.dias){
+    const edad = Date.now() - hit.at;
+    if(edad < FRESCO) return hit.dias;
+    if(edad < SIRVE){ refrescarPorDetras(calId, userId); return hit.dias; }
+  }
+  const dias = await traerHuecos(calId, userId);
+  memoria[clave] = {at:Date.now(), dias};
+  guardarMemoria();
+  return dias;
+}
+
+async function traerHuecos(calId, userId){
   const hoy = hoyPR();
   const a = Date.parse(hoy + "T00:00:00" + OFFSET);
   const b = Date.parse(masDias(hoy, DIAS-1) + "T23:59:59" + OFFSET);
@@ -670,10 +739,15 @@ async function huecos(calId, userId){
     const sl = (j[k] && Array.isArray(j[k].slots)) ? j[k].slots : [];
     dias[k] = sl.map(minDeISO).sort((x,y) => x-y);
   }
-  memoria[clave] = {at:Date.now(), dias};
   return dias;
 }
-function olvidar(){ for(const k in memoria) delete memoria[k]; }
+/* Tras reservar, cancelar o mover, la disponibilidad cambió: se olvida TODO, también lo
+   guardado en el teléfono. Caché + escritura sin limpiar = enseñarle a la clienta un hueco
+   que ella misma acaba de ocupar. */
+function olvidar(){
+  for(const k in memoria) delete memoria[k];
+  try{ localStorage.removeItem(MEM_KEY); }catch(e){}
+}
 
 /* Calcula, para cada día, las horas de comienzo que sirven — y con qué técnica.
    · 1 servicio y sin preferencia -> una sola consulta (GHL asigna la técnica).
