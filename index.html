@@ -11,6 +11,61 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ===== Medición de adquisición (31-ago-2026) =====================================
+     Los mismos IDs que la web. Hasta hoy esta página no tenía NINGÚN tag: Google medía
+     el clic en el botón RESERVAR de la web (59 en agosto) y perdía el rastro justo aquí,
+     que es donde la clienta reserva de verdad. Con esto, la conversión que Google
+     optimiza pasa a ser una cita reservada.
+     ⚠️ El primer bloque de gtag tiene que llevar su etiqueta de cierre ANTES del
+     comentario del píxel. Olvidarla fue el bug que tuvo la web sin medir del 3 al 6
+     de agosto: el navegador se traga el píxel dentro del script de gtag y descarta
+     los dos de una vez. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3ZTN6V2MPL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3ZTN6V2MPL');
+  gtag('config', 'AW-471249006');
+</script>
+
+<!-- Meta Pixel Code -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '841198801211106');
+  fbq('track', 'PageView');
+</script>
+
+<script>
+/* De dónde vino la clienta. El botón de la web arrastra ?gclid=...&utm_* hasta aquí,
+   pero puede tardar días en decidirse: se guarda 90 días, la misma ventana que usa
+   Google Ads para atribuir el clic. */
+(function(){
+  var K = "tn_ads", VENTANA = 90*24*3600*1000;
+  try{
+    var q = new URLSearchParams(location.search), n = {}, hay = false;
+    ["gclid","gbraid","wbraid","gad_campaignid","utm_source","utm_medium","utm_campaign","utm_content","utm_term"]
+      .forEach(function(k){ var v = q.get(k); if(v){ n[k] = v; hay = true; } });
+    if(hay){ n.t = Date.now(); localStorage.setItem(K, JSON.stringify(n)); }
+  }catch(e){}
+  window.tnAds = function(){
+    try{
+      var o = JSON.parse(localStorage.getItem(K) || "null");
+      if(!o || !o.t || Date.now() - o.t > VENTANA) return null;
+      return o;
+    }catch(e){ return null; }
+  };
+})();
+</script>
+
 <style>
   /* Paleta de marca Trend Nails (la misma del tablero del equipo):
      negro #0A0A0A · carbón #1F1F1F · crema #F0EBDB · dorado #E8C468 · taupe #ADA385 */
@@ -855,7 +910,12 @@ $("btnNv").addEventListener("click", async () => {
   if(ph.length < 10) return error("errNv","Escribe los 10 dígitos de tu teléfono.");
   cargando($("btnNv"), true, "Creando tu perfil…");
   try{
-    const j = await api("new", {fn, ln, ph, em});
+    // El gclid viaja para que el Worker pueda marcar en GHL de dónde vino la clienta.
+    // Hoy el Worker todavía lo ignora; en cuanto se despliegue el cambio, empieza a usarse.
+    const ads = (window.tnAds && window.tnAds()) || null;
+    const j = await api("new", {fn, ln, ph, em,
+      gclid: (ads && (ads.gclid || ads.gbraid || ads.wbraid)) || "",
+      utm:   (ads && ads.utm_source) || ""});
     if(!j.ok){
       if(j.yaExiste){
         S.telefono = ph; $("inPh").value = fmtTel(ph); $("inNm").value = fn;
@@ -1291,8 +1351,10 @@ $("btnConf").addEventListener("click", async () => {
     if(mover){
       j = await api("move", {tok:S.tok, eventId:S.mover.id, start:ini, end:fin, userId:S.tecHora || S.mover.u}, 45000);
     }else{
+      const ads = (window.tnAds && window.tnAds()) || null;
       j = await api("book", {tok:S.tok, calId:S.svcs[0].id, start:ini, end:fin,
-                             title:titulo(), userId:S.tecHora || ""}, 45000);
+                             title:titulo(), userId:S.tecHora || "",
+                             gclid: (ads && (ads.gclid || ads.gbraid || ads.wbraid)) || ""}, 45000);
     }
     if(!j.ok) return error("errConf", j.error || "No se pudo completar. Inténtalo otra vez.");
     if(j.u && !S.tecHora) S.tecHora = j.u;
@@ -1308,6 +1370,26 @@ $("btnConf").addEventListener("click", async () => {
 });
 
 /* ===================== 9. listo ===================== */
+/* La conversión que importa: RESERVA CONFIRMADA, no el clic en el botón.
+   Se dispara solo cuando la cita queda creada de verdad, nunca al reagendar
+   (mover una cita que ya existe no es una clienta nueva).
+   La etiqueta AW-471249006/-JZWCMrls-scEO7g2uAB es de la acción "Reserva confirmada (web)"
+   creada el 31-ago-2026. Google solo la acredita si hay clic de anuncio detrás. */
+function conversionReserva(valor){
+  try{
+    if(typeof window.gtag === "function"){
+      window.gtag("event", "conversion", {
+        send_to: "AW-471249006/-JZWCMrls-scEO7g2uAB",
+        value: valor > 0 ? valor : 1.0,
+        currency: "USD"
+      });
+      window.gtag("event", "reserva_confirmada", {valor: valor || 0});
+    }
+    if(typeof window.fbq === "function")
+      window.fbq("track", "Schedule", {value: valor || 0, currency: "USD"});
+  }catch(e){ /* medir nunca puede romperle la reserva a nadie */ }
+}
+
 function mostrarOk(mover, ini, fin, dur){
   const nom = mover ? nombreSvc(S.mover.c, S.mover.t) : titulo();
   const tec = S.tecHora ? DATA.staff[S.tecHora] : "";
@@ -1320,6 +1402,7 @@ function mostrarOk(mover, ini, fin, dur){
     ["Técnica",  tec || "Te asignamos la disponible"]
   ]);
   $("btnIcs").href = URL.createObjectURL(new Blob([ics(nom, ini, fin)], {type:"text/calendar"}));
+  if(!mover) conversionReserva(totPrecio().suma);
   ir("scr-ok", true);
   S.pila = [];
 }
