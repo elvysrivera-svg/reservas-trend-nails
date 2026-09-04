@@ -66,6 +66,57 @@
 })();
 </script>
 
+<script>
+/* Prellenado desde la URL (4-sep-2026).
+   El correo de reactivacion manda a esta pagina con ?first_name=&last_name=&phone=&email=
+   ya resueltos por el script de envio, igual que hacia el widget de GHL. Sin esto la
+   clienta tendria que escribir su telefono y su nombre otra vez, que es exactamente el
+   roce que estamos tratando de quitar.
+   Se guarda ademas en localStorage porque la pagina pinta el formulario despues de
+   cargar: el codigo de abajo lo aplica cuando los campos ya existen. */
+(function(){
+  var K = "tn_prefill";
+  try{
+    var q = new URLSearchParams(location.search), n = {}, hay = false;
+    ["first_name","last_name","phone","email"].forEach(function(k){
+      var v = q.get(k); if(v){ n[k] = v.trim(); hay = true; }
+    });
+    if(hay){ sessionStorage.setItem(K, JSON.stringify(n)); }
+  }catch(e){}
+
+  function datos(){
+    try{ return JSON.parse(sessionStorage.getItem(K) || "null"); }catch(e){ return null; }
+  }
+  function poner(id, valor){
+    var el = document.getElementById(id);
+    if(!el || !valor || el.value) return false;
+    el.value = valor;
+    el.dispatchEvent(new Event("input", {bubbles:true}));
+    el.dispatchEvent(new Event("change", {bubbles:true}));
+    return true;
+  }
+  function aplicar(){
+    var d = datos();
+    if(!d) return;
+    poner("inPh", d.phone);
+    poner("inNm", d.first_name);
+    poner("nvFn", d.first_name);
+    poner("nvLn", d.last_name);
+    poner("nvPh", d.phone);
+    poner("nvEm", d.email);
+  }
+  // Los campos aparecen despues del render, asi que se intenta al cargar y luego
+  // se vigila el DOM por unos segundos. Se para solo para no dejar un observer vivo.
+  document.addEventListener("DOMContentLoaded", function(){
+    aplicar();
+    var obs = new MutationObserver(aplicar);
+    obs.observe(document.body, {childList:true, subtree:true});
+    setTimeout(function(){ obs.disconnect(); }, 12000);
+  });
+  window.tnPrefill = datos;
+})();
+</script>
+
 <style>
   /* Paleta de marca Trend Nails (la misma del tablero del equipo):
      negro #0A0A0A · carbón #1F1F1F · crema #F0EBDB · dorado #E8C468 · taupe #ADA385 */
