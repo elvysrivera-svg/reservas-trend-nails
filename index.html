@@ -81,6 +81,14 @@
     ["first_name","last_name","phone","email"].forEach(function(k){
       var v = q.get(k); if(v){ n[k] = v.trim(); hay = true; }
     });
+    /* El telefono en GHL viene como +17875551234. El campo de esta pagina usa mascara
+       de 10 digitos, asi que si se le pasa el +1 lo cuenta como parte del numero y sale
+       (178) 755-5123: la clienta no se reconoce al entrar. Se deja solo el numero local. */
+    if(n.phone){
+      var d = String(n.phone).replace(/\D/g, "");
+      if(d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+      n.phone = d.length === 10 ? d : "";
+    }
     if(hay){ sessionStorage.setItem(K, JSON.stringify(n)); }
   }catch(e){}
 
