@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#0A0A0A">
 <title>Reserva tu cita · Trend Nails Salon</title>
 <link rel="icon" href="logo.png">
@@ -21,47 +22,32 @@
      comentario del píxel. Olvidarla fue el bug que tuvo la web sin medir del 3 al 6
      de agosto: el navegador se traga el píxel dentro del script de gtag y descarta
      los dos de una vez. -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3ZTN6V2MPL"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-3ZTN6V2MPL');
-  gtag('config', 'AW-471249006');
-</script>
-
-<!-- Meta Pixel Code -->
-<script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '841198801211106');
-  fbq('track', 'PageView');
-</script>
-
 <script>
 /* De dónde vino la clienta. El botón de la web arrastra ?gclid=...&utm_* hasta aquí,
    pero puede tardar días en decidirse: se guarda 90 días, la misma ventana que usa
    Google Ads para atribuir el clic. */
 (function(){
-  var K = "tn_ads", VENTANA = 90*24*3600*1000;
-  try{
-    var q = new URLSearchParams(location.search), n = {}, hay = false;
-    ["gclid","gbraid","wbraid","gad_campaignid","utm_source","utm_medium","utm_campaign","utm_content","utm_term"]
-      .forEach(function(k){ var v = q.get(k); if(v){ n[k] = v; hay = true; } });
-    if(hay){ n.t = Date.now(); localStorage.setItem(K, JSON.stringify(n)); }
-  }catch(e){}
+  var K = "tn_ads", VENTANA = 90*24*3600*1000, actual = null;
+  var keys = ["gclid","gbraid","wbraid","fbclid","gad_campaignid","utm_source","utm_medium","utm_campaign","utm_content","utm_term","utm_id","placement"];
+  var q = new URLSearchParams(location.search), n = {};
+  keys.forEach(function(k){ var v = q.get(k); if(v && v.trim()) n[k] = v.trim().slice(0,512); });
+  // Última visita atribuida completa; no mezclar campañas de visitas diferentes.
+  if(Object.keys(n).length){
+    actual = Object.assign(n, {t:Date.now()});
+    try{ localStorage.setItem(K, JSON.stringify(actual)); }catch(e){}
+  }else{
+    try{ actual = JSON.parse(localStorage.getItem(K) || "null"); }catch(e){}
+  }
   window.tnAds = function(){
-    try{
-      var o = JSON.parse(localStorage.getItem(K) || "null");
-      if(!o || !o.t || Date.now() - o.t > VENTANA) return null;
-      return o;
-    }catch(e){ return null; }
+    if(!actual || !Number.isFinite(actual.t) || actual.t > Date.now() || Date.now() - actual.t >= VENTANA) return null;
+    var out = {t:actual.t};
+    keys.forEach(function(k){ if(typeof actual[k] === "string" && actual[k].trim()) out[k] = actual[k].trim().slice(0,512); });
+    return out;
+  };
+  window.tnAttributionParams = function(){
+    var out = window.tnAds() || {};
+    delete out.t;
+    return out;
   };
 })();
 </script>
@@ -72,12 +58,10 @@
    ya resueltos por el script de envio, igual que hacia el widget de GHL. Sin esto la
    clienta tendria que escribir su telefono y su nombre otra vez, que es exactamente el
    roce que estamos tratando de quitar.
-   Se guarda ademas en localStorage porque la pagina pinta el formulario despues de
-   cargar: el codigo de abajo lo aplica cuando los campos ya existen. */
+   Se conserva en memoria y sessionStorage, nunca en localStorage. */
 (function(){
-  var K = "tn_prefill";
-  try{
-    var q = new URLSearchParams(location.search), n = {}, hay = false;
+  var K = "tn_prefill", actual = null;
+  var q = new URLSearchParams(location.search), n = {}, hay = false;
     ["first_name","last_name","phone","email"].forEach(function(k){
       var v = q.get(k); if(v){ n[k] = v.trim(); hay = true; }
     });
@@ -89,12 +73,29 @@
       if(d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
       n.phone = d.length === 10 ? d : "";
     }
-    if(hay){ sessionStorage.setItem(K, JSON.stringify(n)); }
-  }catch(e){}
+  window.tnIncomingPrefill = hay;
+  if(hay){
+    actual = n;
+    try{ sessionStorage.setItem(K, JSON.stringify(n)); }catch(e){}
+  }else{
+    try{ actual = JSON.parse(sessionStorage.getItem(K) || "null"); }catch(e){}
+  }
+  // Antes de cargar cualquier tag: retirar identidad de la URL de página.
+  window.tnTrackingSafe = false;
+  try{
+    var clean = new URL(location.href);
+    ["first_name","last_name","phone","email"].forEach(function(k){ clean.searchParams.delete(k); });
+    history.replaceState(history.state, "", clean.pathname + clean.search + clean.hash);
+    window.tnTrackingSafe = true;
+  }catch(e){ /* Si no se puede limpiar, no cargar medición. El formulario sigue. */ }
 
   function datos(){
-    try{ return JSON.parse(sessionStorage.getItem(K) || "null"); }catch(e){ return null; }
+    return actual;
   }
+  window.tnClearPrefill = function(){
+    actual = null; window.tnIncomingPrefill = false;
+    try{ sessionStorage.removeItem(K); }catch(e){}
+  };
   function poner(id, valor){
     var el = document.getElementById(id);
     if(!el || !valor || el.value) return false;
@@ -123,6 +124,35 @@
   });
   window.tnPrefill = datos;
 })();
+</script>
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  if(window.tnTrackingSafe){
+    gtag('js', new Date());
+    gtag('config', 'G-3ZTN6V2MPL');
+    gtag('config', 'AW-471249006');
+    var googleTag = document.createElement('script');
+    googleTag.async = true;
+    googleTag.src = 'https://www.googletagmanager.com/gtag/js?id=G-3ZTN6V2MPL';
+    document.head.appendChild(googleTag);
+  }
+</script>
+<!-- Meta Pixel Code: identidad retirada antes de cargarlo. -->
+<script>
+  if(window.tnTrackingSafe){
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '841198801211106');
+    fbq('track', 'PageView');
+  }
 </script>
 
 <style>
@@ -737,7 +767,9 @@ function enCristiano(e, accion){
       : "Está tardando más de lo normal. Vuelve a tocar, por favor.";
   }
   if(/failed to fetch|networkerror|load failed/i.test(m))
-    return "No pudimos conectar. Revisa tu internet e inténtalo otra vez.";
+    return escritura
+      ? "Se perdió la conexión y no recibimos la confirmación. Revisa tus próximas citas antes de repetir; puede que sí haya quedado."
+      : "No pudimos conectar. Revisa tu internet e inténtalo otra vez.";
   return m || "Algo no salió bien. Inténtalo otra vez.";
 }
 /* Apps Script tarda 1-3 s en despertar: lo calentamos al abrir la página. */
@@ -969,12 +1001,7 @@ $("btnNv").addEventListener("click", async () => {
   if(ph.length < 10) return error("errNv","Escribe los 10 dígitos de tu teléfono.");
   cargando($("btnNv"), true, "Creando tu perfil…");
   try{
-    // El gclid viaja para que el Worker pueda marcar en GHL de dónde vino la clienta.
-    // Hoy el Worker todavía lo ignora; en cuanto se despliegue el cambio, empieza a usarse.
-    const ads = (window.tnAds && window.tnAds()) || null;
-    const j = await api("new", {fn, ln, ph, em,
-      gclid: (ads && (ads.gclid || ads.gbraid || ads.wbraid)) || "",
-      utm:   (ads && ads.utm_source) || ""});
+    const j = await api("new", {fn, ln, ph, em, ...window.tnAttributionParams()});
     if(!j.ok){
       if(j.yaExiste){
         S.telefono = ph; $("inPh").value = fmtTel(ph); $("inNm").value = fn;
@@ -989,6 +1016,7 @@ $("btnNv").addEventListener("click", async () => {
 });
 
 function entrar(j){
+  window.tnClearPrefill();
   S.tok = j.tok;
   S.me = {id:j.id, fn:j.fn, ln:j.ln, ph:j.ph, em:j.em};
   try{ localStorage.setItem("tn-sesion", JSON.stringify({tok:S.tok, me:S.me, at:Date.now()})); }catch(e){}
@@ -1002,9 +1030,10 @@ function entrar(j){
 }
 function salir(callado){
   try{ localStorage.removeItem("tn-sesion"); }catch(e){}
+  window.tnClearPrefill();
   S.tok = null; S.me = null; S.citas = []; S.svcs = []; S.tec = null; S.pila = [];
   $("btnSalir").hidden = true;
-  $("inNm").value = "";
+  ["inPh","inNm","nvFn","nvLn","nvPh","nvEm"].forEach(id => $(id).value = "");
   ir("scr-hola", true);
   if(!callado) error("errPh","");
 }
@@ -1410,15 +1439,19 @@ $("btnConf").addEventListener("click", async () => {
     if(mover){
       j = await api("move", {tok:S.tok, eventId:S.mover.id, start:ini, end:fin, userId:S.tecHora || S.mover.u}, 45000);
     }else{
-      const ads = (window.tnAds && window.tnAds()) || null;
       j = await api("book", {tok:S.tok, calId:S.svcs[0].id, start:ini, end:fin,
                              title:titulo(), userId:S.tecHora || "",
-                             gclid: (ads && (ads.gclid || ads.gbraid || ads.wbraid)) || ""}, 45000);
+                             ...window.tnAttributionParams()}, 45000);
+    }
+    if(j.incierto || (j.ok && !mover && (typeof j.id !== "string" || !j.id.trim()))){
+      olvidar();
+      if(S.tok) cargarInicio();
+      return error("errConf", "No pudimos verificar la confirmación. Revisa tus próximas citas antes de repetir.");
     }
     if(!j.ok) return error("errConf", j.error || "No se pudo completar. Inténtalo otra vez.");
     if(j.u && !S.tecHora) S.tecHora = j.u;
     olvidar();
-    mostrarOk(mover, ini, fin, dur);
+    mostrarOk(mover, ini, fin, dur, j.id);
   }catch(e){
     error("errConf", e.message || "No pudimos conectar. Revisa tu internet.");
     // Si se perdió la respuesta, la cita pudo crearse igual: refrescamos su lista
@@ -1434,22 +1467,42 @@ $("btnConf").addEventListener("click", async () => {
    (mover una cita que ya existe no es una clienta nueva).
    La etiqueta AW-471249006/-JZWCMrls-scEO7g2uAB es de la acción "Reserva confirmada (web)"
    creada el 31-ago-2026. Google solo la acredita si hay clic de anuncio detrás. */
-function conversionReserva(valor){
-  try{
-    if(typeof window.gtag === "function"){
+const conversionesEnMemoria = new Set();
+function conversionReserva(valor, eventId){
+  if(!window.tnTrackingSafe || typeof eventId !== "string" || !eventId.trim()) return;
+  function unaVez(canal, enviar){
+    const key = "tn-conversion:" + canal + ":" + eventId;
+    if(conversionesEnMemoria.has(key)) return;
+    try{ if(sessionStorage.getItem(key)) return; }catch(e){}
+    try{
+      if(!enviar()) return;
+      conversionesEnMemoria.add(key);
+      try{ sessionStorage.setItem(key, "1"); }catch(e){}
+    }catch(e){ /* Un canal no interrumpe a los demás ni afecta la reserva. */ }
+  }
+  unaVez("ads", () => {
+    if(typeof window.gtag !== "function") return false;
       window.gtag("event", "conversion", {
         send_to: "AW-471249006/-JZWCMrls-scEO7g2uAB",
+        transaction_id: eventId,
         value: valor > 0 ? valor : 1.0,
         currency: "USD"
       });
-      window.gtag("event", "reserva_confirmada", {valor: valor || 0});
-    }
-    if(typeof window.fbq === "function")
-      window.fbq("track", "Schedule", {value: valor || 0, currency: "USD"});
-  }catch(e){ /* medir nunca puede romperle la reserva a nadie */ }
+    return true;
+  });
+  unaVez("ga4", () => {
+    if(typeof window.gtag !== "function") return false;
+    window.gtag("event", "reserva_confirmada", {valor: valor || 0, transaction_id:eventId});
+    return true;
+  });
+  unaVez("meta", () => {
+    if(typeof window.fbq !== "function") return false;
+    window.fbq("track", "Schedule", {value: valor || 0, currency:"USD"}, {eventID:eventId});
+    return true;
+  });
 }
 
-function mostrarOk(mover, ini, fin, dur){
+function mostrarOk(mover, ini, fin, dur, eventId){
   const nom = mover ? nombreSvc(S.mover.c, S.mover.t) : titulo();
   const tec = S.tecHora ? DATA.staff[S.tecHora] : "";
   $("okTitulo").innerHTML = mover ? '¡Cita <em>movida</em>!' : '¡Cita <em>confirmada</em>!';
@@ -1461,7 +1514,7 @@ function mostrarOk(mover, ini, fin, dur){
     ["Técnica",  tec || "Te asignamos la disponible"]
   ]);
   $("btnIcs").href = URL.createObjectURL(new Blob([ics(nom, ini, fin)], {type:"text/calendar"}));
-  if(!mover) conversionReserva(totPrecio().suma);
+  if(!mover) conversionReserva(totPrecio().suma, eventId);
   ir("scr-ok", true);
   S.pila = [];
 }
@@ -1521,8 +1574,10 @@ function abrirMover(id){
   calentar();
   pintarCats();
   try{
+    // Un enlace con identidad nueva nunca entra como la sesión anterior.
+    if(window.tnIncomingPrefill){ localStorage.removeItem("tn-sesion"); }
     const g = JSON.parse(localStorage.getItem("tn-sesion") || "null");
-    if(g && g.tok && g.me && Date.now() - g.at < 11.5*3600*1000){
+    if(!window.tnIncomingPrefill && g && g.tok && g.me && Number.isFinite(g.at) && g.at <= Date.now() && Date.now() - g.at < 11.5*3600*1000){
       S.tok = g.tok; S.me = g.me;
       $("btnSalir").hidden = false;
       ir("scr-inicio", true);
