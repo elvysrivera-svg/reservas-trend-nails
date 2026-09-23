@@ -86,6 +86,24 @@
 </script>
 
 <script>
+/* Origen de la visita (23-sep-2026). Esta pagina es una entrada de SEO y de pauta:
+   la clienta puede caer aqui con ?gclid= o ?fbclid= y recien despues pulsar "Reservar".
+   Sin esto, el salto a la pagina de reservas llegaba SIN origen y la cita se contaba
+   como directa. Es el MISMO origen (citas.trendnails-salon.com) y la MISMA llave
+   localStorage "tn_ads" que lee la pagina de reservas, asi que basta con guardarlo aqui. */
+(function(){
+  var K = "tn_ads";
+  var keys = ["gclid","gbraid","wbraid","fbclid","gad_campaignid","utm_source","utm_medium","utm_campaign","utm_content","utm_term","utm_id","placement"];
+  var q = new URLSearchParams(location.search), n = {};
+  keys.forEach(function(k){ var v = q.get(k); if(v && v.trim()) n[k] = v.trim().slice(0,512); });
+  if(Object.keys(n).length){
+    n.t = Date.now();
+    try{ localStorage.setItem(K, JSON.stringify(n)); }catch(e){}
+  }
+})();
+</script>
+
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -99,7 +117,7 @@
   n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
   t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
   document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '841198801211106');
+  fbq('init', '1417066802745942');
   fbq('track', 'PageView');
 </script>
 

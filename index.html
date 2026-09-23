@@ -139,7 +139,13 @@
     document.head.appendChild(googleTag);
   }
 </script>
-<!-- Meta Pixel Code: identidad retirada antes de cargarlo. -->
+<!-- Meta Pixel Code: identidad retirada antes de cargarlo.
+     23-sep-2026: el id que habia aqui (841198801211106) NO es de Trend Nails. Segun la
+     Graph API pertenece al negocio "Bm Ok 3950300" y se llama "Jepun": la web llevaba meses
+     mandandole PageView y Schedule a un tercero, y por eso la cuenta de anuncios del salon
+     no tenia con que medir una conversion. Ahora dispara el pixel propio del salon,
+     "Website Trend Nails Salon" (1417066802745942), del negocio Trendnailssalon, ya
+     compartido con act_1562474052348395. -->
 <script>
   if(window.tnTrackingSafe){
     !function(f,b,e,v,n,t,s)
@@ -150,7 +156,7 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '841198801211106');
+    fbq('init', '1417066802745942');
     fbq('track', 'PageView');
   }
 </script>
