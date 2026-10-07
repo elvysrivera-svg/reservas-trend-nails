@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#000000">
+<title>Mensajes de texto · Trend Nails Salon</title>
+<meta name="description" content="Recibe por mensaje de texto los avisos de tus citas y, si quieres, las ofertas de Trend Nails Salon en Caguas, Puerto Rico. Es opcional: hasta 4 ofertas al mes y respondes STOP para salir.">
+<link rel="canonical" href="https://citas.trendnails-salon.com/textos/">
+<link rel="icon" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Página de permiso para mensajes de texto (7-oct-2026, textos v2). Es la URL que ve el
+     revisor del registro A2P. Arriba lo esencial: qué es y el formulario corto (nombre,
+     teléfono y DOS casillas separadas, sin marcar y opcionales). Debajo, compacto, lo que el
+     revisor sí lee: ejemplos, tarifas, STOP, START y HELP, privacidad, la captura del paso
+     "Confirma tu cita" y los datos del salón. Sin medición de anuncios y nada se pre-llena
+     desde la dirección: el permiso lo marca la persona en esta página. -->
+<style>
+  :root{
+    --negro:#000000; --panel:#0D0D0C; --campo:#151413;
+    --oro:#C5A572; --oro-suave:rgba(197,165,114,.14); --oro-linea:rgba(197,165,114,.32);
+    --blanco:#F2F2F2; --texto:#C8C8C8; --apagado:#A3A3A3;
+    --linea:#2A2722; --error:#F2C4C4; --error-fondo:#2A1A1A;
+  }
+  [hidden]{display:none !important}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--negro); color:var(--texto); min-height:100vh;
+    font-family:"Montserrat",ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    font-weight:400; font-size:15px; line-height:1.55; -webkit-text-size-adjust:100%;
+    background-image:radial-gradient(1100px 480px at 85% -10%, rgba(197,165,114,.10), transparent 60%);
+    background-repeat:no-repeat;
+  }
+  a{color:var(--blanco); text-underline-offset:3px; text-decoration-color:var(--oro-linea)}
+  a:hover{color:var(--oro); text-decoration-color:var(--oro)}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 16px calc(32px + env(safe-area-inset-bottom))}
+
+  /* ---------- cabecera ---------- */
+  header{display:flex; align-items:center; gap:12px; padding:18px 0 4px}
+  header img{width:44px; height:auto; flex:0 0 auto}
+  .marca{display:flex; flex-direction:column; gap:2px}
+  .marca b{font-weight:500; font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--oro)}
+  .marca span{font-size:12px; color:var(--apagado); letter-spacing:.04em}
+  header .reservar{margin-left:auto; font-size:13px; font-weight:500; color:var(--blanco); white-space:nowrap}
+
+  /* ---------- lo esencial ---------- */
+  .grid{display:grid; grid-template-columns:minmax(0,1fr); gap:20px; padding-top:16px}
+  h1{
+    font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-weight:500;
+    font-size:36px; line-height:1.08; color:var(--blanco); margin:0 0 10px; letter-spacing:.005em;
+  }
+  h1 em{color:var(--oro); font-style:italic}
+  .lead{font-size:15px; font-weight:300; color:var(--texto); margin:0; max-width:34em}
+  .lead strong{font-weight:500; color:var(--blanco)}
+
+  h2{
+    font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-weight:500;
+    font-size:26px; line-height:1.15; color:var(--blanco); margin:0 0 2px;
+  }
+  .eyebrow{
+    font-size:11px; font-weight:600; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--oro); margin:0 0 10px;
+  }
+
+  /* ---------- formulario ---------- */
+  .tarjeta{
+    background:var(--panel); border:1px solid var(--oro-linea); border-radius:16px;
+    padding:18px 16px 18px; box-shadow:0 18px 50px -24px rgba(0,0,0,.9);
+  }
+  .tarjeta .sub{margin:0 0 14px; font-size:13.5px; color:var(--apagado)}
+  .campos{display:grid; grid-template-columns:minmax(0,1fr); gap:12px}
+  label.lbl{display:block; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--texto); margin:0 0 6px}
+  input[type=text],input[type=tel]{
+    width:100%; padding:13px 14px; font:inherit; font-size:16px; color:var(--blanco);
+    background:var(--campo); border:1px solid var(--linea); border-radius:12px;
+  }
+  input::placeholder{color:#8C8C8C}
+  input[type=text]:focus,input[type=tel]:focus{outline:2px solid var(--oro); outline-offset:1px; border-color:transparent}
+
+  .casillas{margin:14px 0 0; padding:12px 14px; border:1px solid var(--linea); border-radius:12px; background:#0A0A09}
+  .casillas-t{font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--texto); margin:0 0 10px}
+  .casillas-t span{text-transform:none; letter-spacing:0; font-weight:400; color:var(--apagado)}
+  .op{display:flex; gap:12px; align-items:flex-start; font-size:14px; line-height:1.5; color:var(--blanco); cursor:pointer}
+  .op + .op{margin-top:12px; padding-top:12px; border-top:1px solid var(--linea)}
+  /* Casilla propia: la nativa sale blanca sobre negro. Sin marcar = solo el borde dorado. */
+  .op input{
+    -webkit-appearance:none; appearance:none; flex:0 0 auto; width:22px; height:22px; margin:1px 0 0;
+    border:1.5px solid rgba(197,165,114,.62); border-radius:6px; background:var(--campo); cursor:pointer;
+    transition:background-color .15s, border-color .15s;
+  }
+  .op input:hover{border-color:var(--oro)}
+  .op input:checked{background:var(--oro) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/15px no-repeat; border-color:var(--oro)}
+  .op input:focus-visible{outline:2px solid var(--oro); outline-offset:2px}
+  .op-t{display:flex; flex-direction:column; gap:4px; min-width:0}
+  .en{display:block; font-size:12px; line-height:1.45; color:var(--apagado)}
+  .casillas-n{margin:12px 0 0; padding-top:10px; border-top:1px solid var(--linea); font-size:12.5px}
+  .casillas-n a{white-space:nowrap}
+
+  /* Campo trampa: fuera de la vista para personas y lectores de pantalla. */
+  .trampa{position:absolute !important; left:-9999px !important; width:1px; height:1px; overflow:hidden}
+
+  .btn{
+    display:flex; align-items:center; justify-content:center; width:100%; margin-top:14px;
+    padding:15px 18px; border:0; border-radius:12px; cursor:pointer;
+    font:inherit; font-weight:600; font-size:15px; letter-spacing:.03em;
+    background:var(--oro); color:#000; transition:filter .15s, opacity .15s; text-decoration:none;
+  }
+  .btn:hover{filter:brightness(1.07); color:#000}
+  .btn:disabled{opacity:.5; cursor:default; filter:none}
+  .btn.ghost{background:transparent; color:var(--blanco); border:1px solid var(--oro-linea)}
+  .btn.ghost:hover{border-color:var(--oro); color:var(--oro)}
+  .nota{margin:10px 0 0; font-size:12.5px; color:var(--apagado); line-height:1.5}
+  .aviso{margin:12px 0 0; padding:12px 14px; border-radius:12px; font-size:14px}
+  .aviso.err{background:var(--error-fondo); color:var(--error); border:1px solid #4d2c2c}
+  .listo{text-align:center; padding:6px 0 2px}
+  .listo .sello{
+    width:56px; height:56px; margin:4px auto 12px; border-radius:50%; display:grid; place-items:center;
+    border:1px solid var(--oro-linea); background:var(--oro-suave); color:var(--oro); font-size:26px;
+  }
+  .listo p{margin:0 0 6px; color:var(--texto)}
+
+  /* ---------- lo demás, compacto ---------- */
+  .info{display:grid; grid-template-columns:minmax(0,1fr); gap:26px; margin-top:6px}
+  .tipos{display:grid; grid-template-columns:minmax(0,1fr); gap:10px}
+  .tipo{border:1px solid var(--linea); border-radius:14px; padding:14px; background:rgba(13,13,12,.7)}
+  .tipo-c{display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; margin:0 0 4px}
+  .tipo h3{
+    font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-weight:600;
+    font-size:21px; color:var(--oro); margin:0; line-height:1.2;
+  }
+  .tipo .freq{font-size:12px; font-weight:500; letter-spacing:.03em; color:var(--blanco); background:var(--oro-suave); border:1px solid var(--oro-linea); padding:2px 10px; border-radius:999px; white-space:nowrap}
+  .tipo p{margin:0 0 8px; font-size:14px}
+  .ejemplo{margin:0; padding:10px 12px; border-left:2px solid var(--oro); background:#0A0A09; border-radius:0 10px 10px 0; font-size:13px; color:var(--texto); line-height:1.5}
+  .ejemplo b{display:block; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--apagado); margin-bottom:2px}
+
+  dl.saber{margin:0; border-top:1px solid var(--linea)}
+  dl.saber div{display:grid; grid-template-columns:96px minmax(0,1fr); gap:12px; padding:11px 0; border-bottom:1px solid var(--linea); align-items:baseline}
+  dl.saber dt{font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--oro)}
+  dl.saber dd{margin:0; font-size:14px; color:var(--texto)}
+  dl.saber dd strong{color:var(--blanco); font-weight:600}
+
+  .reservar-t{display:grid; grid-template-columns:120px minmax(0,1fr); gap:14px; align-items:start}
+  .captura{margin:0}
+  .captura a{display:block}
+  .captura img{display:block; width:100%; height:auto; border:1px solid var(--oro-linea); border-radius:10px; background:var(--panel)}
+  .reservar-t p{margin:0 0 8px; font-size:14px}
+  .reservar-t .en{margin-top:6px}
+
+  footer{margin-top:30px; padding-top:18px; border-top:1px solid var(--linea); text-align:center; font-size:12.5px; color:var(--apagado); line-height:1.85}
+  footer a{color:var(--texto)}
+
+  /* ---------- tableta y escritorio ---------- */
+  @media (min-width:640px){
+    .tipos{grid-template-columns:repeat(2, minmax(0,1fr))}
+    .campos{grid-template-columns:repeat(2, minmax(0,1fr))}
+  }
+  @media (min-width:900px){
+    .wrap{padding:0 32px 48px}
+    header{padding-top:28px}
+    .grid{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:24px 56px; padding-top:32px; align-items:start}
+    .hero{grid-column:1; grid-row:1; padding-left:24px; border-left:2px solid var(--oro); align-self:start}
+    h1{font-size:54px}
+    .lead{font-size:16.5px}
+    .formulario{grid-column:2; grid-row:1 / span 2; position:sticky; top:24px}
+    .info{grid-column:1; grid-row:2}
+    .tarjeta{padding:24px 24px 22px}
+    .campos{grid-template-columns:minmax(0,1fr)}
+  }
+  @media (max-width:360px){ h1{font-size:32px} header .reservar{display:none} .reservar-t{grid-template-columns:100px minmax(0,1fr)} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img src="/logo.png" alt="" width="320" height="316">
+    <div class="marca">
+      <b>Trend Nails Salon</b>
+      <span>Caguas, Puerto Rico</span>
+    </div>
+    <a class="reservar" href="/">Reservar cita</a>
+  </header>
+
+  <main class="grid">
+
+    <section class="hero" aria-labelledby="titulo">
+      <h1 id="titulo">Tus citas y ofertas, <em>por&nbsp;texto</em></h1>
+      <p class="lead">Avisos de tus citas y, si quieres, ofertas del salón por mensaje de texto. <strong>Es opcional</strong> y lo cancelas cuando quieras.</p>
+    </section>
+
+    <section class="formulario" aria-labelledby="tituloForm">
+      <div class="tarjeta">
+        <form id="form" novalidate autocomplete="on">
+          <h2 id="tituloForm">Suscríbete</h2>
+          <p class="sub">No hace falta reservar para suscribirte.</p>
+
+          <div class="campos">
+            <div>
+              <label class="lbl" for="nombre">Tu nombre</label>
+              <input type="text" id="nombre" name="nombre" autocomplete="name" placeholder="María Rivera" maxlength="60" required>
+            </div>
+            <div>
+              <label class="lbl" for="tel">Tu teléfono</label>
+              <input type="tel" id="tel" name="telefono" inputmode="tel" autocomplete="tel-national" placeholder="(787) 123-4567" maxlength="16" required>
+            </div>
+          </div>
+
+          <div class="trampa" aria-hidden="true">
+            <label for="website">Tu sitio web (déjalo vacío)</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="casillas" role="group" aria-labelledby="casillasT">
+            <p class="casillas-t" id="casillasT">Elige lo que quieres recibir <span>(las dos son opcionales)</span></p>
+            <label class="op">
+              <input type="checkbox" id="smsCitas" name="sms_citas" value="1" autocomplete="off">
+              <span class="op-t">
+                <span data-texto-sms="citas">Sí, acepto textos automatizados de Trend Nails Salon sobre mis citas. Frecuencia variable. Pueden aplicar tarifas de mensajes y datos. STOP para salir, HELP para ayuda.</span>
+                <span class="en" lang="en" data-texto-sms-en="citas">Yes, I agree to receive automated texts from Trend Nails Salon about my appointments. Frequency varies. Msg &amp; data rates may apply. STOP to opt out, HELP for help.</span>
+              </span>
+            </label>
+            <label class="op">
+              <input type="checkbox" id="smsOfertas" name="sms_ofertas" value="1" autocomplete="off">
+              <span class="op-t">
+                <span data-texto-sms="ofertas">Sí, acepto ofertas por texto de Trend Nails Salon, hasta 4 al mes. No es requisito para reservar. Pueden aplicar tarifas de mensajes y datos. STOP para salir, HELP para ayuda.</span>
+                <span class="en" lang="en" data-texto-sms-en="ofertas">Yes, I agree to receive offers by text from Trend Nails Salon, up to 4/month. Not required to book. Msg &amp; data rates may apply. STOP to opt out, HELP for help.</span>
+              </span>
+            </label>
+            <p class="casillas-n"><a href="https://www.trendnails-salon.com/sms-terms" target="_blank" rel="noopener">Términos SMS</a> · <a href="https://www.trendnails-salon.com/privacidad" target="_blank" rel="noopener">Privacidad</a></p>
+          </div>
+
+          <div class="aviso err" id="error" role="alert" hidden></div>
+          <button class="btn" type="submit" id="btn">Suscribirme</button>
+          <p class="nota">Solo guardamos las casillas que marques. Aceptar no es condición para reservar ni para comprar.</p>
+          <noscript><p class="nota">Para suscribirte aquí hace falta JavaScript. También puedes llamarnos al (939) 282-4460.</p></noscript>
+        </form>
+
+        <div class="listo" id="listo" hidden aria-live="polite">
+          <div class="sello" aria-hidden="true">✓</div>
+          <h2 id="listoT">¡Listo!</h2>
+          <p>Guardamos tu permiso. Si algún día no quieres más mensajes, responde STOP.</p>
+          <p>Si antes nos respondiste STOP, escríbenos START para volver a recibirlos.</p>
+          <a class="btn ghost" href="/">Reservar una cita</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="info">
+      <section aria-labelledby="queT">
+        <p class="eyebrow" id="queT">Qué te enviamos</p>
+        <div class="tipos">
+          <article class="tipo">
+            <div class="tipo-c"><h3>Tus citas</h3><span class="freq">Frecuencia variable</span></div>
+            <p>Confirmaciones, recordatorios y cambios, y respuestas cuando nos escribes.</p>
+            <p class="ejemplo" data-muestra="3"><b>Ejemplo</b>Trend Nails Salon: Te esperamos mañana a las 2:00 PM con Kristi. Si necesitas cambiar la hora, entra a https://citas.trendnails-salon.com<br>STOP para salir.</p>
+          </article>
+          <article class="tipo">
+            <div class="tipo-c"><h3>Ofertas</h3><span class="freq">Hasta 4 al mes</span></div>
+            <p>Espacios disponibles, temporadas y ofertas del salón. Solo si marcas esa casilla.</p>
+            <p class="ejemplo" data-muestra="1"><b>Ejemplo</b>Trend Nails Salon: Ya abrimos la agenda de diciembre. Separa tu set para las fiestas en https://citas.trendnails-salon.com<br>Responde STOP para darte de baja.</p>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="saberT">
+        <p class="eyebrow" id="saberT">Lo que debes saber</p>
+        <dl class="saber">
+          <div><dt>Tarifas</dt><dd>Pueden aplicar tarifas de mensajes y datos de tu compañía de teléfono.</dd></div>
+          <div><dt>Salir</dt><dd>Responde <strong>STOP</strong> a cualquier mensaje y dejamos de escribirte. Para volver, responde <strong>START</strong>.</dd></div>
+          <div><dt>Ayuda</dt><dd>Responde <strong>HELP</strong>, llámanos al <a href="tel:+19392824460">(939) 282-4460</a> o escríbenos a <a href="mailto:trendnailssaloninfo@gmail.com">trendnailssaloninfo@gmail.com</a>.</dd></div>
+          <div><dt>Privacidad</dt><dd>No compartimos información móvil con terceros ni con afiliados para fines de mercadeo o promoción. <a href="https://www.trendnails-salon.com/sms-terms" target="_blank" rel="noopener">Términos SMS</a> · <a href="https://www.trendnails-salon.com/privacidad" target="_blank" rel="noopener">Política de privacidad</a></dd></div>
+        </dl>
+      </section>
+
+      <section aria-labelledby="dondeT">
+        <p class="eyebrow" id="dondeT">También al reservar</p>
+        <div class="reservar-t">
+          <figure class="captura">
+            <a href="/textos/confirma-tu-cita.jpg" target="_blank" rel="noopener" aria-label="Ver la captura en grande">
+              <img src="/textos/confirma-tu-cita.jpg" alt="Paso «Confirma tu cita» de la página de citas: resumen de la cita y, debajo, las dos casillas de mensajes de texto sin marcar, encima del botón «Confirmar mi cita»." width="716" height="1972" loading="lazy" decoding="async">
+            </a>
+          </figure>
+          <div>
+            <p>Las mismas dos casillas salen en la <a href="/">página de citas</a>: al crear tu perfil y en el último paso, «Confirma tu cita». Vienen sin marcar y puedes reservar sin marcarlas.</p>
+            <p class="en" lang="en">Booking page, last step (example data): both boxes are unchecked by default and optional. Tap the image to enlarge.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <footer>
+    Trend Nails Salon · Caguas Community Shopping Center, 47 Av. José Gautier Benítez, Caguas, PR 00725<br>
+    <a href="tel:+19392824460">(939) 282-4460</a> · <a href="mailto:trendnailssaloninfo@gmail.com">trendnailssaloninfo@gmail.com</a><br>
+    <a href="https://www.trendnails-salon.com" target="_blank" rel="noopener">trendnails-salon.com</a> · <a href="/">Reservar cita</a> · <a href="https://www.trendnails-salon.com/sms-terms" target="_blank" rel="noopener">Términos SMS</a> · <a href="https://www.trendnails-salon.com/privacidad" target="_blank" rel="noopener">Privacidad</a>
+  </footer>
+</div>
+
+<script>
+/* El mismo Worker de la página de citas. La acción "suscribir" busca la ficha por teléfono
+   (o la crea) y deja la etiqueta sms-citas-si / sms-ofertas-si con una nota de evidencia que
+   guarda el texto exacto de la casilla y su versión (v2). No se reintenta sola; si se repite
+   a mano no duplica nada (idempotente). */
+const API = "https://trend-nails-reservas.elvysrivera.workers.dev";
+const SMS_VERSION = "v2";
+const T0 = Date.now();
+const $ = id => document.getElementById(id);
+
+/* Nada de esta página se llena desde la dirección: si llega con datos en la URL, se quitan. */
+if(location.search){ try{ history.replaceState(null, "", location.pathname + location.hash); }catch(e){} }
+/* Las casillas nunca vienen marcadas (ni si el navegador intenta restaurar el formulario). */
+function desmarcar(){ $("smsCitas").checked = false; $("smsOfertas").checked = false; }
+desmarcar();
+window.addEventListener("pageshow", e => { if(!e.persisted) desmarcar(); });
+
+function digitos(s){ return String(s || "").replace(/\D/g, ""); }
+function fmtTel(v){
+  let d = digitos(v);
+  if(d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+  d = d.slice(0, 10);
+  if(d.length <= 3) return d;
+  if(d.length <= 6) return `(${d.slice(0,3)}) ${d.slice(3)}`;
+  return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+}
+$("tel").addEventListener("input", e => { e.target.value = fmtTel(e.target.value); error(""); });
+$("nombre").addEventListener("input", () => error(""));
+["smsCitas","smsOfertas"].forEach(id => $(id).addEventListener("change", () => error("")));
+
+function error(msg, foco){
+  const e = $("error");
+  if(!msg){ e.hidden = true; e.textContent = ""; return; }
+  e.textContent = msg; e.hidden = false;
+  if(foco) foco.focus();
+}
+
+let enviando = false;
+$("form").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  if(enviando) return;
+  const nombre = $("nombre").value.replace(/\s+/g, " ").trim();
+  let d = digitos($("tel").value);
+  if(d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+  const citas = $("smsCitas").checked, ofertas = $("smsOfertas").checked;
+  if(nombre.length < 2) return error("Escribe tu nombre.", $("nombre"));
+  if(d.length !== 10) return error("Escribe los 10 dígitos de tu teléfono.", $("tel"));
+  if(!citas && !ofertas) return error("Marca al menos una casilla para suscribirte.", $("smsCitas"));
+  error("");
+  enviando = true;
+  const btn = $("btn");
+  btn.disabled = true; btn.textContent = "Guardando…";
+  // La acción va en la URL (el Worker solo lee el cuerpo para permiso y suscribir); nombre,
+  // teléfono y casillas van en el cuerpo, nunca en la dirección.
+  const body = new URLSearchParams({
+    fn:nombre, ph:d, v:SMS_VERSION,
+    c:citas ? "1" : "0", o:ofertas ? "1" : "0",
+    t:String(Date.now() - T0), website:$("website").value
+  });
+  try{
+    const ctrl = new AbortController();
+    const tm = setTimeout(() => ctrl.abort(), 25000);
+    let j = null;
+    try{
+      const r = await fetch(API + "?action=suscribir", {method:"POST", body, signal:ctrl.signal});
+      j = await r.json();
+    }finally{ clearTimeout(tm); }
+    // Solo la respuesta nueva cuenta (un Worker viejo contesta {ok:true, pong:true} a todo).
+    if(j && j.ok === true && j.suscrito === true){
+      $("listoT").textContent = "¡Listo, " + nombre.split(" ")[0] + "!";
+      $("form").hidden = true;
+      $("listo").hidden = false;
+      // El formulario era más alto que el aviso: sin esto la persona se queda mirando otra parte.
+      try{ $("listo").scrollIntoView({block:"center"}); }catch(e){}
+      $("listoT").setAttribute("tabindex", "-1");
+      $("listoT").focus({preventScroll:true});
+      return;
+    }
+    error((j && j.error) || "No pudimos guardar tu permiso. Inténtalo otra vez.");
+  }catch(e){
+    error("No pudimos confirmar si quedó guardado. Revisa tu internet y vuelve a tocar «Suscribirme»: no se duplica.");
+  }finally{
+    enviando = false; btn.disabled = false; btn.textContent = "Suscribirme";
+  }
+});
+</script>
+</body>
+</html>

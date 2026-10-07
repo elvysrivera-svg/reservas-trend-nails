@@ -422,6 +422,32 @@
   }
   footer.pie{text-align:center; color:var(--ink-faint); font-size:11.5px; padding:26px 0 6px; line-height:1.7}
   footer.pie a{color:var(--ink-faint)}
+
+  /* ---------- permiso de mensajes de texto (A2P, 7-oct-2026) ----------
+     Dos casillas separadas, SIN marcar y opcionales. Un solo bloque que se mueve entre
+     "primera vez" y "confirmar" (en "entrar" no sale), así lo marcado no se pierde ni se duplica. */
+  .sms{margin:2px 0 16px; padding:14px 14px 12px; border:1px solid var(--line); border-radius:12px; background:var(--card2)}
+  .sms-t{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); font-weight:700; margin:0 0 11px}
+  .sms-t span{text-transform:none; letter-spacing:0; font-weight:600}
+  .sms-op{display:flex; gap:11px; align-items:flex-start; font-size:13px; line-height:1.5; color:var(--ink-soft); cursor:pointer}
+  .sms-op + .sms-op{margin-top:12px; padding-top:12px; border-top:1px solid var(--line-soft)}
+  /* Casilla propia: la nativa sale blanca sobre negro. Sin marcar = solo el borde dorado. */
+  .sms-op input{
+    -webkit-appearance:none; appearance:none; flex:0 0 auto; width:22px; height:22px; margin:0;
+    border:1.5px solid rgba(232,196,104,.55); border-radius:6px; background:var(--card); cursor:pointer;
+    transition:background-color .15s, border-color .15s;
+  }
+  .sms-op input:hover{border-color:var(--lacquer)}
+  .sms-op input:checked{background:var(--lacquer) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%231a1408' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/15px no-repeat; border-color:var(--lacquer)}
+  .sms-op input:focus-visible{outline:2px solid var(--lacquer); outline-offset:2px}
+  .sms-op a{color:var(--ink); text-underline-offset:2px}
+  .sms-op a:hover{color:var(--lacquer)}
+  .sms-n{margin:11px 0 0; font-size:12px; color:var(--ink-soft)}
+  .sms-n a{color:var(--ink); text-underline-offset:2px; white-space:nowrap}
+  .sms-op[hidden] + .sms-op{margin-top:0; padding-top:0; border-top:0}
+  .sms-ya{margin:0; font-size:12.5px; line-height:1.5; color:var(--ink)}
+  .sms-op:not([hidden]) ~ .sms-ya:not([hidden]){margin-top:12px; padding-top:12px; border-top:1px solid var(--line-soft)}
+  .sms-n a:hover{color:var(--lacquer)}
 </style>
 </head>
 <body>
@@ -481,6 +507,23 @@
     <div class="fld">
       <label class="lbl" for="nvPh">Teléfono</label>
       <input type="tel" id="nvPh" inputmode="tel" autocomplete="tel" placeholder="(787) 123-4567" maxlength="16">
+    </div>
+    <div id="smsSlotNueva">
+      <!-- Permiso SMS: un solo bloque que viaja entre "primera vez" y "Confirma tu cita".
+           No sale en "Entrar" (empujaba el botón fuera de la pantalla del celular). -->
+      <div class="sms" id="smsBloque" role="group" aria-labelledby="smsTitulo">
+        <p class="sms-t" id="smsTitulo">Mensajes de texto <span>(opcional)</span></p>
+        <label class="sms-op" id="smsOpCitas">
+          <input type="checkbox" id="smsCitas" name="sms_citas" value="1" autocomplete="off">
+          <span data-texto-sms="citas">Sí, acepto textos automatizados de Trend Nails Salon sobre mis citas. Frecuencia variable. Pueden aplicar tarifas de mensajes y datos. STOP para salir, HELP para ayuda.</span>
+        </label>
+        <label class="sms-op" id="smsOpOfertas">
+          <input type="checkbox" id="smsOfertas" name="sms_ofertas" value="1" autocomplete="off">
+          <span data-texto-sms="ofertas">Sí, acepto ofertas por texto de Trend Nails Salon, hasta 4 al mes. No es requisito para reservar. Pueden aplicar tarifas de mensajes y datos. STOP para salir, HELP para ayuda.</span>
+        </label>
+        <p class="sms-ya" id="smsYa" hidden></p>
+        <p class="sms-n">Puedes reservar sin marcar ninguna. <a href="https://www.trendnails-salon.com/sms-terms" target="_blank" rel="noopener">Términos SMS</a> · <a href="https://www.trendnails-salon.com/privacidad" target="_blank" rel="noopener">Privacidad</a></p>
+      </div>
     </div>
     <div class="fld">
       <label class="lbl" for="nvEm">Correo <span style="text-transform:none;letter-spacing:0">(para tu confirmación)</span></label>
@@ -546,6 +589,7 @@
     <h2 id="confTitulo">Confirma tu <em>cita</em></h2>
     <p class="sub">Revisa que todo esté bien y la reservamos al instante.</p>
     <div class="resumen" id="confResumen"></div>
+    <div id="smsSlotConf"></div>
     <div class="aviso" id="confNota">Te llegará la confirmación por correo. Si necesitas cambiarla, puedes hacerlo desde aquí mismo.</div>
     <div class="aviso err" id="errConf" hidden></div>
     <button class="btn" id="btnConf">Confirmar mi cita</button>
@@ -557,6 +601,7 @@
     <h2 style="text-align:center" id="okTitulo">¡Cita <em>confirmada</em>!</h2>
     <p class="sub" style="text-align:center" id="okSub"></p>
     <div class="resumen" id="okResumen"></div>
+    <div class="aviso ok" id="okSms" hidden></div>
     <a class="btn ghost" id="btnIcs" download="cita-trend-nails.ics" href="#" style="text-decoration:none; margin-bottom:10px">📅 Añadir a mi calendario</a>
     <button class="btn" id="btnVolver">Listo</button>
   </section>
@@ -565,7 +610,8 @@
 
   <footer class="pie">
     Trend Nails Salon · Caguas, Puerto Rico<br>
-    <a href="https://www.trendnails-salon.com" target="_blank" rel="noopener">trendnails-salon.com</a>
+    <a href="https://www.trendnails-salon.com" target="_blank" rel="noopener">trendnails-salon.com</a><br>
+    <a href="/textos/">Mensajes de texto</a> · <a href="https://www.trendnails-salon.com/sms-terms" target="_blank" rel="noopener">Términos SMS</a> · <a href="https://www.trendnails-salon.com/privacidad" target="_blank" rel="noopener">Privacidad</a>
   </footer>
 </div>
 
@@ -636,7 +682,9 @@ const S = {
   modo:"reservar",            // "reservar" | "mover"
   mover:null,                 // la cita que se está moviendo
   pantalla:"scr-hola", pila:[],
-  telefono:""
+  telefono:"",
+  telOrigen:"",               // de dónde salió el teléfono: escrito | enlace | sesion (va en la nota del permiso SMS)
+  smsListo:{citas:false, ofertas:false}   // permisos SMS ya guardados en esta sesión
 };
 const $ = id => document.getElementById(id);
 
@@ -711,6 +759,7 @@ function ir(p, sinPila){
   if(!sinPila && p !== S.pantalla) S.pila.push(S.pantalla);
   document.querySelectorAll(".scr").forEach(s => s.hidden = (s.id !== p));
   S.pantalla = p;
+  ubicarSms(p);
   window.scrollTo(0,0);
   pintarBarra();
 }
@@ -769,7 +818,7 @@ function enCristiano(e, accion){
   if(/abort/i.test(m) || m === "__google__"){
     // Si era una reserva, NO la invitamos a repetir: pudo haberse guardado igual.
     return escritura
-      ? "Tardó más de lo normal y no recibimos la confirmación. Revisa «Tus próximas citas» antes de volver a intentarlo — puede que sí haya quedado."
+      ? "Tardó más de lo normal y no recibimos la confirmación. Revisa «Tus próximas citas» antes de volver a intentarlo: puede que sí haya quedado."
       : "Está tardando más de lo normal. Vuelve a tocar, por favor.";
   }
   if(/failed to fetch|networkerror|load failed/i.test(m))
@@ -983,6 +1032,7 @@ $("btnPh").addEventListener("click", async () => {
   if(d.length < 10){ error("errPh","Escribe los 10 dígitos de tu teléfono."); $("inPh").focus(); return; }
   if(nm.length < 2){ error("errPh","Escribe tu nombre."); $("inNm").focus(); return; }
   S.telefono = d;
+  S.telOrigen = origenTel(d);
   error("errPh","");
   cargando($("btnPh"), true, "Entrando…");
   try{
@@ -1005,6 +1055,7 @@ $("btnNv").addEventListener("click", async () => {
   const ph = digitos($("nvPh").value), em = $("nvEm").value.trim();
   if(!fn) return error("errNv","Necesitamos tu nombre.");
   if(ph.length < 10) return error("errNv","Escribe los 10 dígitos de tu teléfono.");
+  S.telOrigen = origenTel(ph);
   cargando($("btnNv"), true, "Creando tu perfil…");
   try{
     const j = await api("new", {fn, ln, ph, em, ...window.tnAttributionParams()});
@@ -1038,6 +1089,8 @@ function salir(callado){
   try{ localStorage.removeItem("tn-sesion"); }catch(e){}
   window.tnClearPrefill();
   S.tok = null; S.me = null; S.citas = []; S.svcs = []; S.tec = null; S.pila = [];
+  S.telOrigen = ""; S.smsListo = {citas:false, ofertas:false};
+  desmarcarSms(); pintarSms();
   $("btnSalir").hidden = true;
   ["inPh","inNm","nvFn","nvLn","nvPh","nvEm"].forEach(id => $(id).value = "");
   ir("scr-hola", true);
@@ -1423,11 +1476,12 @@ function abrirConfirmar(){
   $("confResumen").innerHTML = filas([
     ["Servicio", mover ? nombreSvc(S.mover.c, S.mover.t) : titulo()],
     ["Día",      fechaLarga(S.dia)],
-    ["Hora",     fmtHora(S.hora) + " – " + fmtHora(S.hora + dur)],
+    ["Hora",     fmtHora(S.hora) + " a " + fmtHora(S.hora + dur)],
     ["Duración", fmtDur(dur)],
     ["Técnica",  tec || "Te asignamos la disponible"],
     ["Desde",    (!mover && suma) ? `$${suma}${todos ? "" : " +"}` : ""],
-    ["A nombre de", `${S.me.fn} ${S.me.ln}`.trim()]
+    ["A nombre de", `${S.me.fn} ${S.me.ln}`.trim()],
+    ["Teléfono", telVisible(S.me.ph)]
   ]);
   $("confNota").textContent = mover
     ? "Tu cita se mueve a la hora nueva y te avisamos por correo. Nadie pierde el turno."
@@ -1458,6 +1512,8 @@ $("btnConf").addEventListener("click", async () => {
     if(j.u && !S.tecHora) S.tecHora = j.u;
     olvidar();
     mostrarOk(mover, ini, fin, dur, j.id);
+    // Permiso SMS: DESPUÉS de la cita confirmada, sin esperarlo y sin tocar la reserva.
+    if(!mover) enviarPermisosSms(j.id);
   }catch(e){
     error("errConf", e.message || "No pudimos conectar. Revisa tu internet.");
     // Si se perdió la respuesta, la cita pudo crearse igual: refrescamos su lista
@@ -1513,10 +1569,11 @@ function mostrarOk(mover, ini, fin, dur, eventId){
   const tec = S.tecHora ? DATA.staff[S.tecHora] : "";
   $("okTitulo").innerHTML = mover ? '¡Cita <em>movida</em>!' : '¡Cita <em>confirmada</em>!';
   $("okSub").textContent = "Te esperamos en Trend Nails Salon.";
+  $("okSms").hidden = true;
   $("okResumen").innerHTML = filas([
     ["Servicio", nom],
     ["Día",      fechaLarga(S.dia)],
-    ["Hora",     fmtHora(S.hora) + " – " + fmtHora(S.hora + dur)],
+    ["Hora",     fmtHora(S.hora) + " a " + fmtHora(S.hora + dur)],
     ["Técnica",  tec || "Te asignamos la disponible"]
   ]);
   $("btnIcs").href = URL.createObjectURL(new Blob([ics(nom, ini, fin)], {type:"text/calendar"}));
@@ -1535,6 +1592,111 @@ function ics(nom, ini, fin){
     "END:VEVENT","END:VCALENDAR"].join("\r\n");
 }
 $("btnVolver").addEventListener("click", () => { ir("scr-inicio", true); cargarInicio(); });
+
+/* ===================== permiso de mensajes de texto (SMS) ===================== */
+/* 7-oct-2026, registro A2P. Dos casillas separadas, SIN marcar y opcionales: la reserva
+   sale igual con o sin ellas. Nunca se marcan desde el código ni desde un enlace
+   pre-llenado (el prellenado solo toca nombre, teléfono y correo).
+   Si marcó alguna, el permiso se guarda en su ficha (etiqueta + nota de evidencia) SOLO
+   después de que la cita quedó confirmada, con una llamada aparte que no se espera ni se
+   reintenta. Si falla, la cita no se entera: queda en la bitácora del Worker.
+   El texto de cada casilla tiene versión: v2 desde el 7-oct (textos cortos; la v1 nunca se
+   publicó). Si se cambia una palabra, se sube a v3 aquí, en textos/index.html y en
+   reserva-worker.js (la prueba sms-consentimiento lo vigila). Los enlaces a Términos SMS y
+   Privacidad van debajo de las dos casillas, no dentro del texto. */
+const SMS_VERSION = "v2";
+/* Dónde sale el bloque. "Entrar" (scr-hola) NO está a propósito: ahí empujaba el botón fuera
+   de la pantalla del celular a toda clienta. Para volver a ponerlo: añadir
+   "scr-hola":"<id de un div vacío en scr-hola>" y medir que "Entrar" siga a la vista. */
+const SMS_SLOTS = {"scr-nueva":"smsSlotNueva", "scr-conf":"smsSlotConf"};
+const SMS_NOMBRE = {citas:"los textos de tus citas", ofertas:"las ofertas por texto"};
+function smsMarcadas(){
+  const c = $("smsCitas"), o = $("smsOfertas");
+  return {citas: !!(c && c.checked === true), ofertas: !!(o && o.checked === true)};
+}
+function desmarcarSms(){
+  ["smsCitas","smsOfertas"].forEach(id => { const el = $(id); if(el) el.checked = false; });
+}
+/* Lo ya guardado en esta visita no se vuelve a enseñar: desmarcar una casilla no cancela un
+   permiso guardado (eso se hace respondiendo STOP), así que no se ofrece como si lo hiciera. */
+function pintarSms(){
+  const b = $("smsBloque");
+  if(!b) return;
+  const listo = S.smsListo || {};
+  const oc = $("smsOpCitas"), oo = $("smsOpOfertas"), ya = $("smsYa");
+  if(oc) oc.hidden = !!listo.citas;
+  if(oo) oo.hidden = !!listo.ofertas;
+  const hechos = ["citas","ofertas"].filter(t => listo[t]);
+  if(ya){
+    ya.hidden = !hechos.length;
+    ya.textContent = hechos.length
+      ? "Ya guardamos tu permiso para " + hechos.map(t => SMS_NOMBRE[t]).join(" y ") + ". Para cancelarlo, responde STOP a cualquier mensaje."
+      : "";
+  }
+  b.hidden = hechos.length === 2 || (S.pantalla === "scr-conf" && S.modo === "mover");
+}
+/* El bloque es uno solo y viaja con la clienta: debajo del teléfono al crear el perfil, y
+   debajo del resumen (que enseña su teléfono) al confirmar. Al reagendar no sale. */
+function ubicarSms(p){
+  const b = $("smsBloque");
+  if(!b || typeof b.appendChild !== "function") return;
+  const slot = SMS_SLOTS[p] && $(SMS_SLOTS[p]);
+  if(slot && b.parentNode !== slot) slot.appendChild(b);
+  pintarSms();
+}
+function origenTel(d){
+  const pre = (typeof window.tnPrefill === "function") ? window.tnPrefill() : null;
+  return (pre && pre.phone && pre.phone === d) ? "enlace" : "escrito";
+}
+function telVisible(ph){
+  let d = digitos(ph);
+  if(d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+  return d.length === 10 ? fmtTel(d) : "";
+}
+function avisoConsola(){ try{ console.warn.apply(console, arguments); }catch(e){} }
+async function enviarPermisosSms(eventId){
+  try{
+    const m = smsMarcadas();
+    const citas = m.citas && !S.smsListo.citas, ofertas = m.ofertas && !S.smsListo.ofertas;
+    if((!citas && !ofertas) || !S.tok || API.indexOf("__") === 0) return;
+    // La acción va en la URL (el Worker solo lee el cuerpo para permiso y suscribir); la
+    // llave de sesión y lo demás, en el cuerpo.
+    const body = new URLSearchParams({
+      tok:S.tok, v:SMS_VERSION, c:citas ? "1" : "0", o:ofertas ? "1" : "0",
+      pg:"reserva", tel:S.telOrigen || "", ev:eventId || ""
+    });
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 20000);
+    let j = null;
+    try{
+      const r = await fetch(API + "?action=permiso", {method:"POST", body, signal:ctrl.signal});
+      j = await r.json();
+    }finally{ clearTimeout(t); }
+    // Se exige la forma nueva de respuesta: un Worker viejo contesta {ok:true, pong:true} a
+    // cualquier acción desconocida y eso NO es un permiso guardado.
+    if(j && (Array.isArray(j.hechos) || Array.isArray(j.ya))){
+      const hechos = Array.isArray(j.hechos) ? j.hechos : [], ya = Array.isArray(j.ya) ? j.ya : [];
+      const pedidos = [citas && "citas", ofertas && "ofertas"].filter(Boolean);
+      const guardados = pedidos.filter(t => hechos.includes(t) || ya.includes(t));
+      guardados.forEach(t => {
+        S.smsListo[t] = true;
+        const el = $(t === "citas" ? "smsCitas" : "smsOfertas");
+        if(el) el.checked = false;
+      });
+      pintarSms();
+      const av = $("okSms");
+      if(av && guardados.length && S.pantalla === "scr-ok"){
+        av.textContent = "Guardamos tu permiso para " + guardados.map(t => SMS_NOMBRE[t]).join(" y ") +
+          ". Puedes cancelarlo cuando quieras respondiendo STOP.";
+        av.hidden = false;
+      }
+      if(guardados.length === pedidos.length) return;
+    }
+    avisoConsola("Permiso SMS no guardado:", j && (j.errores || j.error));
+  }catch(e){
+    avisoConsola("Permiso SMS no guardado:", e && e.message);
+  }
+}
 
 /* ===================== cancelar y reagendar ===================== */
 let cancelando = null;
@@ -1577,6 +1739,7 @@ function abrirMover(id){
 
 /* ===================== arranque ===================== */
 (function inicio(){
+  desmarcarSms();
   calentar();
   pintarCats();
   try{
@@ -1585,6 +1748,7 @@ function abrirMover(id){
     const g = JSON.parse(localStorage.getItem("tn-sesion") || "null");
     if(!window.tnIncomingPrefill && g && g.tok && g.me && Number.isFinite(g.at) && g.at <= Date.now() && Date.now() - g.at < 11.5*3600*1000){
       S.tok = g.tok; S.me = g.me;
+      S.telOrigen = "sesion";
       $("btnSalir").hidden = false;
       ir("scr-inicio", true);
       cargarInicio();
