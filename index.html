@@ -114,6 +114,11 @@
     poner("nvLn", d.last_name);
     poner("nvPh", d.phone);
     poner("nvEm", d.email);
+    // 17-oct: también los datos de "Confirma tu cita", por si reserva desde los servicios.
+    poner("cfFn", d.first_name);
+    poner("cfLn", d.last_name);
+    poner("cfPh", d.phone);
+    poner("cfEm", d.email);
   }
   // Los campos aparecen despues del render, asi que se intenta al cargar y luego
   // se vigila el DOM por unos segundos. Se para solo para no dejar un observer vivo.
@@ -213,7 +218,7 @@
     color:var(--ink); margin:0 0 4px; letter-spacing:.005em; text-wrap:balance;
   }
   h2 em{font-style:italic; color:var(--lacquer)}
-  h2,.sub,.card-t,.sugiere-t,.day b,.barra-t,.estado,.vacio,.av{font-variant-numeric:lining-nums}
+  h2,.sub,.card-t,.sugiere-t,.day b,.barra-t,.estado,.vacio{font-variant-numeric:lining-nums}
   .scr > h2{text-align:center; margin-top:10px}
   /* La línea dorada fina debajo del titular, igual que en las piezas. */
   .scr > h2::after{content:""; display:block; width:56px; height:1px; background:var(--lacquer); margin:14px auto 0}
@@ -263,21 +268,26 @@
   .btn:hover{filter:brightness(1.07)}
   .btn:focus-visible{outline:2px solid var(--ink); outline-offset:3px}
   .btn:disabled{opacity:.5; cursor:default; filter:none}
+  .btn[aria-busy="true"]:disabled{opacity:1; cursor:progress}
+  .btn[aria-busy="true"]::before{
+    content:""; flex:0 0 auto; width:14px; height:14px; border-radius:50%;
+    border:2px solid currentColor; border-right-color:transparent; animation:g .9s linear infinite;
+  }
   .btn.ghost{background:transparent; color:var(--ink); border-color:var(--lacquer-line)}
   .btn.ghost:hover{border-color:var(--lacquer); color:var(--lacquer); filter:none}
-  .btn.sm{width:auto; min-height:0; padding:10px 16px; font-size:11px; letter-spacing:.18em}
+  .btn.sm{width:auto; min-height:44px; padding:10px 16px; font-size:12px; letter-spacing:.16em}
   .btn.danger{background:transparent; color:var(--rose); border-color:var(--rose-line)}
   .btn.danger:hover{border-color:var(--rose); filter:none}
   /* "Es mi primera vez aquí": la otra puerta de entrada, en la itálica dorada de las piezas. */
   .linkish{
-    display:block; width:100%; margin-top:18px; background:none; border:0; padding:8px;
+    display:block; width:100%; min-height:44px; margin-top:18px; background:none; border:0; padding:8px;
     font-family:var(--serif); font-style:italic; font-weight:500; font-size:20px; color:var(--lacquer);
     text-decoration:underline; text-decoration-color:var(--lacquer-line); text-decoration-thickness:1px; text-underline-offset:6px;
   }
   .linkish:hover{color:var(--ink); text-decoration-color:var(--lacquer)}
   .back{
-    background:none; border:0; color:var(--ink-faint); padding:8px 0; margin:6px 0 0;
-    font-size:11px; font-weight:500; letter-spacing:.22em; text-transform:uppercase;
+    background:none; border:0; color:var(--ink-faint); padding:8px 0; margin:6px 0 0; min-height:44px;
+    font-size:12px; font-weight:500; letter-spacing:.2em; text-transform:uppercase;
     display:inline-flex; align-items:center; gap:8px;
   }
   .back:hover{color:var(--lacquer)}
@@ -288,7 +298,7 @@
     padding:18px; margin-bottom:12px; color:var(--ink);
   }
   button.card{transition:border-color .15s}
-  button.card:hover{border-color:var(--lacquer)}
+  @media (hover:hover){ button.card:hover{border-color:var(--lacquer)} }
   .card.quiet{background:var(--card2); border-color:var(--line-soft); text-align:center}
   .card-t{font-family:var(--serif); font-style:italic; font-weight:500; font-size:22px; line-height:1.2; color:var(--ink); margin:0 0 4px}
   .card-s{color:var(--ink-soft); font-size:13px; margin:0}
@@ -304,11 +314,11 @@
   .cats{display:flex; gap:8px; overflow-x:auto; padding:2px 16px 16px; margin:0 -16px; scrollbar-width:none}
   .cats::-webkit-scrollbar{display:none}
   .cat{
-    flex:0 0 auto; padding:9px 15px; border-radius:999px; border:1px solid var(--line);
+    flex:0 0 auto; min-height:44px; padding:9px 15px; border-radius:999px; border:1px solid var(--line);
     background:transparent; color:var(--ink-soft); font-size:12px; font-weight:500; letter-spacing:.04em; white-space:nowrap;
     transition:border-color .15s, color .15s, background-color .15s;
   }
-  .cat:hover{border-color:var(--lacquer-line); color:var(--ink)}
+  @media (hover:hover){ .cat:hover{border-color:var(--lacquer-line); color:var(--ink)} }
   .cat[aria-pressed=true]{background:var(--lacquer); color:var(--on-gold); border-color:var(--lacquer)}
   /* La lista como un menú: filas separadas por una raya fina, sin cajas. */
   .svc-list{display:flex; flex-direction:column; border-top:1px solid var(--line-soft)}
@@ -317,7 +327,10 @@
     background:transparent; border:0; border-bottom:1px solid var(--line-soft); border-radius:0; color:var(--ink);
     transition:background-color .15s;
   }
-  .svc:hover{background:rgba(197,165,114,.05)}
+  @media (hover:hover){
+    .svc:hover{background:rgba(197,165,114,.05)}
+    .svc:hover .svc-x{background:var(--lacquer); color:var(--on-gold); border-color:var(--lacquer)}
+  }
   .svc[aria-pressed=true]{background:var(--lacquer-soft)}
   .svc-i{flex:1 1 auto; min-width:0}
   .svc-n{font-weight:500; font-size:14.5px; display:block; color:var(--ink)}
@@ -327,17 +340,17 @@
     display:grid; place-items:center; color:var(--lacquer); font-size:17px; font-weight:300; line-height:1;
     transition:background-color .15s, color .15s, border-color .15s;
   }
-  .svc:hover .svc-x,.svc[aria-pressed=true] .svc-x{background:var(--lacquer); color:var(--on-gold); border-color:var(--lacquer)}
+  .svc[aria-pressed=true] .svc-x{background:var(--lacquer); color:var(--on-gold); border-color:var(--lacquer)}
 
   /* ---------- chips de lo elegido ---------- */
   .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px}
   .chip{
-    display:inline-flex; align-items:center; gap:6px; padding:7px 7px 7px 14px; border-radius:999px;
+    display:inline-flex; align-items:center; gap:4px; min-height:44px; padding:2px 2px 2px 14px; border-radius:999px;
     background:var(--lacquer-soft); border:1px solid var(--lacquer-line); color:var(--ink); font-size:13px;
   }
   .chip button{
     background:none; border:0; color:var(--lacquer); font-size:17px; line-height:1; padding:0;
-    width:24px; height:24px; border-radius:50%; display:grid; place-items:center;
+    width:40px; height:40px; border-radius:50%; display:grid; place-items:center;
   }
   .chip button:hover{color:var(--rose)}
 
@@ -354,7 +367,7 @@
     background:var(--paper); border:1px solid var(--line); border-radius:12px; color:var(--ink);
     transition:border-color .15s;
   }
-  .sug:hover{border-color:var(--lacquer)}
+  @media (hover:hover){ .sug:hover{border-color:var(--lacquer)} .sug:hover .sug-add{background:var(--lacquer); color:var(--on-gold)} }
   .sug-i{flex:1 1 auto; min-width:0}
   .sug-n{display:block; font-weight:500; font-size:13.5px}
   .sug-m{display:block; color:var(--ink-faint); font-size:12px; margin-top:2px}
@@ -363,23 +376,8 @@
     font-size:10.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; white-space:nowrap;
     transition:background-color .15s, color .15s;
   }
-  .sug:hover .sug-add{background:var(--lacquer); color:var(--on-gold)}
 
-  /* ---------- técnicas ---------- */
-  #tecLista{border-top:1px solid var(--line-soft)}
-  .tec{
-    display:flex; align-items:center; gap:14px; width:100%; text-align:left; padding:14px 4px; margin:0;
-    background:transparent; border:0; border-bottom:1px solid var(--line-soft); border-radius:0; color:var(--ink);
-    transition:background-color .15s;
-  }
-  .tec:hover{background:rgba(197,165,114,.05)}
-  .tec[aria-pressed=true]{background:var(--lacquer-soft)}
-  /* La inicial dentro de un aro dorado fino, como el logo. */
-  .av{
-    flex:0 0 auto; width:44px; height:44px; border-radius:50%; display:grid; place-items:center;
-    border:1px solid var(--lacquer-line); color:var(--lacquer);
-    font-family:var(--serif); font-style:italic; font-weight:500; font-size:21px; line-height:1;
-  }
+  /* ---------- etiquetas ---------- */
   .tag{
     display:inline-block; font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase;
     color:var(--on-gold); background:var(--lacquer); padding:4px 10px; border-radius:999px;
@@ -395,7 +393,7 @@
   }
   .day b{display:block; font-family:var(--serif); font-style:italic; font-weight:500; font-size:24px; margin-top:2px}
   .day span{display:block; font-size:10.5px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
-  .day:hover:not(:disabled){border-color:var(--lacquer-line)}
+  @media (hover:hover){ .day:hover:not(:disabled){border-color:var(--lacquer-line)} }
   .day[aria-pressed=true]{background:var(--lacquer); border-color:var(--lacquer); color:var(--on-gold)}
   .day[aria-pressed=true] span{color:rgba(0,0,0,.62)}
   .day:disabled{opacity:.28; cursor:default}
@@ -415,7 +413,7 @@
     color:var(--ink); font-size:13.5px; font-weight:500; letter-spacing:.03em; font-variant-numeric:tabular-nums;
     transition:border-color .15s, background-color .15s, color .15s;
   }
-  .hour:hover{border-color:var(--lacquer)}
+  @media (hover:hover){ .hour:hover{border-color:var(--lacquer)} }
   .hour[aria-pressed=true]{background:var(--lacquer); border-color:var(--lacquer); color:var(--on-gold); font-weight:600}
 
   /* ---------- barra fija ---------- */
@@ -494,6 +492,37 @@
     .spin{animation-duration:2.4s}
   }
 
+  /* ---------- página fácil para clientas nuevas (17-oct-2026) ----------
+     Servicios primero, la técnica dentro de las horas y los datos al confirmar. */
+  .linkish.ya{margin:0 0 16px; padding:6px 8px; font-size:19px}
+  .svc .tag{margin:0 0 7px}
+  .svc-pie{margin:18px 8px 0; text-align:center; color:var(--ink-faint); font-family:var(--serif); font-style:italic; font-size:17px; line-height:1.4}
+  #tecWrap{margin:0 0 4px}
+  #tecChips{padding-bottom:12px}
+  .cat .tag{margin-left:7px; padding:3px 8px; vertical-align:1px}
+  .cat[aria-pressed=true] .tag{background:var(--on-gold); color:var(--lacquer)}
+  .tec-nota{margin:-4px 0 14px; font-size:12.5px; line-height:1.5; color:var(--ink-faint)}
+  .quien{margin:-6px 0 16px; text-align:center}
+  .quien .linkish{display:inline-flex; align-items:center; width:auto; margin:0; padding:4px 6px; font-size:17px}
+  .linkish:disabled{opacity:.5; cursor:default}
+  .scr > h2:focus{outline:none}
+  /* El aviso de un campo va pegado al campo, no debajo de las casillas. */
+  .campo-err{margin:7px 2px 0; font-size:12.5px; line-height:1.45; color:var(--rose)}
+  #confDatos input[aria-invalid="true"]{border-color:var(--rose); box-shadow:0 0 0 3px rgba(232,180,180,.14)}
+  /* Lo ya añadido se queda en la lista, marcado: tocarlo otra vez lo quita. */
+  .svc[aria-pressed=true] .svc-x{width:auto; padding:0 12px; border-radius:999px; font-size:12px; font-weight:600; letter-spacing:.04em; white-space:nowrap}
+  #confDatos .eyebrow{margin-top:4px}
+  .datos-n{margin:-2px 0 14px; font-size:13px; line-height:1.5; color:var(--ink-soft)}
+  label.lbl .opc{text-transform:none; letter-spacing:0; color:var(--ink-faint)}
+  .ayuda{margin:7px 2px 0; font-size:12px; line-height:1.45; color:var(--ink-faint)}
+  .salida{display:flex; flex-wrap:wrap; gap:8px; margin:-4px 0 16px}
+  .salida p{flex:1 1 100%; margin:0 0 4px; font-size:13.5px; line-height:1.5; color:var(--ink-soft)}
+  .salida .btn{flex:1 1 auto}
+  #btnVerCitas{margin-top:10px}
+  #confNota{margin:14px 0 0}
+  .ok-donde{margin:-10px auto 20px; max-width:30em; text-align:center; font-size:13.5px; line-height:1.6; color:var(--ink-soft)}
+  .ok-donde a{color:var(--lacquer); text-underline-offset:3px; text-decoration-color:var(--lacquer-line); white-space:nowrap}
+
   /* ---------- permiso de mensajes de texto (A2P, 7-oct-2026) ----------
      Dos casillas separadas, SIN marcar y opcionales. Un solo bloque que se mueve entre
      "primera vez" y "confirmar" (en "entrar" no sale), así lo marcado no se pierde ni se duplica.
@@ -537,24 +566,28 @@
 
   <main>
 
-  <!-- ============ 1. entrar (teléfono + nombre, UNA sola consulta) ============ -->
+  <!-- ============ 1. "Ya he venido": teléfono + nombre, UNA sola consulta ============
+       17-oct-2026: ya no es la primera pantalla de quien llega nueva (esa ve los servicios).
+       Sale al arrancar solo en un celular donde ya entró alguien, o con un enlace prellenado. -->
   <section class="scr" id="scr-hola">
-    <h2>Reserva tu <em>cita</em></h2>
-    <p class="sub">Escribe tu teléfono y tu nombre, y te reconocemos al instante.</p>
+    <button class="back" id="holaBack">← Ver servicios</button>
+    <h2 tabindex="-1">¡Qué bueno <em>verte</em>!</h2>
+    <p class="sub">Escribe tu teléfono y tu nombre para ver tus citas y reservar lo de siempre.</p>
     <div class="fld">
       <label class="lbl" for="inPh">Tu teléfono</label>
-      <input type="tel" id="inPh" inputmode="tel" autocomplete="tel" placeholder="(787) 123-4567" maxlength="16">
+      <input type="tel" id="inPh" inputmode="tel" autocomplete="tel" placeholder="(787) 123-4567" maxlength="20" enterkeyhint="next">
     </div>
     <div class="fld">
       <label class="lbl" for="inNm">Tu nombre</label>
-      <input type="text" id="inNm" autocomplete="given-name" placeholder="María">
+      <input type="text" id="inNm" autocomplete="given-name" placeholder="María" enterkeyhint="go">
     </div>
-    <div class="aviso err" id="errPh" hidden></div>
+    <div class="aviso err" id="errPh" role="alert" hidden></div>
+    <div class="salida" id="holaSalida" hidden></div>
     <button class="btn" id="btnPh">Entrar</button>
     <button class="linkish" id="btnNueva">Es mi primera vez aquí</button>
   </section>
 
-  <!-- ============ 2. (fusionada con la anterior — se conserva oculta por compatibilidad) ============ -->
+  <!-- ============ 2. (fusionada con la anterior; se conserva oculta por compatibilidad) ============ -->
   <section class="scr" id="scr-nombre" hidden>
     <div class="aviso err" id="errNm" hidden></div>
     <button class="btn" id="btnNm" hidden>Entrar</button>
@@ -564,8 +597,8 @@
   <!-- ============ 3. clienta nueva ============ -->
   <section class="scr" id="scr-nueva" hidden>
     <button class="back" data-go="scr-hola">← Volver</button>
-    <h2>Bienvenida a <em>Trend Nails</em></h2>
-    <p class="sub">Con esto creamos tu perfil. La próxima vez entras solo con tu teléfono.</p>
+    <h2 tabindex="-1">Bienvenida a <em>Trend Nails</em></h2>
+    <p class="sub">Con esto creamos tu perfil. La próxima vez entras con tu teléfono y tu nombre.</p>
     <div class="row fld">
       <div>
         <label class="lbl" for="nvFn">Nombre</label>
@@ -578,7 +611,7 @@
     </div>
     <div class="fld">
       <label class="lbl" for="nvPh">Teléfono</label>
-      <input type="tel" id="nvPh" inputmode="tel" autocomplete="tel" placeholder="(787) 123-4567" maxlength="16">
+      <input type="tel" id="nvPh" inputmode="tel" autocomplete="tel" placeholder="(787) 123-4567" maxlength="20">
     </div>
     <div id="smsSlotNueva">
       <!-- Permiso SMS: un solo bloque que viaja entre "primera vez" y "Confirma tu cita".
@@ -598,20 +631,21 @@
       </div>
     </div>
     <div class="fld">
-      <label class="lbl" for="nvEm">Correo <span style="text-transform:none;letter-spacing:0">(para tu confirmación)</span></label>
+      <label class="lbl" for="nvEm">Correo <span style="text-transform:none;letter-spacing:0">(opcional, para tu confirmación)</span></label>
       <input type="email" id="nvEm" inputmode="email" autocomplete="email" placeholder="maria@correo.com">
     </div>
-    <div class="aviso err" id="errNv" hidden></div>
+    <div class="aviso err" id="errNv" role="alert" hidden></div>
     <button class="btn" id="btnNv">Crear mi perfil</button>
   </section>
 
   <!-- ============ 4. inicio ============ -->
   <section class="scr" id="scr-inicio" hidden>
-    <h2>Hola, <em id="miNombre">…</em></h2>
+    <h2 tabindex="-1">Hola, <em id="miNombre">…</em></h2>
     <p class="sub" id="miSub"></p>
 
     <div id="proxWrap">
       <p class="eyebrow">Tus próximas citas</p>
+      <div class="salida" id="inicioSalida" hidden></div>
       <div id="proxLista"></div>
     </div>
 
@@ -620,13 +654,16 @@
     <button class="btn" id="btnReservar">Ver todos los servicios</button>
   </section>
 
-  <!-- ============ 5. servicios ============ -->
+  <!-- ============ 5. servicios (17-oct-2026: la primera pantalla de quien llega nueva) ============ -->
   <section class="scr" id="scr-svc" hidden>
-    <button class="back" data-go="scr-inicio">← Volver</button>
-    <h2>¿Qué te vas a <em>hacer</em>?</h2>
-    <p class="sub">Puedes elegir más de uno y te lo dejamos todo en la misma cita.</p>
+    <button class="back" id="svcBack" data-go="scr-inicio" hidden>← Volver</button>
+    <h2 id="svcTitulo" tabindex="-1">Reserva tu <em>cita</em></h2>
+    <p class="sub" id="svcSub">Escoge tu servicio y mira las horas libres. Tus datos te los pedimos al final.</p>
+    <button class="linkish ya" id="btnYaVine">¿Ya has venido? Entra y ve tus citas</button>
+    <div class="aviso" id="svcNota" hidden></div>
+    <div class="aviso err" id="svcAviso" role="alert" hidden></div>
     <div class="fld">
-      <input type="search" id="svcQ" placeholder="Buscar un servicio…" autocomplete="off">
+      <input type="search" id="svcQ" placeholder="Buscar un servicio…" autocomplete="off" aria-label="Buscar un servicio">
     </div>
     <div class="chips" id="svcChips" hidden></div>
     <div class="sugiere" id="sugiere" hidden>
@@ -636,43 +673,56 @@
     <div class="cats" id="svcCats"></div>
     <div class="svc-list" id="svcList"></div>
     <div class="vacio" id="svcVacio" hidden>No encontramos ese servicio. Prueba con otra palabra.</div>
+    <p class="svc-pie" id="svcPie" hidden>¿Buscas otra cosa? Toca una categoría o búscalo por nombre.</p>
   </section>
 
-  <!-- ============ 6. técnica ============ -->
-  <section class="scr" id="scr-tec" hidden>
-    <button class="back" data-go="scr-svc">← Cambiar servicios</button>
-    <h2>¿Con <em>quién</em>?</h2>
-    <p class="sub" id="tecSub">Si no tienes preferencia, te damos la primera disponible.</p>
-    <div id="tecLista"></div>
-  </section>
-
-  <!-- ============ 7. día y hora ============ -->
+  <!-- ============ 6. técnica, día y hora (la técnica se escoge aquí mismo desde el 17-oct) ============ -->
   <section class="scr" id="scr-hora" hidden>
-    <button class="back" id="horaBack">← Volver</button>
-    <h2 id="horaTitulo">Elige tu <em>hora</em></h2>
+    <button class="back" id="horaBack">← Cambiar servicios</button>
+    <h2 id="horaTitulo" tabindex="-1">Elige tu <em>hora</em></h2>
     <p class="sub" id="horaSub"></p>
+    <div id="tecWrap">
+      <label class="lbl" id="tecLbl">Con quién</label>
+      <div class="cats" id="tecChips" role="group" aria-labelledby="tecLbl"></div>
+      <p class="tec-nota" id="tecNota" hidden>La misma técnica te hace todo, un servicio detrás del otro.</p>
+    </div>
     <div class="days" id="dias"></div>
     <div id="horasWrap"></div>
   </section>
 
-  <!-- ============ 8. confirmar ============ -->
+  <!-- ============ 8. confirmar (aquí van los datos de quien no ha entrado) ============ -->
   <section class="scr" id="scr-conf" hidden>
-    <button class="back" data-go="scr-hora">← Cambiar la hora</button>
-    <h2 id="confTitulo">Confirma tu <em>cita</em></h2>
-    <p class="sub">Revisa que todo esté bien y la reservamos al instante.</p>
+    <button class="back" id="confBack" data-go="scr-hora">← Cambiar la hora</button>
+    <h2 id="confTitulo" tabindex="-1">Confirma tu <em>cita</em></h2>
+    <p class="sub">Revisa que todo esté bien.</p>
     <div class="resumen" id="confResumen"></div>
+    <p class="quien" id="confQuien" hidden><button class="linkish" id="btnNoSoyYo">¿No eres tú? Cambia los datos</button></p>
+    <div id="confDatos" hidden>
+      <p class="eyebrow">Tus datos</p>
+      <p class="datos-n">Si ya has venido, usa el mismo teléfono y el mismo nombre.</p>
+      <div class="row fld">
+        <div><label class="lbl" for="cfFn">Nombre</label><input type="text" id="cfFn" autocomplete="given-name" placeholder="María" enterkeyhint="next" aria-describedby="cfFnErr"><p class="campo-err" id="cfFnErr" role="alert" hidden></p></div>
+        <div><label class="lbl" for="cfLn">Apellido</label><input type="text" id="cfLn" autocomplete="family-name" placeholder="Rivera" enterkeyhint="next"></div>
+      </div>
+      <div class="fld"><label class="lbl" for="cfPh">Teléfono</label><input type="tel" id="cfPh" inputmode="tel" autocomplete="tel" placeholder="(787) 123-4567" maxlength="20" enterkeyhint="next" aria-describedby="cfPhErr"><p class="campo-err" id="cfPhErr" role="alert" hidden></p></div>
+      <div class="fld"><label class="lbl" for="cfEm">Correo <span class="opc">(opcional)</span></label><input type="email" id="cfEm" inputmode="email" autocomplete="email" placeholder="maria@correo.com" enterkeyhint="done" aria-describedby="cfEmErr"><p class="campo-err" id="cfEmErr" role="alert" hidden></p><p class="ayuda">Para mandarte la confirmación también por correo.</p></div>
+    </div>
     <div id="smsSlotConf"></div>
-    <div class="aviso" id="confNota">Te llegará la confirmación por correo. Si necesitas cambiarla, puedes hacerlo desde aquí mismo.</div>
-    <div class="aviso err" id="errConf" hidden></div>
+    <div class="aviso err" id="errConf" role="alert" hidden></div>
+    <div class="salida" id="confSalida" hidden></div>
     <button class="btn" id="btnConf">Confirmar mi cita</button>
+    <button class="btn ghost" id="btnVerCitas" hidden>Ver mis citas</button>
+    <div class="aviso" id="confNota"></div>
   </section>
 
   <!-- ============ 9. listo ============ -->
   <section class="scr" id="scr-ok" hidden>
     <div class="tick">✓</div>
-    <h2 style="text-align:center" id="okTitulo">¡Cita <em>confirmada</em>!</h2>
+    <h2 style="text-align:center" id="okTitulo" tabindex="-1">¡Cita <em>confirmada</em>!</h2>
     <p class="sub" style="text-align:center" id="okSub"></p>
+    <p class="ok-donde" id="okDonde">Caguas Community Shopping Center, 47 Av. José Gautier Benítez, Caguas. <a href="https://www.google.com/maps/search/?api=1&amp;query=Trend+Nails+Salon+Caguas" target="_blank" rel="noopener">Cómo llegar</a></p>
     <div class="resumen" id="okResumen"></div>
+    <div class="aviso ok" id="okAviso" hidden></div>
     <div class="aviso ok" id="okSms" hidden></div>
     <a class="btn ghost" id="btnIcs" download="cita-trend-nails.ics" href="#" style="text-decoration:none; margin-bottom:10px">Añadir a mi calendario</a>
     <button class="btn" id="btnVolver">Listo</button>
@@ -711,9 +761,8 @@
 
 <script>
 /* ===================== configuración ===================== */
-const DATA = {"staff":{"BQsJfxc8p7gXwVbXN996":"Rosemarie","3L3JPYqRxqqhMKJMnlDP":"Karelys","J4QowXcetly14EtpDQ2X":"Kristi","YQdq6AMAxLwyq15DMnLn":"Jahaira","ruG3xOXEKMFefGysrUUW":"Delianis","TkM2wOYinB8E1F0cugjf":"Elvys","Y0ntiN7amJipExCQKvws":"Rosa","vBnLPd8Y0paHajwj4CYK":"Daneysha","EoEoF89oUzZMEiPUKfGt":"Brenda"},"services":[{"id":"Hx1Zoy1sawYoo5SZMysC","n":"Acrílico en dedito gordo del pie","d":15,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"8X2uRNOG4VCBsWgVwdBy","n":"Aplicación de parafina","d":15,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"EezPB3sITJuJSzrRYoW9","n":"Arreglo de una (1) uña en acrílico","d":30,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"mRJvYqrjm2ua43v5rUFq","n":"Arreglo de uña en gel","d":20,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"qEhkAcZFgWoJQ9FAemJW","n":"Cortes de uñas de pies","d":15,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"gPMjdoKgYxBfeiWwcLzG","n":"Diseños elaborado en todas las uñas","d":45,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"qMbHXWozStOI9d8HGdlA","n":"Diseños en relieve (2 uñas) sencillo","d":20,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"CZpZF1TjztJIf7p9ZkXN","n":"Diseños en relieve elaborado (todas)","d":30,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"ybhkR0zscmcTqtEB5AYV","n":"Diseños personalizados (animados, etc.)","d":60,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"icjh1tVET66Z01537Wuo","n":"Diseños sencillos en dos uñas","d":15,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"g36RaezJv7mpr25eCRpU","n":"Diseños sencillos en todas las uñas","d":30,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"aoEm0pl0DZVHJRu5yh8s","n":"Dos tonos en pies","d":80,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"9NrzbWzFWcLi5aoPIoJ5","n":"Esmaltado de gel clear","d":25,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"mHR0N7KD6F0AERAPq6p9","n":"Esmaltado de gel en pies","d":30,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"Ez5uHFB94nW8Y97m5mc1","n":"Esmaltado en gel en manos con Builder","d":80,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"lkL37TRj1Kl1JgFuEALH","n":"Esmaltado regular en manos","d":15,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"qCcAONbuDombNG0Zxp1O","n":"Esmaltado regular en pies","d":15,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"iFTIlSN50BZ3Fu840Eyh","n":"Full set baby boomer (ombré)","d":105,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"beBgKZovv7Ff64cNySiw","n":"Full set cortas almond/coffin","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"8Dpm5uidS3s3b9WKEp2g","n":"Full set cortas en acrílico de color","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"WTkToNpniEBxpfQvkFSl","n":"Full set cortas en acrílico de color — OFERTA","d":75,"g":"ofGTPF77E8xlplWW9JJ5","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","Y0ntiN7amJipExCQKvws"]},{"id":"nPPZX2YnjM5NvNb8vCjx","n":"Full set de acrílico de color en pies","d":80,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"pBFwHIArqgsyaaXuqy83","n":"Full set dos tonos cortas","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"D92UuxcnIIIiWQkboc8n","n":"Full set en pies sencillo (acrílico regular)","d":60,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"ARFI4hy7jZp1PVOeBwGT","n":"Full set esculturales medianas","d":105,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"Bp2loHDTJk54PLL3tuYA","n":"Full set gel tips cortas","d":80,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996","3L3JPYqRxqqhMKJMnlDP","YQdq6AMAxLwyq15DMnLn"]},{"id":"RV1uhwh4E0KHqkdG7AZl","n":"Full set gel tips largas","d":105,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn"]},{"id":"N0xlx7HF1swl6xG7Z6EI","n":"Full set gel tips medianas","d":90,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn"]},{"id":"LeBl4UWcZ0B5jm0xnklM","n":"Full set largas acrílico de color","d":140,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"dkaIGgCvndiYkh9YQhAn","n":"Full set largas almond/coffin","d":120,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"LADpMPGYHsRHlZlUca1v","n":"Full set medianas almond/coffin","d":90,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"WkSvlK7a52WGdejjwHy0","n":"Full set medianas en acrílico de color","d":110,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"bxQ82vpM4AnSV1LHLYVj","n":"Full set regular cortas con esmaltado en gel","d":30,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"pwPUQqHl0ZUgasIkwURV","n":"Full set sencillo cortas cuadradas","d":75,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"Sxv2mlMxsfWCwyigN1SB","n":"Full set sencillo largas cuadradas","d":105,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"GtuYTWr3EAWSJpm9FSe7","n":"Full set sencillo medianas cuadradas","d":100,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"FOe7WXIxIJz6WURq8X73","n":"Full set sencillo XL cuadradas","d":150,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"6vwMRZmxKYCBKviNyZep","n":"Full set XL acrílico de color","d":170,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"DtjP0K6mgYHjrtzEz0JZ","n":"Head Spa","d":120,"g":"PFd221GFOa663WjwOJXz","tm":["vBnLPd8Y0paHajwj4CYK","BQsJfxc8p7gXwVbXN996"]},{"id":"gUqhOrD1oRxDyBILQFCf","n":"Manicura con gel clear","d":45,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"eGe9PYICNx0cGoHcFmnH","n":"Manicura en seco con esmaltado en gel","d":60,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"yXEl9MSGuUE3CBJa4osZ","n":"Manicura sencilla con esmalte clear regular","d":45,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW"]},{"id":"aBNT8juNjHCiWNyeP77c","n":"Manicura sencilla con esmalte regular","d":45,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW"]},{"id":"CBZW9ulf4PCajsdLBPeR","n":"Manicura Spa — OFERTA","d":60,"g":"fT0sXptFVjHBh5NXRncJ","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"avtlL5MRbaddOnvKrhAQ","n":"Manicura spa con esmaltado en gel en color","d":60,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"1x6JRye2SFhLFoOAa87j","n":"Manicura spa con esmaltado regular","d":70,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"cD4dawqBzxW4QbrMdkNX","n":"Manicura y Pedicura — OFERTA","d":120,"g":"ofGTPF77E8xlplWW9JJ5","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"hnpIXeiI3sSkalYU2XuN","n":"Parafina","d":20,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"ToQbIYacEvAQgWgKGrKe","n":"Pedicura deluxe","d":105,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"22rzDXrEGL04Nkcof6Ia","n":"Pedicura deluxe con esmaltado en gel","d":105,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"adP4ePXrCRnUpJEF75yN","n":"Pedicura sencilla","d":60,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"wu9pvYRkckJDgmCy4lqy","n":"Pedicura sencilla con esmaltado de gel","d":90,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"sRwJjdMQ1YsvkERKMAp8","n":"Pedicura spa","d":60,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"Kw76D0PFGGx4vO0IBY5B","n":"Pedicura Spa — OFERTA","d":60,"g":"Ie8nCrazRqN34JtWb6S1","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"Gx3i4M1pv69zqBpi03N1","n":"Pedicura spa con esmaltado en gel","d":105,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"dNLv41IF9boLAksKczIP","n":"Remoción de acrílico","d":25,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"kAeKnqoJrT5gIQWsOM2s","n":"Remoción de gel","d":20,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"4VT3qJkcujmIjYhqMWpU","n":"Remoción de gel tips","d":20,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996","3L3JPYqRxqqhMKJMnlDP","YQdq6AMAxLwyq15DMnLn","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"3jV9KtHYF25GsYqjZ5il","n":"Remoción de uñeros","d":15,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"jOVGwRWT4yWWNKY38nPX","n":"Retoque de acrílico de color nuevo","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"CxIvpmCa1vHvCiBhRNxQ","n":"Retoque de acrílico en pies","d":60,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"xicaGPKmYL6fcxfuF5bw","n":"Retoque de acrílico sencillo con esmaltado en gel","d":75,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"n9mew9JrgjOiGgTLTIQj","n":"Retoque de acrílico, gel y parafina — OFERTA","d":70,"g":"fT0sXptFVjHBh5NXRncJ","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","EoEoF89oUzZMEiPUKfGt"]},{"id":"YPqpcCo9nEPnwCHf4PG5","n":"Retoque de dedito gordo en acrílico (ambos)","d":20,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"AuODJ11avkPJ7ls9tVic","n":"Retoque de dos tonos nuevo","d":100,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"RFReaX7pmFEbZyC94zqY","n":"Retoque de gel tip con esmaltado en gel","d":90,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996","3L3JPYqRxqqhMKJMnlDP","YQdq6AMAxLwyq15DMnLn","EoEoF89oUzZMEiPUKfGt"]},{"id":"7zeNjsutWO7bwiN10qwn","n":"Retoque en dedito gordo (ambos) con gel","d":45,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"egdNu5KMi6vBCQ6kgcb4","n":"Retoque sencillo con esmalte regular","d":60,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"fbVJ7kIyGm8xxrCIGAie","n":"Retoque sencillo de acrílico de color","d":60,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"7tuGa7ycIYAp4tkRScjq","n":"Servicio extra SPA","d":30,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]}]};
-const PRICE={"1x6JRye2SFhLFoOAa87j":38,"22rzDXrEGL04Nkcof6Ia":75,"3jV9KtHYF25GsYqjZ5il":5,"4VT3qJkcujmIjYhqMWpU":15,"6vwMRZmxKYCBKviNyZep":75,"7tuGa7ycIYAp4tkRScjq":15,"7zeNjsutWO7bwiN10qwn":29,"8Dpm5uidS3s3b9WKEp2g":55,"8X2uRNOG4VCBsWgVwdBy":10,"9NrzbWzFWcLi5aoPIoJ5":25,"ARFI4hy7jZp1PVOeBwGT":75,"AuODJ11avkPJ7ls9tVic":60,"Bp2loHDTJk54PLL3tuYA":60,"CBZW9ulf4PCajsdLBPeR":50,"CZpZF1TjztJIf7p9ZkXN":20,"CxIvpmCa1vHvCiBhRNxQ":30,"D92UuxcnIIIiWQkboc8n":35,"EezPB3sITJuJSzrRYoW9":3,"Ez5uHFB94nW8Y97m5mc1":40,"FOe7WXIxIJz6WURq8X73":75,"GtuYTWr3EAWSJpm9FSe7":55,"Gx3i4M1pv69zqBpi03N1":65,"Hx1Zoy1sawYoo5SZMysC":10,"Kw76D0PFGGx4vO0IBY5B":50,"LADpMPGYHsRHlZlUca1v":60,"LeBl4UWcZ0B5jm0xnklM":70,"N0xlx7HF1swl6xG7Z6EI":65,"RFReaX7pmFEbZyC94zqY":50,"RV1uhwh4E0KHqkdG7AZl":70,"Sxv2mlMxsfWCwyigN1SB":65,"ToQbIYacEvAQgWgKGrKe":65,"WTkToNpniEBxpfQvkFSl":50,"WkSvlK7a52WGdejjwHy0":65,"YPqpcCo9nEPnwCHf4PG5":4,"aBNT8juNjHCiWNyeP77c":25,"adP4ePXrCRnUpJEF75yN":45,"aoEm0pl0DZVHJRu5yh8s":50,"avtlL5MRbaddOnvKrhAQ":50,"beBgKZovv7Ff64cNySiw":55,"bxQ82vpM4AnSV1LHLYVj":55,"cD4dawqBzxW4QbrMdkNX":85,"dNLv41IF9boLAksKczIP":15,"dkaIGgCvndiYkh9YQhAn":75,"eGe9PYICNx0cGoHcFmnH":45,"egdNu5KMi6vBCQ6kgcb4":35,"fbVJ7kIyGm8xxrCIGAie":40,"g36RaezJv7mpr25eCRpU":10,"gPMjdoKgYxBfeiWwcLzG":15,"gUqhOrD1oRxDyBILQFCf":30,"hnpIXeiI3sSkalYU2XuN":10,"iFTIlSN50BZ3Fu840Eyh":60,"icjh1tVET66Z01537Wuo":5,"jOVGwRWT4yWWNKY38nPX":60,"kAeKnqoJrT5gIQWsOM2s":10,"lkL37TRj1Kl1JgFuEALH":15,"mHR0N7KD6F0AERAPq6p9":25,"mRJvYqrjm2ua43v5rUFq":3,"n9mew9JrgjOiGgTLTIQj":50,"nPPZX2YnjM5NvNb8vCjx":45,"pBFwHIArqgsyaaXuqy83":60,"pwPUQqHl0ZUgasIkwURV":45,"qCcAONbuDombNG0Zxp1O":15,"qEhkAcZFgWoJQ9FAemJW":10,"qMbHXWozStOI9d8HGdlA":8,"sRwJjdMQ1YsvkERKMAp8":55,"wu9pvYRkckJDgmCy4lqy":55,"xicaGPKmYL6fcxfuF5bw":45,"yXEl9MSGuUE3CBJa4osZ":20};
-/* Categorías con nombre de verdad (GHL solo nos da el id del grupo). */
+const DATA = {"staff":{"BQsJfxc8p7gXwVbXN996":"Rosemarie","3L3JPYqRxqqhMKJMnlDP":"Karelys","J4QowXcetly14EtpDQ2X":"Kristi","YQdq6AMAxLwyq15DMnLn":"Jahira","ruG3xOXEKMFefGysrUUW":"Delianis","TkM2wOYinB8E1F0cugjf":"Elvys","Y0ntiN7amJipExCQKvws":"Rosa","vBnLPd8Y0paHajwj4CYK":"Daneysha","EoEoF89oUzZMEiPUKfGt":"Brenda"},"services":[{"id":"Hx1Zoy1sawYoo5SZMysC","n":"Acrílico en dedito gordo del pie","d":15,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"8X2uRNOG4VCBsWgVwdBy","n":"Aplicación de parafina","d":15,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"EezPB3sITJuJSzrRYoW9","n":"Arreglo de una (1) uña en acrílico","d":30,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"mRJvYqrjm2ua43v5rUFq","n":"Arreglo de uña en gel","d":20,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"qEhkAcZFgWoJQ9FAemJW","n":"Cortes de uñas de pies","d":15,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"gPMjdoKgYxBfeiWwcLzG","n":"Diseños elaborados en todas las uñas","d":45,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"qMbHXWozStOI9d8HGdlA","n":"Diseños en relieve (2 uñas) sencillo","d":20,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"CZpZF1TjztJIf7p9ZkXN","n":"Diseños en relieve elaborado (todas)","d":30,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"ybhkR0zscmcTqtEB5AYV","n":"Diseños personalizados (animados, etc.)","d":60,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"icjh1tVET66Z01537Wuo","n":"Diseños sencillos en dos uñas","d":15,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"g36RaezJv7mpr25eCRpU","n":"Diseños sencillos en todas las uñas","d":30,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"aoEm0pl0DZVHJRu5yh8s","n":"Dos tonos en pies","d":80,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"9NrzbWzFWcLi5aoPIoJ5","n":"Esmaltado de gel clear","d":25,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"mHR0N7KD6F0AERAPq6p9","n":"Esmaltado de gel en pies","d":30,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"Ez5uHFB94nW8Y97m5mc1","n":"Esmaltado en gel en manos con Builder","d":80,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"lkL37TRj1Kl1JgFuEALH","n":"Esmaltado regular en manos","d":15,"g":"cRY5s0ltQKkVzMp2olCv","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt"]},{"id":"qCcAONbuDombNG0Zxp1O","n":"Esmaltado regular en pies","d":15,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"iFTIlSN50BZ3Fu840Eyh","n":"Full set baby boomer (ombré)","d":105,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"beBgKZovv7Ff64cNySiw","n":"Full set cortas almond/coffin","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"8Dpm5uidS3s3b9WKEp2g","n":"Full set cortas en acrílico de color","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"nPPZX2YnjM5NvNb8vCjx","n":"Full set de acrílico de color en pies","d":80,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"pBFwHIArqgsyaaXuqy83","n":"Full set dos tonos cortas","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"D92UuxcnIIIiWQkboc8n","n":"Full set en pies sencillo (acrílico regular)","d":60,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"ARFI4hy7jZp1PVOeBwGT","n":"Full set esculturales medianas","d":105,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"Bp2loHDTJk54PLL3tuYA","n":"Full set gel tips cortas","d":80,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996","3L3JPYqRxqqhMKJMnlDP","YQdq6AMAxLwyq15DMnLn"]},{"id":"RV1uhwh4E0KHqkdG7AZl","n":"Full set gel tips largas","d":105,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn"]},{"id":"N0xlx7HF1swl6xG7Z6EI","n":"Full set gel tips medianas","d":90,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn"]},{"id":"LeBl4UWcZ0B5jm0xnklM","n":"Full set largas acrílico de color","d":140,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"dkaIGgCvndiYkh9YQhAn","n":"Full set largas almond/coffin","d":120,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"LADpMPGYHsRHlZlUca1v","n":"Full set medianas almond/coffin","d":90,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"WkSvlK7a52WGdejjwHy0","n":"Full set medianas en acrílico de color","d":110,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"bxQ82vpM4AnSV1LHLYVj","n":"Full set regular cortas con esmaltado en gel","d":30,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"pwPUQqHl0ZUgasIkwURV","n":"Full set sencillo cortas cuadradas","d":75,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"Sxv2mlMxsfWCwyigN1SB","n":"Full set sencillo largas cuadradas","d":105,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"GtuYTWr3EAWSJpm9FSe7","n":"Full set sencillo medianas cuadradas","d":100,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"FOe7WXIxIJz6WURq8X73","n":"Full set sencillo XL cuadradas","d":150,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"6vwMRZmxKYCBKviNyZep","n":"Full set XL acrílico de color","d":170,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"DtjP0K6mgYHjrtzEz0JZ","n":"Head Spa","d":120,"g":"PFd221GFOa663WjwOJXz","tm":["vBnLPd8Y0paHajwj4CYK","BQsJfxc8p7gXwVbXN996"]},{"id":"gUqhOrD1oRxDyBILQFCf","n":"Manicura con gel clear","d":45,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"eGe9PYICNx0cGoHcFmnH","n":"Manicura en seco con esmaltado en gel","d":60,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"yXEl9MSGuUE3CBJa4osZ","n":"Manicura sencilla con esmalte clear regular","d":45,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW"]},{"id":"aBNT8juNjHCiWNyeP77c","n":"Manicura sencilla con esmalte regular","d":45,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW"]},{"id":"avtlL5MRbaddOnvKrhAQ","n":"Manicura spa con esmaltado en gel en color","d":60,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"1x6JRye2SFhLFoOAa87j","n":"Manicura spa con esmaltado regular","d":70,"g":"wFzMzHU9ecEmSDdBxwnc","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996"]},{"id":"cD4dawqBzxW4QbrMdkNX","n":"Manicura y pedicura (oferta)","d":120,"g":"ofGTPF77E8xlplWW9JJ5","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"hnpIXeiI3sSkalYU2XuN","n":"Parafina","d":20,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"ToQbIYacEvAQgWgKGrKe","n":"Pedicura deluxe","d":105,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"22rzDXrEGL04Nkcof6Ia","n":"Pedicura deluxe con esmaltado en gel","d":105,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"adP4ePXrCRnUpJEF75yN","n":"Pedicura sencilla","d":60,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"wu9pvYRkckJDgmCy4lqy","n":"Pedicura sencilla con esmaltado de gel","d":90,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"sRwJjdMQ1YsvkERKMAp8","n":"Pedicura spa","d":60,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"Kw76D0PFGGx4vO0IBY5B","n":"Pedicura spa (oferta)","d":60,"g":"Ie8nCrazRqN34JtWb6S1","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"Gx3i4M1pv69zqBpi03N1","n":"Pedicura spa con esmaltado en gel","d":105,"g":"fzOC2zNF91UNsCtsiQ7i","tm":["YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","vBnLPd8Y0paHajwj4CYK","EoEoF89oUzZMEiPUKfGt","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996"]},{"id":"dNLv41IF9boLAksKczIP","n":"Remoción de acrílico","d":25,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"kAeKnqoJrT5gIQWsOM2s","n":"Remoción de gel","d":20,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"4VT3qJkcujmIjYhqMWpU","n":"Remoción de gel tips","d":20,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996","3L3JPYqRxqqhMKJMnlDP","YQdq6AMAxLwyq15DMnLn","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"3jV9KtHYF25GsYqjZ5il","n":"Remoción de uñeros","d":15,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]},{"id":"jOVGwRWT4yWWNKY38nPX","n":"Retoque de acrílico de color nuevo","d":80,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"CxIvpmCa1vHvCiBhRNxQ","n":"Retoque de acrílico en pies","d":60,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"xicaGPKmYL6fcxfuF5bw","n":"Retoque de acrílico sencillo con esmaltado en gel","d":75,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"YPqpcCo9nEPnwCHf4PG5","n":"Retoque de dedito gordo en acrílico (ambos)","d":20,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"AuODJ11avkPJ7ls9tVic","n":"Retoque de dos tonos nuevo","d":100,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"RFReaX7pmFEbZyC94zqY","n":"Retoque de gel tip con esmaltado en gel","d":90,"g":"bfbJjjtFPSgfgZ8IWyb2","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","ruG3xOXEKMFefGysrUUW","BQsJfxc8p7gXwVbXN996","3L3JPYqRxqqhMKJMnlDP","YQdq6AMAxLwyq15DMnLn","EoEoF89oUzZMEiPUKfGt"]},{"id":"7zeNjsutWO7bwiN10qwn","n":"Retoque en dedito gordo (ambos) con gel","d":45,"g":"GceGdaCTfwrkVLp7neyI","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP"]},{"id":"egdNu5KMi6vBCQ6kgcb4","n":"Retoque sencillo con esmalte regular","d":60,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws","EoEoF89oUzZMEiPUKfGt"]},{"id":"fbVJ7kIyGm8xxrCIGAie","n":"Retoque sencillo de acrílico de color","d":60,"g":"BcIF9jkT2zu23pNuUO6U","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","Y0ntiN7amJipExCQKvws"]},{"id":"7tuGa7ycIYAp4tkRScjq","n":"Servicio extra SPA","d":30,"g":"9ZtC5GQBfAAw0VxyROLX","tm":["vBnLPd8Y0paHajwj4CYK","J4QowXcetly14EtpDQ2X","BQsJfxc8p7gXwVbXN996","ruG3xOXEKMFefGysrUUW","YQdq6AMAxLwyq15DMnLn","3L3JPYqRxqqhMKJMnlDP","EoEoF89oUzZMEiPUKfGt","Y0ntiN7amJipExCQKvws"]}]};
+const PRICE={"1x6JRye2SFhLFoOAa87j":38,"22rzDXrEGL04Nkcof6Ia":75,"3jV9KtHYF25GsYqjZ5il":5,"4VT3qJkcujmIjYhqMWpU":15,"6vwMRZmxKYCBKviNyZep":75,"7tuGa7ycIYAp4tkRScjq":15,"7zeNjsutWO7bwiN10qwn":29,"8Dpm5uidS3s3b9WKEp2g":55,"8X2uRNOG4VCBsWgVwdBy":10,"9NrzbWzFWcLi5aoPIoJ5":25,"ARFI4hy7jZp1PVOeBwGT":75,"AuODJ11avkPJ7ls9tVic":60,"Bp2loHDTJk54PLL3tuYA":60,"CZpZF1TjztJIf7p9ZkXN":20,"CxIvpmCa1vHvCiBhRNxQ":30,"D92UuxcnIIIiWQkboc8n":35,"EezPB3sITJuJSzrRYoW9":3,"Ez5uHFB94nW8Y97m5mc1":40,"FOe7WXIxIJz6WURq8X73":75,"GtuYTWr3EAWSJpm9FSe7":55,"Gx3i4M1pv69zqBpi03N1":65,"Hx1Zoy1sawYoo5SZMysC":10,"Kw76D0PFGGx4vO0IBY5B":50,"LADpMPGYHsRHlZlUca1v":60,"LeBl4UWcZ0B5jm0xnklM":70,"N0xlx7HF1swl6xG7Z6EI":65,"RFReaX7pmFEbZyC94zqY":50,"RV1uhwh4E0KHqkdG7AZl":70,"Sxv2mlMxsfWCwyigN1SB":65,"ToQbIYacEvAQgWgKGrKe":65,"WkSvlK7a52WGdejjwHy0":65,"YPqpcCo9nEPnwCHf4PG5":4,"aBNT8juNjHCiWNyeP77c":25,"adP4ePXrCRnUpJEF75yN":45,"aoEm0pl0DZVHJRu5yh8s":50,"avtlL5MRbaddOnvKrhAQ":50,"beBgKZovv7Ff64cNySiw":55,"bxQ82vpM4AnSV1LHLYVj":55,"cD4dawqBzxW4QbrMdkNX":85,"dNLv41IF9boLAksKczIP":15,"dkaIGgCvndiYkh9YQhAn":75,"eGe9PYICNx0cGoHcFmnH":45,"egdNu5KMi6vBCQ6kgcb4":35,"fbVJ7kIyGm8xxrCIGAie":40,"g36RaezJv7mpr25eCRpU":10,"gPMjdoKgYxBfeiWwcLzG":15,"gUqhOrD1oRxDyBILQFCf":30,"hnpIXeiI3sSkalYU2XuN":10,"iFTIlSN50BZ3Fu840Eyh":60,"icjh1tVET66Z01537Wuo":5,"jOVGwRWT4yWWNKY38nPX":60,"kAeKnqoJrT5gIQWsOM2s":10,"lkL37TRj1Kl1JgFuEALH":15,"mHR0N7KD6F0AERAPq6p9":25,"mRJvYqrjm2ua43v5rUFq":3,"nPPZX2YnjM5NvNb8vCjx":45,"pBFwHIArqgsyaaXuqy83":60,"pwPUQqHl0ZUgasIkwURV":45,"qCcAONbuDombNG0Zxp1O":15,"qEhkAcZFgWoJQ9FAemJW":10,"qMbHXWozStOI9d8HGdlA":8,"sRwJjdMQ1YsvkERKMAp8":55,"wu9pvYRkckJDgmCy4lqy":55,"xicaGPKmYL6fcxfuF5bw":45,"yXEl9MSGuUE3CBJa4osZ":20};
 /* Lo que las clientas de Trend Nails ya combinan de verdad: sacado de 301 citas reales
    (jun-ago 2026), mirando qué servicios se hizo la MISMA clienta el MISMO día.
    La pareja más fuerte con diferencia: manos con Builder + gel en pies (27 veces).
@@ -728,22 +777,67 @@ const PARAFINA = "8X2uRNOG4VCBsWgVwdBy";      // Aplicación de parafina
 const G_MANOS = ["BcIF9jkT2zu23pNuUO6U","bfbJjjtFPSgfgZ8IWyb2","wFzMzHU9ecEmSDdBxwnc","cRY5s0ltQKkVzMp2olCv"];
 const G_PIES  = ["fzOC2zNF91UNsCtsiQ7i","GceGdaCTfwrkVLp7neyI"];
 
+/* Visitas atendidas por servicio del 20-jul al 19-sep de 2026 (571 visitas, en
+   docs/agentes/datos/analisis-nuevas-2026-09-19.json). Ordena cada categoría de lo más
+   pedido a lo menos; lo que no sale aquí tiene 0. Se acabó la lista alfabética. */
+const POP = {"xicaGPKmYL6fcxfuF5bw":176,"mHR0N7KD6F0AERAPq6p9":174,"Ez5uHFB94nW8Y97m5mc1":159,"wu9pvYRkckJDgmCy4lqy":33,"RFReaX7pmFEbZyC94zqY":28,"g36RaezJv7mpr25eCRpU":25,"adP4ePXrCRnUpJEF75yN":15,"gPMjdoKgYxBfeiWwcLzG":13,"bxQ82vpM4AnSV1LHLYVj":13,"Bp2loHDTJk54PLL3tuYA":13,"qCcAONbuDombNG0Zxp1O":12,"9NrzbWzFWcLi5aoPIoJ5":10,"eGe9PYICNx0cGoHcFmnH":10,"LADpMPGYHsRHlZlUca1v":10,"7zeNjsutWO7bwiN10qwn":7,"CxIvpmCa1vHvCiBhRNxQ":7,"N0xlx7HF1swl6xG7Z6EI":6,"dNLv41IF9boLAksKczIP":5,"icjh1tVET66Z01537Wuo":5,"AuODJ11avkPJ7ls9tVic":5,"cD4dawqBzxW4QbrMdkNX":5,"qEhkAcZFgWoJQ9FAemJW":4,"EezPB3sITJuJSzrRYoW9":4,"8Dpm5uidS3s3b9WKEp2g":4,"avtlL5MRbaddOnvKrhAQ":3,"pwPUQqHl0ZUgasIkwURV":3,"Gx3i4M1pv69zqBpi03N1":3,"dkaIGgCvndiYkh9YQhAn":3,"nPPZX2YnjM5NvNb8vCjx":3,"WkSvlK7a52WGdejjwHy0":3,"D92UuxcnIIIiWQkboc8n":3,"Hx1Zoy1sawYoo5SZMysC":3,"kAeKnqoJrT5gIQWsOM2s":3,"fbVJ7kIyGm8xxrCIGAie":3,"4VT3qJkcujmIjYhqMWpU":2,"sRwJjdMQ1YsvkERKMAp8":2,"ybhkR0zscmcTqtEB5AYV":2,"beBgKZovv7Ff64cNySiw":2,"GtuYTWr3EAWSJpm9FSe7":2,"lkL37TRj1Kl1JgFuEALH":2,"1x6JRye2SFhLFoOAa87j":2,"aBNT8juNjHCiWNyeP77c":2,"gUqhOrD1oRxDyBILQFCf":2,"CZpZF1TjztJIf7p9ZkXN":1,"yXEl9MSGuUE3CBJa4osZ":1,"22rzDXrEGL04Nkcof6Ia":1,"RV1uhwh4E0KHqkdG7AZl":1,"YPqpcCo9nEPnwCHf4PG5":1,"ToQbIYacEvAQgWgKGrKe":1,"Sxv2mlMxsfWCwyigN1SB":1,"FOe7WXIxIJz6WURq8X73":1};
+
+/* Categorías con nombre de verdad (GHL solo nos da el id del grupo). 17-oct-2026:
+   "Manicura" y "Esmaltado y parafina" se funden en "Manos": el servicio de manos que más
+   estrenan las nuevas es Builder (17 de 89 primeras visitas) y vive en el grupo de esmaltado.
+   "Lo más pedido" y "Manos y pies" son listas fijas; "Retoques" va por el nombre. */
 const CATS = [
-  ["ofertas",              "Ofertas",              ["fT0sXptFVjHBh5NXRncJ","Ie8nCrazRqN34JtWb6S1","ofGTPF77E8xlplWW9JJ5"]],
-  ["acrilico",             "Uñas acrílicas",       ["BcIF9jkT2zu23pNuUO6U"]],
-  ["geltips",              "Gel tips",             ["bfbJjjtFPSgfgZ8IWyb2"]],
-  ["manicura",             "Manicura",             ["wFzMzHU9ecEmSDdBxwnc"]],
-  ["pedicura",             "Pedicura",             ["fzOC2zNF91UNsCtsiQ7i"]],
-  ["pies",                 "Área de los pies",     ["GceGdaCTfwrkVLp7neyI"]],
-  ["esmaltado",            "Esmaltado y parafina", ["cRY5s0ltQKkVzMp2olCv"]],
-  ["disenos",              "Diseños y extras",     ["9ZtC5GQBfAAw0VxyROLX"]],
-  ["headspa",              "Head Spa",             ["PFd221GFOa663WjwOJXz"]]
+  ["top",        "Lo más pedido"],
+  ["manosypies", "Manos y pies"],
+  ["manos",      "Manos",            ["wFzMzHU9ecEmSDdBxwnc","cRY5s0ltQKkVzMp2olCv"]],
+  ["retoques",   "Retoques"],
+  ["acrilico",   "Uñas acrílicas",   ["BcIF9jkT2zu23pNuUO6U"]],
+  ["geltips",    "Gel tips",         ["bfbJjjtFPSgfgZ8IWyb2"]],
+  ["pedicura",   "Pedicura",         ["fzOC2zNF91UNsCtsiQ7i"]],
+  ["pies",       "Área de los pies", ["GceGdaCTfwrkVLp7neyI"]],
+  ["disenos",    "Diseños y extras", ["9ZtC5GQBfAAw0VxyROLX"]],
+  ["ofertas",    "Ofertas",          ["fT0sXptFVjHBh5NXRncJ","Ie8nCrazRqN34JtWb6S1","ofGTPF77E8xlplWW9JJ5"]],
+  ["headspa",    "Head Spa",         ["PFd221GFOa663WjwOJXz"]]
+];
+/* "Lo más pedido": 571 visitas atendidas del 20-jul al 19-sep y las 89 primeras visitas de
+   clientas nuevas. Una pareja son dos servicios en ese orden (el de manos primero: la cita se
+   crea en su calendario y el título queda "A + B"). */
+const TOP = [
+  {ids:["Ez5uHFB94nW8Y97m5mc1","mHR0N7KD6F0AERAPq6p9"], n:"Manos con Builder + gel en pies", tag:"La pareja favorita"},  // 47 de 571; 10 de 89 primeras
+  {ids:["Ez5uHFB94nW8Y97m5mc1"]},      // 159; 17 de 89 primeras
+  {ids:["xicaGPKmYL6fcxfuF5bw"]},      // 176
+  {ids:["mHR0N7KD6F0AERAPq6p9"]},      // 174
+  {ids:["wu9pvYRkckJDgmCy4lqy"]},      // 33
+  {ids:["RFReaX7pmFEbZyC94zqY"]}       // 28
+];
+const MANOS_Y_PIES = [
+  {ids:["Ez5uHFB94nW8Y97m5mc1","mHR0N7KD6F0AERAPq6p9"], n:"Manos con Builder + gel en pies"},             // 47
+  {ids:["xicaGPKmYL6fcxfuF5bw","mHR0N7KD6F0AERAPq6p9"], n:"Retoque de acrílico con gel + gel en pies"},   // 41
+  {ids:["cD4dawqBzxW4QbrMdkNX"], n:"Manicura y pedicura (oferta)"},                                        // 5
+  {ids:["RFReaX7pmFEbZyC94zqY","mHR0N7KD6F0AERAPq6p9"], n:"Retoque de gel tip + gel en pies"}             // 6
+];
+/* utm_content de los anuncios por día (brand kit trend/proyectos/2026-10-pauta-por-dia/_src/dias.json).
+   Se compara por igualdad o por prefijo (aguanta "_v2"); si no casa, por palabra clave. */
+const UTM_CATS = [
+  ["dom_manos_hechas",  "manos",      "Escoge tu servicio y mira las horas libres de esta semana."],
+  ["lun_retoque",       "retoques",   "¿Ya te toca? Escoge tu retoque y mira las horas libres."],
+  ["mar_tu_foto",       "acrilico",   "¿Traes una foto? Escoge el largo que más se parezca y enséñasela a tu técnica en la cita."],
+  ["mie_manos_y_pies",  "manosypies", "Manos y pies en una sola cita, con la misma técnica."],
+  ["jue_colores_otono", "manos",      "Escoge tu servicio y en la cita tu técnica te ayuda a escoger el color."]
+];
+const UTM_PALABRAS = [
+  [/retoque/, "retoques"], [/manos_y_pies|combo/, "manosypies"], [/pedi|pies/, "pedicura"],
+  [/acril|foto|set/, "acrilico"], [/builder|gel|mani|manos|color/, "manos"]
 ];
 const API = "https://trend-nails-reservas.elvysrivera.workers.dev";                     // Apps Script de esta página (el token vive allá)
 const TZ = "America/Puerto_Rico", OFFSET = "-04:00", DIAS = 21;
 const DOW = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+const DOW_LARGO = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
 const MES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 const SVC = {}; DATA.services.forEach(s => SVC[s.id] = s);
+/* El salón, para las salidas de "no pudimos": el WhatsApp cae en María, por eso va también el teléfono.
+   Número de CONTEXTO-AGENTE-AGENDAMIENTO.md y del registro A2P. */
+const WA_SALON = "19392824460", TEL_SALON = "+19392824460", TEL_SALON_VISIBLE = "(939) 282-4460";
 
 /* ===================== estado ===================== */
 const S = {
@@ -753,28 +847,46 @@ const S = {
   dias:null, dia:null, hora:null, tecHora:null,
   modo:"reservar",            // "reservar" | "mover"
   mover:null,                 // la cita que se está moviendo
+  moverDur:0,
   pantalla:"scr-hola", pila:[],
   telefono:"",
   telOrigen:"",               // de dónde salió el teléfono: escrito | enlace | sesion (va en la nota del permiso SMS)
-  smsListo:{citas:false, ofertas:false}   // permisos SMS ya guardados en esta sesión
+  smsListo:{citas:false, ofertas:false},   // permisos SMS ya guardados en esta sesión
+  sesionCerrada:false,        // la sesión venció en medio de una reserva (no pisar su aviso)
+  incierta:"",                // se perdió la respuesta de una reserva: su aviso, hasta que vea sus citas al día
+  correoNoGuardado:false      // su correo chocaba con otra ficha y se guardó el perfil sin él
 };
 const $ = id => document.getElementById(id);
 
 /* ===================== utilidades ===================== */
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function digitos(s){ return String(s||"").replace(/\D/g,""); }
+/* El autocompletado del celular pone "+1 (787) 555-0123": el 1 se quita, porque ningún código
+   de área de EE. UU. ni de PR empieza con 1. */
 function fmtTel(v){
-  const d = digitos(v).slice(0,10);
+  let d = digitos(v);
+  if(d.charAt(0) === "1") d = d.slice(1);   // +1: ningún código de área de EE. UU. ni de PR empieza con 1
+  d = d.slice(0,10);
   if(d.length <= 3) return d;
   if(d.length <= 6) return `(${d.slice(0,3)}) ${d.slice(3)}`;
   return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
 }
+function tel10(v){
+  let d = digitos(v);
+  if(d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+  return d;
+}
+function sinAcentos(s){ return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
 function fmtDur(m){ const h = Math.floor(m/60), mi = m%60; return h ? (mi ? `${h} h ${mi} min` : `${h} h`) : `${mi} min`; }
 function fmtHora(min){
   let h = Math.floor(min/60), m = min%60, ap = h >= 12 ? "PM" : "AM";
   h = h % 12 || 12;
   return `${h}:${String(m).padStart(2,"0")} ${ap}`;
 }
+/* Para lo que se lee en el resumen y en la barra: "10:00 AM" nunca se parte en dos líneas. */
+function horaNB(min){ return fmtHora(min).replace(" ", "\u00a0"); }
+/* La fecha corta de la barra: "Lun 19". La larga ("Lun 19 de octubre") no cabía a 360 px. */
+function fechaCorta(iso){ const d = new Date(iso+"T12:00:00Z"); return `${DOW[d.getUTCDay()]} ${d.getUTCDate()}`; }
 function hoyPR(){
   const p = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   return p;
@@ -792,6 +904,11 @@ function fechaLarga(iso){
   // "Mañana" a secas se confunde con la franja de la mañana: siempre con el día al lado.
   if(iso === masDias(hoy,1)) return "Mañana, " + corta;
   return `${corta} de ${MES[d.getUTCMonth()]}`;
+}
+/* Para el texto de WhatsApp: "sábado 18 de octubre", sin "Mañana," delante. */
+function fechaTexto(iso){
+  const d = new Date(iso+"T12:00:00Z");
+  return `${DOW_LARGO[d.getUTCDay()]} ${d.getUTCDate()} de ${MES[d.getUTCMonth()]}`;
 }
 /* ⚠️ GHL devuelve las horas en DOS formatos distintos según el endpoint:
    · /calendars/events            -> "2026-08-05T17:15:00-04:00"  (ISO con zona)
@@ -811,45 +928,124 @@ function iso(fecha, min){
   const h = String(Math.floor(min/60)).padStart(2,"0"), m = String(min%60).padStart(2,"0");
   return `${fecha}T${h}:${m}:00${OFFSET}`;
 }
-function totDur(){ return S.svcs.reduce((n,s) => n + s.d, 0); }
-function totPrecio(){
+/* Cada calendario da comienzos cada 30 min (medido 17-oct-2026 en todos). El servicio siguiente
+   empieza en el primer comienzo de su calendario a partir del fin del anterior. */
+const PASO_CAL = 30;
+function colocar(svcs){                         // minutos desde el comienzo de la cita
+  const offs = []; let fin = 0;
+  svcs.forEach((s, k) => { const ini = k ? Math.ceil(fin / PASO_CAL) * PASO_CAL : 0; offs.push(ini); fin = ini + s.d; });
+  return {offs, total: fin};                    // total = lo que se reserva
+}
+function durReservada(){ return S.modo === "mover" ? S.moverDur : colocar(S.svcs).total; }
+function precioDe(svcs){
   let suma = 0, todos = true;
-  for(const s of S.svcs){ const p = PRICE[s.id]; if(p) suma += p; else todos = false; }
+  for(const s of svcs){ const p = PRICE[s.id]; if(p) suma += p; else todos = false; }
   return {suma, todos};
 }
+function totPrecio(){ return precioDe(S.svcs); }
 function titulo(){ return S.svcs.map(s => s.n).join(" + "); }
+/* A GHL le llega el nombre del calendario tal cual, aunque a la clienta se le enseñe corregido. */
+const NOMBRE_GHL = {"gPMjdoKgYxBfeiWwcLzG":"Diseños elaborado en todas las uñas"};
+function tituloGHL(svcs){ return svcs.map(s => NOMBRE_GHL[s.id] || s.n).join(" + "); }
 function equipo(){
   if(!S.svcs.length) return [];
   let t = S.svcs[0].tm.slice();
   for(const s of S.svcs.slice(1)) t = t.filter(u => s.tm.includes(u));
   return t;
 }
-function inicial(n){ return (n||"?").trim().charAt(0).toUpperCase(); }
+/* Técnicas que pueden hacer TODO esto junto con lo ya escogido. */
+function tecnicasPara(ids){
+  let t = S.svcs.length ? equipo() : null;
+  for(const id of ids){
+    const s = SVC[id]; if(!s) return [];
+    t = t ? t.filter(u => s.tm.includes(u)) : s.tm.slice();
+  }
+  return t || [];
+}
 
 /* ===================== navegación ===================== */
+/* 17-oct-2026: el botón de atrás del celular ya no saca de la página. Cada pantalla nueva
+   deja una entrada en el historial; "atrás" (del celular o de la página) vuelve por la pila. */
+let prof = 0, tragando = false;                 // entradas que esta página puso en el historial
+try{ prof = (history.state && history.state.tn) || 0; }catch(e){}
+let horasViejas = false;                        // la disponibilidad cambió desde que se pintaron las horas
 function ir(p, sinPila){
-  if(!sinPila && p !== S.pantalla) S.pila.push(S.pantalla);
+  if(!sinPila && p !== S.pantalla){
+    S.pila.push(S.pantalla);
+    try{ if(typeof history.pushState === "function"){ history.pushState({tn: prof + 1}, ""); prof++; } }catch(e){}
+  }
   document.querySelectorAll(".scr").forEach(s => s.hidden = (s.id !== p));
   S.pantalla = p;
   ubicarSms(p);
   window.scrollTo(0,0);
   pintarBarra();
+  // Lectores de pantalla y teclado: la pantalla nueva se anuncia por su título.
+  const sc = $(p), h = (sc && typeof sc.querySelector === "function") ? sc.querySelector("h2") : null;
+  if(h && typeof h.focus === "function"){ try{ h.focus({preventScroll:true}); }catch(e){} }
 }
 function atras(){
-  const p = S.pila.pop() || "scr-inicio";
-  ir(p, true);
+  const desde = S.pantalla;
+  let p = S.pila.pop();
+  while(p && p === S.pantalla) p = S.pila.pop();     // arregla el doble toque de antes
+  let dest = p || (S.tok ? "scr-inicio" : "scr-svc");
+  if(dest === "scr-inicio" && !(S.tok && S.me)) dest = "scr-svc";     // sin sesión no hay inicio que enseñar
+  // De las horas a servicios, la hora escogida se suelta: si después entra por "¿Ya has venido?",
+  // no se la lleva a confirmar una hora que ya no estaba mirando.
+  if(desde === "scr-hora" && dest === "scr-svc"){ S.hora = null; S.tecHora = null; }
+  if(dest === "scr-svc" && desde !== "scr-svc") abrirServicios(true);
+  else{
+    ir(dest, true);
+    if(dest === "scr-inicio" && S.me && desde !== "scr-inicio") (desde === "scr-ok" ? cargarInicio() : pintarInicio());
+    if(dest === "scr-hora" && (horasViejas || !S.dias)) pintarHoras();
+  }
+  // Sin pantallas guardadas, las entradas que quedan en el historial ya no llevan a ningún
+  // sitio: se recogen de una vez, así el próximo "atrás" del celular sí sale de la página.
+  if(!S.pila.length && prof > 0 && typeof history.go === "function"){
+    tragando = true;
+    try{ history.go(-prof); }catch(e){ tragando = false; }
+  }
 }
-document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => ir(b.dataset.go, true)));
+function volver(){                                     // todos los botones "←"
+  if(prof > 0 && typeof history.back === "function") history.back();   // popstate llama atras()
+  else atras();
+}
+if(typeof window.addEventListener === "function"){
+  window.addEventListener("popstate", e => {
+    const d = (e.state && e.state.tn) || 0;
+    if(tragando){ tragando = false; prof = d; return; }
+    if(d < prof){ prof = d; $("modal").hidden = true; cancelando = null; atras(); }
+    else prof = d;                                     // adelante: no se mueve nada
+  });
+}
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", volver));
 
 function error(id, msg){
   const e = $(id);
   if(!msg){ e.hidden = true; return; }
   e.textContent = msg; e.hidden = false;
 }
+/* Como error(), pero admite botones y enlaces (solo HTML armado aquí, nunca texto de afuera). */
+function salida(id, html){
+  const e = $(id);
+  if(!html){ e.hidden = true; e.innerHTML = ""; return; }
+  e.innerHTML = html; e.hidden = false;
+}
 function cargando(btn, si, txt){
   btn.disabled = si;
+  if(typeof btn.setAttribute === "function"){ if(si) btn.setAttribute("aria-busy", "true"); else btn.removeAttribute("aria-busy"); }
   if(si){ btn.dataset.txt = btn.textContent; btn.textContent = txt || "Un momento…"; }
   else if(btn.dataset.txt){ btn.textContent = btn.dataset.txt; }
+}
+function enlaceWa(texto){ return "https://wa.me/" + WA_SALON + "?text=" + encodeURIComponent(texto); }
+/* Sin nombre, teléfono ni correo: solo lo que quiere reservar. */
+function textoWaReserva(){
+  if(S.modo === "reservar" && S.svcs.length && S.dia && S.hora != null)
+    return `Hola, quiero reservar ${titulo()} el ${fechaTexto(S.dia)} a las ${fmtHora(S.hora)}.`;
+  return "Hola, quiero reservar una cita.";
+}
+function enlacesContacto(textoWa, textoBoton){
+  return `<a class="btn ghost sm" href="${esc(enlaceWa(textoWa || textoWaReserva()))}" target="_blank" rel="noopener">${esc(textoBoton || "Escríbenos por WhatsApp")}</a>` +
+         `<a class="btn ghost sm" href="tel:${TEL_SALON}">Llámanos al ${TEL_SALON_VISIBLE}</a>`;
 }
 
 /* ===================== llamadas al backend ===================== */
@@ -893,7 +1089,8 @@ function enCristiano(e, accion){
       ? "Tardó más de lo normal y no recibimos la confirmación. Revisa «Tus próximas citas» antes de volver a intentarlo: puede que sí haya quedado."
       : "Está tardando más de lo normal. Vuelve a tocar, por favor.";
   }
-  if(/failed to fetch|networkerror|load failed/i.test(m))
+  // "network error": Chrome cuando la conexión se corta a mitad de la respuesta.
+  if(/failed to fetch|networkerror|network error|load failed/i.test(m))
     return escritura
       ? "Se perdió la conexión y no recibimos la confirmación. Revisa tus próximas citas antes de repetir; puede que sí haya quedado."
       : "No pudimos conectar. Revisa tu internet e inténtalo otra vez.";
@@ -935,6 +1132,8 @@ const SIRVE   = 12*3600*1000;       // 12 h: se pinta YA y se refresca por detr�
 const MEM_MAX = 24;                 // no llenar el almacenamiento del teléfono
 
 const memoria = {};   // calId|userId -> {at, dias:{iso:[minutos]}}
+const enVuelo = new Map();          // calId|userId -> consulta en camino (no se pide dos veces)
+let memGen = 0;                     // sube con olvidar(): lo que llegue de antes no se guarda
 function guardarMemoria(){
   try{
     const claves = Object.keys(memoria).sort((a,b) => memoria[b].at - memoria[a].at).slice(0, MEM_MAX);
@@ -957,8 +1156,9 @@ function refrescarPorDetras(calId, userId){
   const clave = calId + "|" + (userId||"");
   if(refrescando.has(clave)) return;
   refrescando.add(clave);
+  const gen = memGen;
   traerHuecos(calId, userId)
-    .then(dias => { memoria[clave] = {at:Date.now(), dias}; guardarMemoria(); revalidarPantalla(); })
+    .then(dias => { if(gen !== memGen) return; memoria[clave] = {at:Date.now(), dias}; guardarMemoria(); revalidarPantalla(); })
     .catch(() => {})
     .finally(() => refrescando.delete(clave));
 }
@@ -971,8 +1171,10 @@ function revalidarPantalla(){
   clearTimeout(revalTimer);
   revalTimer = setTimeout(() => {
     if(S.pantalla !== "scr-hora" || S.hora) return;
+    const pedido = horasPedido, tec = S.tec;
     calcular().then(r => {
-      if(S.pantalla !== "scr-hora" || S.hora || r.sinEquipo) return;
+      // Si mientras tanto tocó otra técnica (o se repintaron las horas), esto ya es viejo.
+      if(S.pantalla !== "scr-hora" || S.hora || r.sinEquipo || pedido !== horasPedido || tec !== S.tec) return;
       S.dias = r;
       pintarDias();
       const dia = (S.dia && (r.dias[S.dia]||[]).length) ? S.dia
@@ -990,10 +1192,16 @@ async function huecos(calId, userId){
     if(edad < FRESCO) return hit.dias;
     if(edad < SIRVE){ refrescarPorDetras(calId, userId); return hit.dias; }
   }
-  const dias = await traerHuecos(calId, userId);
-  memoria[clave] = {at:Date.now(), dias};
-  guardarMemoria();
-  return dias;
+  if(enVuelo.has(clave)) return enVuelo.get(clave);
+  const gen = memGen;
+  const p = traerHuecos(calId, userId).then(dias => {
+    if(gen === memGen){ memoria[clave] = {at:Date.now(), dias}; guardarMemoria(); }
+    return dias;
+  });
+  enVuelo.set(clave, p);
+  const quitar = () => { if(enVuelo.get(clave) === p) enVuelo.delete(clave); };
+  p.then(quitar, quitar);
+  return p;
 }
 
 async function traerHuecos(calId, userId){
@@ -1019,13 +1227,46 @@ async function traerHuecos(calId, userId){
    que ella misma acaba de ocupar. */
 function olvidar(){
   for(const k in memoria) delete memoria[k];
+  enVuelo.clear(); memGen++;
+  horasViejas = true;
   try{ localStorage.removeItem(MEM_KEY); }catch(e){}
 }
+/* Al escoger un servicio, sus horas se piden ya, por detrás, para que salgan al instante al
+   tocar "Ver horas". Son las mismas consultas que haría calcular(): no suma ninguna. */
+function precargar(pareja){
+  try{
+    const team = equipo();
+    if(!team.length) return;
+    const u = (S.usualTec && team.includes(S.usualTec)) ? S.usualTec : null;
+    const pedir = (id, t) => { try{ Promise.resolve(huecos(id, t)).catch(() => {}); }catch(e){} };
+    if(S.svcs.length === 1){ pedir(S.svcs[0].id, u); return; }
+    if(!pareja) return;
+    for(const s of S.svcs) for(const t of (u ? [u] : team)) pedir(s.id, t);
+  }catch(e){}
+}
 
-/* Calcula, para cada día, las horas de comienzo que sirven — y con qué técnica.
+/* El rato entre un servicio y el siguiente (Builder acaba 11:20, los pies empiezan 11:30) también
+   tiene que estar libre. Lo prueba cualquier comienzo de los MISMOS calendarios de esa técnica que lo
+   cubra entero. Cero consultas nuevas. */
+function ratosLibres(t, f, svcs, offs, sets){
+  for(let k = 1; k < svcs.length; k++){
+    const a = t + offs[k-1] + svcs[k-1].d, b = t + offs[k];
+    if(b <= a) continue;
+    const cubierto = svcs.some((s, j) => {
+      const m = sets[j][f]; if(!m) return false;
+      for(const x of m) if(x <= a && x + s.d >= b) return true;
+      return false;
+    });
+    if(!cubierto) return false;
+  }
+  return true;
+}
+
+/* Calcula, para cada día, las horas de comienzo que sirven, y con qué técnica.
    · 1 servicio y sin preferencia -> una sola consulta (GHL asigna la técnica).
-   · varios servicios -> cada uno tiene que caber justo después del anterior CON LA MISMA
-     técnica, así que hay que preguntar por técnica (igual que en el tablero). */
+   · varios servicios -> cada uno tiene que empezar en el primer comienzo de su calendario
+     después del anterior, CON LA MISMA técnica, así que hay que preguntar por técnica
+     (igual que en el tablero). */
 async function calcular(){
   const svcs = S.svcs;
   if(!svcs.length) return {dias:{}, tecs:{}};
@@ -1045,8 +1286,11 @@ async function calcular(){
     if(!extra) return mins;
     const set = new Set(mins);
     const paso = mins.length > 1 ? Math.min(...mins.slice(1).map((m,i) => m - mins[i])) : 5;
+    // Hasta el comienzo que cubre el final: una cita de 2 h en Builder (80 min) necesita también el de
+    // t + 60, porque con el de t + 30 solo se sabe libre hasta t + 110.
+    const hasta = Math.ceil(extra / paso) * paso;
     return mins.filter(t => {
-      for(let k = paso; k <= extra; k += paso) if(!set.has(t + k)) return false;
+      for(let k = paso; k <= hasta; k += paso) if(!set.has(t + k)) return false;
       return true;
     });
   };
@@ -1057,8 +1301,7 @@ async function calcular(){
     for(const f in d){ const m = limpiar(f, cabe(d[f])); if(m.length) dias[f] = m; }
     return {dias, tecs:{}};
   }
-  const offs = []; let acc = 0;
-  for(const s of svcs){ offs.push(acc); acc += s.d; }
+  const {offs} = colocar(svcs);
 
   const porTec = {};
   for(let k = 0; k < svcs.length; k++){
@@ -1066,15 +1309,17 @@ async function calcular(){
     filas.forEach(([u, d]) => { (porTec[u] = porTec[u] || [])[k] = d; });
   }
   const dias = {}, tecs = {};      // tecs["fecha|min"] = [userIds]
+  const carga = {};                // carga[fecha][userId] = comienzos libres en el calendario del primer servicio
   for(const u of team){
     const sets = (porTec[u] || []).map(d => {
       const m = {}; for(const f in d) m[f] = new Set(d[f]); return m;
     });
     if(sets.length !== svcs.length) continue;
     for(const f in sets[0]){
+      (carga[f] = carga[f] || {})[u] = sets[0][f].size;
       const orden = [...sets[0][f]].sort((a,b) => a-b);
       const buenas = cabe(orden).filter(t =>
-        svcs.every((s,k) => sets[k][f] && sets[k][f].has(t + offs[k])));
+        svcs.every((s,k) => sets[k][f] && sets[k][f].has(t + offs[k])) && ratosLibres(t, f, svcs, offs, sets));
       for(const t of limpiar(f, buenas)){
         (dias[f] = dias[f] || []).push(t);
         (tecs[f+"|"+t] = tecs[f+"|"+t] || []).push(u);
@@ -1082,25 +1327,89 @@ async function calcular(){
     }
   }
   for(const f in dias) dias[f] = [...new Set(dias[f])].sort((a,b) => a-b);
-  return {dias, tecs};
+  return {dias, tecs, carga};
+}
+/* "Cualquiera" con 2 o más servicios: la técnica la escoge la página (con uno solo la reparte GHL).
+   Va la que tiene el día más libre (más comienzos libres en el calendario del primer servicio) y, si
+   empatan, una al azar. Antes iba siempre la primera de la lista, y casi todas las parejas le caían a
+   la misma. Cero consultas nuevas. */
+function elegirTec(f, tecs){
+  if(!tecs || !tecs.length) return null;
+  const carga = (S.dias && S.dias.carga && S.dias.carga[f]) || {};
+  const libres = u => carga[u] || 0;
+  const max = Math.max(...tecs.map(libres));
+  const mejores = tecs.filter(u => libres(u) === max);
+  return mejores[Math.floor(Math.random() * mejores.length)];
 }
 
-/* ===================== 1-3. entrar ===================== */
-$("inPh").addEventListener("input", e => { e.target.value = fmtTel(e.target.value); error("errPh",""); });
-$("nvPh").addEventListener("input", e => { e.target.value = fmtTel(e.target.value); });
+/* ===================== medición del embudo (sin datos personales) ===================== */
+/* 17-oct-2026: antes solo se medía reserva_confirmada y no se sabía dónde se quedaban las
+   195 visitas de Meta. Estos eventos dicen en qué paso se va la gente. El filtro hace imposible
+   mandar un teléfono, un correo o un nombre: solo pasan claves conocidas, números chicos y
+   palabras en minúscula sin dígitos, acentos, espacios ni @.
+   conversion (Ads), reserva_confirmada (GA4) y Schedule (píxel) NO salen de aquí: siguen
+   saliendo solo de mostrarOk, una vez por cita. */
+const MEDIR_CLAVES = new Set(["via","n_servicios","categoria","tipo","resultado","dias_con_horas",
+  "tecnica","modo","dias_hasta","franja","con_sesion","sin_correo","motivo","donde","origen"]);
+function limpiarMedicion(p){
+  const out = {};
+  for(const k in (p || {})){
+    if(!MEDIR_CLAVES.has(k)) continue;
+    const v = p[k];
+    if(typeof v === "number" && Number.isFinite(v) && Math.abs(v) < 1000) out[k] = v;
+    else if(typeof v === "string" && /^[a-z_]{1,40}$/.test(v)) out[k] = v;   // sin dígitos, mayúsculas, acentos, espacios ni @
+  }
+  return out;
+}
+function medir(evento, p){
+  if(!window.tnTrackingSafe || typeof window.gtag !== "function") return;
+  try{ window.gtag("event", evento, limpiarMedicion(p)); }catch(e){}
+}
+const pixelYa = new Set();
+function medirPixel(evento, p){
+  if(!window.tnTrackingSafe || typeof window.fbq !== "function" || pixelYa.has(evento)) return;
+  pixelYa.add(evento);
+  try{ window.fbq("track", evento, p || {}); }catch(e){}
+}
+function paramVisita(k){ try{ return new URLSearchParams(location.search).get(k) || ""; }catch(e){ return ""; } }
+/* De dónde llegó ESTA visita (la URL de ahora, no lo guardado de hace semanas). Igual que fuenteReserva
+   del Worker: "anuncio" solo con un clic de Google Ads o un utm_medium pagado. La bio de Instagram
+   (utm_medium=social y fbclid), el perfil de Google (organic) o el WhatsApp del ciclo son "enlace". */
+const ORIGEN_VISITA = (["gclid","gbraid","wbraid"].some(k => paramVisita(k)) ||
+  /^(paid|paid_social|cpc|ppc|paid_search)$/.test(paramVisita("utm_medium").trim().toLowerCase())) ? "anuncio"
+  : (["utm_source","utm_medium","utm_campaign","utm_content","utm_term","utm_id","fbclid"].some(k => paramVisita(k)) ? "enlace" : "directo");
+let vistoSvc = false;
+
+/* ===================== "Ya he venido": entrar ===================== */
+for(const id of ["inPh","nvPh","cfPh"]){
+  $(id).addEventListener("input", e => { e.target.value = fmtTel(e.target.value); if(id === "inPh") error("errPh",""); if(id === "cfPh") campoError("cfPh", ""); });
+}
+$("cfFn").addEventListener("input", () => campoError("cfFn", ""));
+/* Con el teclado abierto, "Siguiente" pasa al campo de abajo. En el último se cierra el teclado y se
+   enseñan las casillas con el botón; no se confirma solo. */
+const CAMPOS_CONF = ["cfFn","cfLn","cfPh","cfEm"];
+CAMPOS_CONF.forEach((id, i) => $(id).addEventListener("keydown", e => {
+  if(e.key !== "Enter") return;
+  if(typeof e.preventDefault === "function") e.preventDefault();
+  const sig = i + 1 < CAMPOS_CONF.length ? $(CAMPOS_CONF[i + 1]) : null;
+  if(sig){ sig.focus(); return; }
+  const el = $(id), b = $("btnConf");
+  if(typeof el.blur === "function") el.blur();
+  if(typeof b.scrollIntoView === "function") b.scrollIntoView({block:"center", behavior:"smooth"});
+}));
 $("inPh").addEventListener("keydown", e => { if(e.key === "Enter") $("inNm").focus(); });
 $("inNm").addEventListener("keydown", e => { if(e.key === "Enter") $("btnPh").click(); });
 /* Despertamos el backend en cuanto toca un campo: mientras teclea, el servidor arranca. */
-$("inPh").addEventListener("focus", calentar, {once:true});
-$("inNm").addEventListener("focus", calentar, {once:true});
+for(const id of ["inPh","inNm","cfFn","cfPh"]) $(id).addEventListener("focus", calentar, {once:true});
 
 /* UNA sola consulta para entrar. Antes eran tres seguidas (teléfono → nombre → citas)
    y cada viaje a Apps Script cuesta más de un segundo aunque no haga nada: 5 s de espera
    para la clienta. Ahora el teléfono y el nombre van juntos, y sus citas se piden en
    paralelo mientras ya está viendo su pantalla. */
 $("btnPh").addEventListener("click", async () => {
-  const d = digitos($("inPh").value);
+  const d = tel10($("inPh").value);
   const nm = $("inNm").value.trim();
+  salida("holaSalida", "");
   if(d.length < 10){ error("errPh","Escribe los 10 dígitos de tu teléfono."); $("inPh").focus(); return; }
   if(nm.length < 2){ error("errPh","Escribe tu nombre."); $("inNm").focus(); return; }
   S.telefono = d;
@@ -1109,68 +1418,180 @@ $("btnPh").addEventListener("click", async () => {
   cargando($("btnPh"), true, "Entrando…");
   try{
     const j = await api("me", {ph:d, nm});
-    if(!j.ok){
-      // No decimos si el número existe o no (privacidad): mismo mensaje, y salida clara si es nueva.
-      error("errPh", (j.error || "No pudimos entrar.") + " Si es tu primera vez, toca «Es mi primera vez aquí».");
-      return;
-    }
+    if(!j.ok){ await noEntro(d, j); return; }
+    medir("datos_resultado", {resultado:"entro", donde:"ya_he_venido", sin_correo: j.em ? 0 : 1});
     entrar(j);
   }catch(e){ error("errPh", e.message || "No pudimos conectar. Revisa tu internet."); }
   finally{ cargando($("btnPh"), false); }
 });
+/* El Worker contesta "no coincide" igual si el teléfono no existe que si es de otro nombre.
+   Una lectura más, solo con el teléfono (no suma fallo ni devuelve datos), dice cuál de las
+   dos y así la salida es la buena: a reservar si es nueva, o a escribir su nombre. */
+async function noEntro(d, j){
+  const msg = String(j.error || "");
+  if(/demasiados intentos/i.test(msg)){
+    error("errPh", msg); salida("holaSalida", enlacesContacto());
+    medir("datos_resultado", {resultado:"error", donde:"ya_he_venido"});
+    return;
+  }
+  if(!/no coincide/i.test(msg)){
+    error("errPh", msg || "No pudimos entrar. Inténtalo otra vez.");
+    medir("datos_resultado", {resultado:"error", donde:"ya_he_venido"});
+    return;
+  }
+  let r = null;
+  try{ r = await api("me", {ph:d}); }catch(e){ r = null; }
+  const aServicios = `<p>Si es tu primera vez, no necesitas perfil: escoge tu servicio y te pedimos los datos al final.</p>` +
+                     `<button class="btn sm" data-accion="a-servicios">Ver servicios y reservar</button>`;
+  if(r && r.ok && r.existe === false){
+    error("errPh", "No encontramos ese teléfono.");
+    salida("holaSalida", aServicios);
+    medir("datos_resultado", {resultado:"no_existe", donde:"ya_he_venido"});
+  }else if(r && r.ok && r.existe === true){
+    error("errPh", "Ese teléfono está registrado con otro nombre.");
+    salida("holaSalida", `<p>Escribe el nombre con el que te registraste la primera vez. Si no te acuerdas, escríbenos y te ayudamos.</p>` + enlacesContacto());
+    medir("datos_resultado", {resultado:"nombre_no_coincide", donde:"ya_he_venido"});
+  }else{
+    error("errPh", "No encontramos ese teléfono con ese nombre.");
+    salida("holaSalida", aServicios + enlacesContacto());
+    medir("datos_resultado", {resultado:"error", donde:"ya_he_venido"});
+  }
+}
+$("holaSalida").addEventListener("click", e => {
+  const b = e.target.closest("[data-accion]"); if(!b || b.dataset.accion !== "a-servicios") return;
+  if(!$("cfPh").value) $("cfPh").value = fmtTel($("inPh").value);
+  if(!$("cfFn").value) $("cfFn").value = $("inNm").value.trim();
+  abrirServicios();
+});
+$("holaBack").addEventListener("click", volver);
 
-$("btnNueva").addEventListener("click", () => { $("nvPh").value = fmtTel($("inPh").value); ir("scr-nueva"); });
+$("btnNueva").addEventListener("click", () => {
+  $("nvPh").value = fmtTel($("inPh").value);
+  if(!$("nvFn").value) $("nvFn").value = $("inNm").value.trim();
+  ir("scr-nueva");
+});
 $("btnNueva2").addEventListener("click", () => { $("nvPh").value = fmtTel(S.telefono); ir("scr-nueva"); });
 
+/* "Es mi primera vez aquí": crear el perfil sin reservar todavía (aquí vive el formulario que
+   nombra el registro A2P). Mismas ramas que al confirmar. */
 $("btnNv").addEventListener("click", async () => {
   const fn = $("nvFn").value.trim(), ln = $("nvLn").value.trim();
-  const ph = digitos($("nvPh").value), em = $("nvEm").value.trim();
-  if(!fn) return error("errNv","Necesitamos tu nombre.");
-  if(ph.length < 10) return error("errNv","Escribe los 10 dígitos de tu teléfono.");
+  const ph = tel10($("nvPh").value), em = $("nvEm").value.trim();
+  if(fn.length < 2) return error("errNv","Escribe tu nombre.");
+  if(ph.length !== 10) return error("errNv","Escribe los 10 dígitos de tu teléfono.");
+  if(em && !CORREO_OK.test(em)) return error("errNv","Revisa tu correo o déjalo en blanco.");
+  error("errNv","");
   S.telOrigen = origenTel(ph);
   cargando($("btnNv"), true, "Creando tu perfil…");
   try{
-    const j = await api("new", {fn, ln, ph, em, ...window.tnAttributionParams()});
-    if(!j.ok){
-      if(j.yaExiste){
-        S.telefono = ph; $("inPh").value = fmtTel(ph); $("inNm").value = fn;
-        ir("scr-hola", true); error("errPh", j.error); setTimeout(() => $("inNm").focus(), 120);
-        return;
-      }
-      return error("errNv", j.error || "No se pudo crear tu perfil.");
+    const base = {fn, ln, ph, ...window.tnAttributionParams()};
+    let j = await api("new", em ? {...base, em} : base);
+    if(!j.ok && j.yaExiste && em){
+      // El choque era el correo (GHL lo rechazó sin crear nada): una vez más, sin correo.
+      j = await api("new", base);
+      if(j.ok && j.tok) S.correoNoGuardado = true;
     }
-    entrar(j);
+    if(j.ok && j.tok){
+      medir("datos_resultado", {resultado: j.nuevo === false ? "entro" : "creada", donde:"perfil", sin_correo: j.em ? 0 : 1});
+      entrar(j);
+      return;
+    }
+    medir("datos_resultado", {resultado: /no coincide/i.test(j.error || "") ? "nombre_no_coincide" : "error", donde:"perfil"});
+    if(j.nuevo === false && /no coincide/i.test(j.error || ""))
+      return error("errNv", "Ese teléfono ya está registrado con otro nombre. Toca «Volver» y entra con el nombre con el que te registraste.");
+    if(j.yaExiste)
+      return error("errNv", "Ya tenemos un perfil con ese teléfono. Toca «Volver» y entra con tu teléfono y tu nombre.");
+    if(j.nuevo === false && j.error) return error("errNv", j.error);
+    return error("errNv", "No pudimos guardar tus datos. Inténtalo otra vez en un momento.");
   }catch(e){ error("errNv", e.message || "No pudimos conectar."); }
   finally{ cargando($("btnNv"), false); }
 });
 
-function entrar(j){
+/* La parte de estado de entrar, sin navegar (la usan "Entrar", "Crear mi perfil" y "Confirmar mi cita"). */
+function abrirSesion(j){
   window.tnClearPrefill();
   S.tok = j.tok;
   S.me = {id:j.id, fn:j.fn, ln:j.ln, ph:j.ph, em:j.em};
   try{ localStorage.setItem("tn-sesion", JSON.stringify({tok:S.tok, me:S.me, at:Date.now()})); }catch(e){}
-  $("btnSalir").hidden = false;
+  // Marca sin datos personales: en este celular ya entró alguien. La próxima vez abre en "Ya he venido".
+  try{ localStorage.setItem("tn-ya-vino", "1"); }catch(e){}
+  $("btnSalir").hidden = false; $("btnYaVine").hidden = true;
+  S.sesionCerrada = false;
+  // El backend rápido manda las citas en la MISMA respuesta: si vienen, no hay segunda consulta.
+  if(Array.isArray(j.citas)) aplicarResumen(j);
+}
+const sinPasoDeEntrar = () => { S.pila = S.pila.filter(p => p !== "scr-hola" && p !== "scr-nueva"); };
+function entrar(j){
+  abrirSesion(j);
+  const reservando = S.modo === "reservar" && S.svcs.length;
+  if(reservando && S.dia && S.hora != null){
+    abrirConfirmar(); sinPasoDeEntrar();
+    if(S.pila[S.pila.length - 1] !== "scr-hora") S.pila.push("scr-hora");
+    return;
+  }
+  if(reservando){
+    const team = equipo();
+    S.tec = (S.usualTec && team.includes(S.usualTec)) ? S.usualTec : null;
+    abrirHoras(); sinPasoDeEntrar(); return;
+  }
+  if(j.nuevo === true){ abrirServicios(); sinPasoDeEntrar(); return; }
   S.pila = [];
   ir("scr-inicio", true);
-  // El backend rápido manda las citas en la MISMA respuesta: si vienen, no hay
-  // segunda consulta y su pantalla sale completa de golpe.
-  if(Array.isArray(j.citas)){ aplicarResumen(j); pintarInicio(); }
+  if(Array.isArray(j.citas)){ S.incierta = ""; pintarInicio(); }     // sus citas al día: ya ve si quedó
   else cargarInicio();
 }
-function salir(callado){
+/* Lo que se borra al salir o al cambiar de persona. La selección no se toca aquí. */
+function olvidarIdentidad(conMarca){
   try{ localStorage.removeItem("tn-sesion"); }catch(e){}
+  if(conMarca){ try{ localStorage.removeItem("tn-ya-vino"); }catch(e){} }
   window.tnClearPrefill();
-  S.tok = null; S.me = null; S.citas = []; S.svcs = []; S.tec = null; S.pila = [];
-  S.telOrigen = ""; S.smsListo = {citas:false, ofertas:false};
+  S.tok = null; S.me = null; S.citas = []; S.usualCal = ""; S.usualTec = ""; S.visitas = 0;
+  S.telOrigen = ""; S.smsListo = {citas:false, ofertas:false}; S.correoNoGuardado = false;
   desmarcarSms(); pintarSms();
   $("btnSalir").hidden = true;
-  ["inPh","inNm","nvFn","nvLn","nvPh","nvEm"].forEach(id => $(id).value = "");
-  ir("scr-hola", true);
-  if(!callado) error("errPh","");
+  ["inPh","inNm","nvFn","nvLn","nvPh","nvEm","cfFn","cfLn","cfPh","cfEm"].forEach(id => $(id).value = "");
 }
-$("btnSalir").addEventListener("click", () => salir());
+function salir(callado){
+  const enConf = !!callado && S.pantalla === "scr-conf" && S.modo === "reservar" && S.svcs.length > 0 && !!S.dia && S.hora != null;
+  olvidarIdentidad(!callado);
+  S.sesionCerrada = !!callado;
+  $("modal").hidden = true; cancelando = null;
+  if(enConf){
+    // Se le venció la sesión justo al confirmar: lo escogido se queda y pide sus datos aquí mismo.
+    pintarConfirmar();
+    error("errConf", "Tu sesión se cerró. Escribe tus datos y toca «Confirmar mi cita» otra vez.");
+    return;
+  }
+  S.pila = [];
+  // Venció en el inicio, al cancelar o al mover: lo escogido se suelta. Si no, al volver a entrar una
+  // cita que estaba moviendo (o una ya reservada) se reabría en "Confirma tu cita" como reserva NUEVA.
+  S.svcs = []; S.tec = null; S.dia = null; S.hora = null; S.tecHora = null;
+  S.modo = "reservar"; S.mover = null;
+  if(callado){
+    salida("holaSalida", "");
+    ir("scr-hola", true);
+    error("errPh", "Tu sesión se cerró. Escribe tu teléfono y tu nombre otra vez.");
+    return;
+  }
+  S.incierta = "";
+  error("errPh",""); salida("holaSalida", "");
+  abrirServicios(true);
+}
+$("btnSalir").addEventListener("click", () => { if(!$("btnConf").disabled) salir(); });
+/* Mientras una reserva va en camino no se puede salir ni cambiar de persona: la cita se crearía igual
+   con la llave de antes y la pantalla se quedaría a medias. */
+function bloquearSalidas(si){ $("btnSalir").disabled = si; $("btnNoSoyYo").disabled = si; }
+/* "¿No eres tú? Cambia los datos": como Salir con la identidad, pero lo escogido se queda. */
+function cambiarPersona(){
+  if($("btnConf").disabled) return;
+  olvidarIdentidad(true);
+  S.sesionCerrada = false;
+  pintarConfirmar();
+  $("cfFn").focus();
+}
+$("btnNoSoyYo").addEventListener("click", cambiarPersona);
 
-/* ===================== 4. inicio ===================== */
+/* ===================== inicio ===================== */
 /* El backend ya separa pasadas de próximas, pero lo hace sobre una hora SIN zona, que
    el servidor lee con la SUYA y no con la de Puerto Rico. Volvemos a filtrar aquí con la
    hora normalizada para que nunca se le cuele una cita ya pasada. */
@@ -1183,14 +1604,17 @@ function aplicarResumen(j){
   S.usualCal = j.usualCal || ""; S.usualTec = j.usualTec || ""; S.visitas = j.visitas || 0;
 }
 async function cargarInicio(){
+  if(!(S.tok && S.me)) return;
   $("miNombre").textContent = (S.me.fn || "").trim().split(" ")[0] || "bienvenida";
   $("proxLista").innerHTML = `<div class="estado"><div class="spin"></div>Buscando tus citas…</div>`;
   $("miSub").textContent = "";
+  salida("inicioSalida", "");
   try{
     const j = await api("mine", {tok:S.tok});
     if(!j.ok) throw new Error(j.error || "No pudimos consultar tus citas.");
     aplicarResumen(j);
     pintarInicio();
+    if(S.pantalla === "scr-inicio") S.incierta = "";
   }catch(e){
     $("proxLista").innerHTML = `<div class="aviso err">${esc(e.message)}</div>`;
   }
@@ -1223,7 +1647,7 @@ function pintarInicio(){
   }
   // saludo
   $("miSub").textContent = S.visitas
-    ? (S.visitas === 1 ? "Nos alegra tenerte de vuelta." : `Ya llevas ${S.visitas} visitas con nosotras. Gracias 💛`)
+    ? (S.visitas === 1 ? "Nos alegra tenerte de vuelta." : `Ya llevas ${S.visitas} visitas con nosotras. ¡Gracias!`)
     : "Nos alegra tenerte aquí.";
 
   // "lo de siempre"
@@ -1239,8 +1663,9 @@ function pintarInicio(){
       </button>`;
     $("btnUsual").addEventListener("click", () => {
       S.modo = "reservar"; S.mover = null;
-      S.svcs = [s];
+      S.svcs = [s]; S.dia = null; S.hora = null; S.tecHora = null;
       S.tec = (S.usualTec && s.tm.includes(S.usualTec)) ? S.usualTec : null;
+      medir("servicio_agregado", {via:"lo_de_siempre", n_servicios:1});
       abrirHoras();
     });
   }else{
@@ -1248,70 +1673,159 @@ function pintarInicio(){
   }
 }
 $("btnReservar").addEventListener("click", () => {
-  S.modo = "reservar"; S.mover = null; S.svcs = []; S.tec = null;
-  $("svcQ").value = "";
-  catActiva = null;
-  pintarSvc();
-  ir("scr-svc");
+  S.svcs = []; S.tec = null; S.dia = null; S.hora = null; S.tecHora = null;
+  abrirServicios();
 });
 $("proxLista").addEventListener("click", e => {
   const b = e.target.closest("[data-cancelar]"); if(b) return abrirCancelar(b.dataset.cancelar);
   const m = e.target.closest("[data-mover]");    if(m) return abrirMover(m.dataset.mover);
 });
 
-/* ===================== 5. servicios ===================== */
-let catActiva = null;
+/* ===================== servicios ===================== */
+let catActiva = null, catTocada = false;
+/* La categoría del anuncio sale SOLO de la URL de esta visita: un clic de hace 60 días no
+   debe abrir "Retoques". */
+function catDeUtm(utm){
+  const u = String(utm || "").trim().toLowerCase();
+  if(!u) return null;
+  for(const [clave, cat, nota] of UTM_CATS) if(u === clave || u.startsWith(clave)) return {cat, nota};
+  for(const [re, cat] of UTM_PALABRAS) if(re.test(u)) return {cat, nota:""};
+  return {cat:"top", nota:""};
+}
+const UTM_VISITA = catDeUtm(paramVisita("utm_content"));
 function pintarCats(){
   $("svcCats").innerHTML = CATS.map(([k,n]) =>
     `<button class="cat" data-cat="${k}" aria-pressed="${catActiva===k}">${esc(n)}</button>`).join("");
 }
+/* El chip activo se desliza a la vista, solo de lado (nunca mueve la página hacia arriba). */
+function centrarCat(){
+  const caja = $("svcCats");
+  if(!caja || typeof caja.querySelector !== "function") return;
+  const el = caja.querySelector('[aria-pressed="true"]');
+  if(!el || typeof el.scrollIntoView !== "function" || typeof el.getBoundingClientRect !== "function") return;
+  const r = el.getBoundingClientRect(), c = caja.getBoundingClientRect();
+  caja.scrollLeft += (r.left + r.width/2) - (c.left + c.width/2);
+}
+const porPop = (a, b) => ((POP[b.id] || 0) - (POP[a.id] || 0)) || a.n.localeCompare(b.n, "es");
+function enCategoria(s, k){
+  if(k === "retoques") return /^Retoque/.test(s.n);
+  const c = CATS.find(x => x[0] === k);
+  return !!(c && c[2] && c[2].includes(s.g));
+}
+/* Lo que se enseña en la lista: con el buscador, TODO el catálogo; si no, la categoría. */
+function itemsSvc(){
+  const q = sinAcentos($("svcQ").value.trim());
+  let items;
+  if(q) items = DATA.services.filter(s => sinAcentos(s.n).includes(q)).sort(porPop).map(s => ({ids:[s.id]}));
+  else if(catActiva === "top") items = TOP;
+  else if(catActiva === "manosypies") items = MANOS_Y_PIES;
+  else items = DATA.services.filter(s => enCategoria(s, catActiva)).sort(porPop).map(s => ({ids:[s.id]}));
+  const elegidos = new Set(S.svcs.map(s => s.id));
+  const hayZona = S.svcs.some(s => G_MANOS.includes(s.g) || G_PIES.includes(s.g));
+  return items.map(it => ({...it, puesto: it.ids.every(id => elegidos.has(id))})).filter(it => {
+    if(!it.ids.every(id => SVC[id])) return false;
+    // Lo ya añadido se queda en su sitio, marcado: si desapareciera, el de abajo subiría bajo el dedo.
+    if(it.puesto) return true;
+    // Una pareja a medio escoger no se ofrece (lo que falta sale en las sugerencias).
+    if(it.ids.some(id => elegidos.has(id))) return false;
+    // Con manos o pies ya escogidos, nada de paquetes que repitan la zona (dos manicuras en 4 h).
+    if(hayZona && cubreManosYPies(it.ids)) return false;
+    // si ya hay algo elegido, solo ofrecemos lo que una MISMA técnica pueda hacer junto a eso
+    return tecnicasPara(it.ids).length > 0;
+  });
+}
+/* Un paquete que ya trae manos y pies: las parejas de "Manos y pies" y la oferta de manicura y pedicura.
+   Los extras sueltos (la parafina, por ejemplo) no cuentan: esos sí se combinan. */
+const OFERTA_MANOS_Y_PIES = "cD4dawqBzxW4QbrMdkNX";
+function cubreManosYPies(ids){
+  if(ids.length === 1) return ids[0] === OFERTA_MANOS_Y_PIES;
+  const gs = ids.map(id => SVC[id].g);
+  return gs.some(g => G_MANOS.includes(g)) && gs.some(g => G_PIES.includes(g));
+}
+function pintarCabeceraSvc(){
+  const con = !!S.tok;
+  $("svcBack").hidden = !con;
+  $("btnYaVine").hidden = con;
+  $("svcTitulo").innerHTML = con ? '¿Qué te vas a <em>hacer</em>?' : 'Reserva tu <em>cita</em>';
+  $("svcSub").textContent = con
+    ? "Puedes elegir más de uno y te lo dejamos todo en la misma cita."
+    : "Escoge tu servicio y mira las horas libres. Tus datos te los pedimos al final.";
+  const nota = (!catTocada && UTM_VISITA && UTM_VISITA.nota) ? UTM_VISITA.nota : "";
+  $("svcNota").textContent = nota; $("svcNota").hidden = !nota;
+}
 function pintarSvc(){
   pintarCats();
-  const q = $("svcQ").value.trim().toLowerCase()
-              .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  const elegidos = S.svcs.map(s => s.id);
-  // si ya hay algo elegido, solo ofrecemos lo que una MISMA técnica pueda hacer junto a eso
-  const team = S.svcs.length ? equipo() : null;
-  let lista = DATA.services.filter(s => {
-    if(elegidos.includes(s.id)) return false;
-    if(team && !s.tm.some(u => team.includes(u))) return false;
-    if(catActiva){
-      const grupos = (CATS.find(c => c[0] === catActiva) || [])[2] || [];
-      if(!grupos.includes(s.g)) return false;
-    }
-    if(q){
-      const n = s.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-      if(!n.includes(q)) return false;
-    }
-    return true;
-  });
-  $("svcVacio").hidden = lista.length > 0;
-  $("svcList").innerHTML = lista.map(s => {
-    const p = PRICE[s.id];
-    return `<button class="svc" data-svc="${s.id}">
+  pintarCabeceraSvc();
+  const q = $("svcQ").value.trim();
+  const items = itemsSvc();
+  if(!S.svcs.length || equipo().length) error("svcAviso", "");
+  $("svcVacio").hidden = items.length > 0 || !q;
+  $("svcPie").hidden = !!q || catActiva !== "top";
+  $("svcList").innerHTML = items.map(it => {
+    const svs = it.ids.map(id => SVC[id]);
+    const {suma, todos} = precioDe(svs);
+    const attr = svs.length > 1 ? `data-combo="${it.ids.join(",")}"` : `data-svc="${it.ids[0]}"`;
+    return `<button class="svc" ${attr} aria-pressed="${it.puesto}">
       <span class="svc-i">
-        <span class="svc-n">${esc(s.n)}</span>
-        <span class="svc-m">${esc(fmtDur(s.d))}${p ? " · desde $" + p : ""}</span>
+        ${it.tag ? `<span class="tag">${esc(it.tag)}</span>` : ""}
+        <span class="svc-n">${esc(it.n || svs[0].n)}</span>
+        <span class="svc-m">${esc(fmtDur(colocar(svs).total))}${suma ? " · desde $" + suma + (todos ? "" : " +") : ""}</span>
       </span>
-      <span class="svc-x">+</span>
+      <span class="svc-x">${it.puesto ? "✓ Añadido" : "+"}</span>
     </button>`;
   }).join("");
   pintarChips();
   pintarSugerencias();
   pintarBarra();
 }
+/* Abre "servicios". Sin sesión es la primera pantalla; con la categoría del anuncio si la hubo. */
+function abrirServicios(sinPila){
+  S.modo = "reservar"; S.mover = null;
+  $("svcQ").value = "";
+  if(!catTocada || !catActiva) catActiva = (UTM_VISITA && UTM_VISITA.cat) || "top";
+  error("svcAviso", "");
+  pintarSvc();
+  ir("scr-svc", sinPila);
+  centrarCat();
+  if(!vistoSvc){
+    vistoSvc = true;
+    medir("vista_servicios", {origen: S.tok ? "con_sesion" : ORIGEN_VISITA, categoria: catActiva});
+    medirPixel("ViewContent", {content_category: catActiva});
+  }
+}
+/* Añade uno o dos servicios (una pareja se añade en su orden). */
+function agregar(ids, via){
+  let n = 0;
+  for(const id of ids){
+    const s = SVC[id];
+    if(s && !S.svcs.some(x => x.id === id)){ S.svcs.push(s); n++; }
+  }
+  if(!n) return;
+  S.dia = null; S.hora = null; S.tecHora = null;
+  $("svcQ").value = "";
+  pintarSvc();
+  medir("servicio_agregado", {via, n_servicios:S.svcs.length, categoria:catActiva || ""});
+  precargar(via === "pareja");
+}
 /* ===================== "esto suele ir junto" ===================== */
 /* Primero manda lo que las clientas ya combinan de verdad (JUNTOS). Si el servicio
    elegido todavía no tiene datos, cae en la regla por zona: a un trabajo de manos se
    le sugiere pies, y al revés. Nunca sugerimos algo que ninguna técnica pueda hacer
-   junto a lo ya elegido — la clienta se quedaría atascada al llegar a las horas. */
+   junto a lo ya elegido (la clienta se quedaría atascada al llegar a las horas), ni un
+   segundo servicio de una zona que ya tiene (diseños y extras no cuentan como zona). */
 function sugerencias(){
   if(!S.svcs.length) return [];
   const yaTiene = new Set(S.svcs.map(s => s.id));
   const team = equipo();
+  const grupos = S.svcs.map(s => s.g);
+  const hayManos = grupos.some(g => G_MANOS.includes(g));
+  const hayPies  = grupos.some(g => G_PIES.includes(g));
   const sirve = id => {
     const s = SVC[id];
-    return s && !yaTiene.has(id) && s.tm.some(u => team.includes(u));
+    if(!s || yaTiene.has(id) || !s.tm.some(u => team.includes(u))) return false;
+    if(hayManos && G_MANOS.includes(s.g)) return false;
+    if(hayPies && G_PIES.includes(s.g)) return false;
+    return true;
   };
   const out = [];
   const meter = id => { if(sirve(id) && !out.includes(id)) out.push(id); };
@@ -1321,9 +1835,6 @@ function sugerencias(){
 
   // 2) respaldo por zona del cuerpo
   if(out.length < 2){
-    const grupos = S.svcs.map(s => s.g);
-    const hayManos = grupos.some(g => G_MANOS.includes(g));
-    const hayPies  = grupos.some(g => G_PIES.includes(g));
     if(hayManos && !hayPies){ meter(PIES_TOP); meter(PIES_2); }
     if(hayPies && !hayManos){ meter(MANOS_TOP); meter(PARAFINA); }
     meter(DISENO);
@@ -1353,98 +1864,130 @@ function pintarSugerencias(){
 }
 $("sugiere").addEventListener("click", e => {
   const b = e.target.closest("[data-sug]"); if(!b) return;
-  const s = SVC[b.dataset.sug]; if(!s) return;
-  S.svcs.push(s);
-  $("svcQ").value = "";
-  pintarSvc();
+  agregar([b.dataset.sug], "sugerencia");
 });
 
 function pintarChips(){
   const c = $("svcChips");
   c.hidden = !S.svcs.length;
   c.innerHTML = S.svcs.map(s =>
-    `<span class="chip">${esc(s.n)} <button data-quitar="${s.id}" aria-label="Quitar">×</button></span>`).join("");
+    `<span class="chip">${esc(s.n)} <button data-quitar="${s.id}" aria-label="Quitar ${esc(s.n)}">×</button></span>`).join("");
 }
 $("svcQ").addEventListener("input", pintarSvc);
 $("svcCats").addEventListener("click", e => {
   const b = e.target.closest("[data-cat]"); if(!b) return;
-  catActiva = (catActiva === b.dataset.cat) ? null : b.dataset.cat;
-  pintarSvc();
-});
-$("svcList").addEventListener("click", e => {
-  const b = e.target.closest("[data-svc]"); if(!b) return;
-  const s = SVC[b.dataset.svc]; if(!s) return;
-  S.svcs.push(s);
+  catTocada = true;
+  if(catActiva === b.dataset.cat) return;
+  catActiva = b.dataset.cat;
   $("svcQ").value = "";
   pintarSvc();
 });
+$("svcList").addEventListener("click", e => {
+  const b = e.target.closest("[data-combo],[data-svc]"); if(!b) return;
+  const ids = b.dataset.combo ? b.dataset.combo.split(",") : [b.dataset.svc];
+  // Tocar otra vez lo que ya está añadido lo quita (la fila se queda donde estaba).
+  if(ids.every(id => S.svcs.some(s => s.id === id))) return quitar(ids);
+  if(b.dataset.combo) return agregar(ids, "pareja");
+  const via = $("svcQ").value.trim() ? "busqueda" : (catActiva === "top" ? "lo_mas_pedido" : "lista");
+  agregar(ids, via);
+});
+function quitar(ids){
+  S.svcs = S.svcs.filter(s => !ids.includes(s.id));
+  S.dia = null; S.hora = null; S.tecHora = null;
+  pintarSvc();
+}
 $("svcChips").addEventListener("click", e => {
   const b = e.target.closest("[data-quitar]"); if(!b) return;
-  S.svcs = S.svcs.filter(s => s.id !== b.dataset.quitar);
-  pintarSvc();
+  quitar([b.dataset.quitar]);
+});
+$("btnYaVine").addEventListener("click", () => {
+  medir("ya_he_venido_clic");
+  error("errPh",""); salida("holaSalida", "");
+  ir("scr-hola");
+  setTimeout(() => { if(S.pantalla === "scr-hola" && window.innerWidth > 700) $("inPh").focus(); }, 200);
 });
 
-/* ===================== 6. técnica ===================== */
-function pintarTec(){
+/* ===================== técnica (dentro de las horas) ===================== */
+function pintarTecChips(){
+  const mover = S.modo === "mover";
+  $("tecWrap").hidden = mover;
+  if(mover) return;
   const team = equipo();
   const usual = (S.usualTec && team.includes(S.usualTec)) ? S.usualTec : null;
-  $("tecSub").textContent = S.svcs.length > 1
-    ? "La misma técnica te hará todos los servicios, uno detrás del otro."
-    : "Si no tienes preferencia, te damos la primera disponible.";
   const orden = team.slice().sort((a,b) =>
     (b === usual) - (a === usual) || (DATA.staff[a]||"").localeCompare(DATA.staff[b]||"", "es"));
-  $("tecLista").innerHTML =
-    `<button class="tec" data-tec="" aria-pressed="${S.tec===null}">
-       <span class="av">✦</span>
-       <span class="svc-i"><span class="svc-n">Cualquiera disponible</span>
-       <span class="svc-m">Verás más horas para escoger</span></span>
-     </button>` +
-    orden.map(u => `<button class="tec" data-tec="${u}" aria-pressed="${S.tec===u}">
-       <span class="av">${esc(inicial(DATA.staff[u]))}</span>
-       <span class="svc-i"><span class="svc-n">${esc(DATA.staff[u]||"Técnica")}</span>
-       ${u===usual ? '<span class="svc-m">Tu técnica de siempre</span>' : ""}</span>
-       ${u===usual ? '<span class="tag">Tuya</span>' : ""}
-     </button>`).join("");
+  $("tecChips").innerHTML =
+    `<button class="cat" data-tec="" aria-pressed="${!S.tec}">Cualquiera</button>` +
+    orden.map(u => `<button class="cat" data-tec="${u}" aria-pressed="${S.tec===u}">${esc(DATA.staff[u]||"Técnica")}${u===usual ? '<span class="tag">Tuya</span>' : ""}</button>`).join("");
+  $("tecNota").hidden = S.svcs.length < 2;
 }
-$("tecLista").addEventListener("click", e => {
+$("tecChips").addEventListener("click", e => {
   const b = e.target.closest("[data-tec]"); if(!b) return;
-  S.tec = b.dataset.tec || null;
-  abrirHoras();
+  const t = b.dataset.tec || null;
+  if(t === S.tec) return;
+  S.tec = t;
+  medir("tecnica_elegida", {tipo: !t ? "cualquiera" : (t === S.usualTec ? "la_de_siempre" : "especifica")});
+  pintarHoras();
 });
 
-/* ===================== 7. día y hora ===================== */
+/* ===================== día y hora ===================== */
 function abrirHoras(){
-  S.dia = null; S.hora = null; S.tecHora = null; S.dias = null;
+  S.dia = null;
   ir("scr-hora");
-  $("horaTitulo").innerHTML = S.modo === "mover" ? 'Nueva <em>hora</em>' : 'Elige tu <em>hora</em>';
-  const nom = S.modo === "mover" ? nombreSvc(S.mover.c, S.mover.t) : titulo();
-  const tec = S.tec ? " · con " + (DATA.staff[S.tec]||"") : "";
-  $("horaSub").textContent = nom + " · " + fmtDur(S.modo === "mover" ? S.moverDur : totDur()) + tec;
+  pintarHoras();
+}
+/* Recalcula sin cambiar de pantalla (al tocar otra técnica o al volver tras una hora ocupada)
+   y conserva el día si sigue teniendo horas. */
+let horasPedido = 0;
+function pintarHoras(){
+  const mover = S.modo === "mover";
+  const diaPrevio = S.dia;
+  S.hora = null; S.tecHora = null; S.dias = null;
+  horasViejas = false;
+  $("horaTitulo").innerHTML = mover ? 'Nueva <em>hora</em>' : 'Elige tu <em>hora</em>';
+  $("horaBack").textContent = mover ? "← Volver" : "← Cambiar servicios";
+  const nom = mover ? nombreSvc(S.mover.c, S.mover.t) : titulo();
+  $("horaSub").textContent = nom + " · " + fmtDur(durReservada());
+  pintarTecChips();
   $("dias").innerHTML = "";
   $("horasWrap").innerHTML = `<div class="estado"><div class="spin"></div>Buscando espacios libres…</div>`;
   pintarBarra();
+  const pedido = ++horasPedido;
+  const base = {n_servicios:S.svcs.length, tecnica:S.tec ? "especifica" : "cualquiera", modo:S.modo};
+  const vigente = () => pedido === horasPedido && S.pantalla === "scr-hora";
   calcular().then(r => {
-    if(S.pantalla !== "scr-hora") return;
+    if(!vigente()) return;
     S.dias = r;
     if(r.sinEquipo){
-      $("horasWrap").innerHTML = `<div class="aviso err">Ninguna técnica hace todos esos servicios juntos. Quita alguno y prueba otra vez.</div>`;
+      $("horasWrap").innerHTML = `<div class="aviso err">Ninguna técnica hace todos esos servicios juntos. Quita uno y prueba otra vez.</div>` +
+        `<div class="salida"><button class="btn ghost sm" data-accion="cambiar-servicios">Cambiar servicios</button></div>`;
+      medir("horas_resultado", {...base, resultado:"sin_horas", dias_con_horas:0});
       return;
     }
     pintarDias();
-    const primero = Object.keys(r.dias).sort().find(f => r.dias[f] && r.dias[f].length);
-    if(!primero){
-      $("horasWrap").innerHTML = `<div class="aviso">No quedan espacios en las próximas ${DIAS} noches para esa combinación. Prueba con otra técnica o escríbenos.</div>`;
+    const conHoras = Object.keys(r.dias).sort().filter(f => r.dias[f] && r.dias[f].length);
+    if(!conHoras.length){
+      const tec = S.tec ? (DATA.staff[S.tec] || "") : "";
+      $("horasWrap").innerHTML = (tec && !mover)
+        ? `<div class="aviso">No quedan espacios con ${esc(tec)} en los próximos ${DIAS} días.</div>` +
+          `<div class="salida"><button class="btn sm" data-accion="cualquiera">Ver con cualquiera</button></div>`
+        : `<div class="aviso">No quedan espacios en los próximos ${DIAS} días para esto.</div>` +
+          `<div class="salida">${enlacesContacto(mover ? "Hola, quiero cambiar mi cita." : "", "Escríbenos por WhatsApp y te buscamos un espacio")}</div>`;
+      medir("horas_resultado", {...base, resultado:"sin_horas", dias_con_horas:0});
       return;
     }
-    elegirDia(primero);
+    elegirDia(diaPrevio && conHoras.includes(diaPrevio) ? diaPrevio : conHoras[0]);
+    medir("horas_resultado", {...base, resultado:"con_horas", dias_con_horas:conHoras.length});
   }).catch(e => {
-    if(S.pantalla !== "scr-hora") return;
+    if(!vigente()) return;
     $("horasWrap").innerHTML = `<div class="aviso err">${/429/.test(e.message)
-      ? "Muchas consultas seguidas. Espera unos segundos y vuelve a entrar."
-      : "No pudimos consultar la disponibilidad. Revisa tu internet."}</div>`;
+      ? "Hay muchas consultas en este momento. Espera unos segundos y toca «Probar otra vez»."
+      : "No pudimos ver las horas libres. Revisa tu internet."}</div>` +
+      `<div class="salida"><button class="btn sm" data-accion="reintentar">Probar otra vez</button></div>`;
+    medir("horas_resultado", {...base, resultado:"error", dias_con_horas:0});
   });
 }
-$("horaBack").addEventListener("click", atras);
+$("horaBack").addEventListener("click", volver);
 
 function pintarDias(){
   const hoy = hoyPR();
@@ -1488,12 +2031,21 @@ function elegirDia(f){
   pintarBarra();
 }
 $("horasWrap").addEventListener("click", e => {
+  const a = e.target.closest("[data-accion]");
+  if(a){
+    if(a.dataset.accion === "cualquiera"){ S.tec = null; medir("tecnica_elegida", {tipo:"cualquiera"}); pintarHoras(); }
+    else if(a.dataset.accion === "reintentar") pintarHoras();
+    else if(a.dataset.accion === "cambiar-servicios") volver();
+    return;
+  }
   const b = e.target.closest("[data-min]"); if(!b) return;
   S.hora = +b.dataset.min;
   const tecs = S.dias.tecs[S.dia+"|"+S.hora];
-  S.tecHora = S.tec || (tecs && tecs[0]) || null;
+  S.tecHora = S.tec || elegirTec(S.dia, tecs) || null;
   $("horasWrap").querySelectorAll(".hour").forEach(x => x.setAttribute("aria-pressed", x === b));
   pintarBarra();
+  const dias = Math.round((Date.parse(S.dia + "T12:00:00Z") - Date.parse(hoyPR() + "T12:00:00Z")) / 86400000);
+  medir("hora_elegida", {dias_hasta:dias, franja: S.hora < 12*60 ? "manana" : (S.hora < 17*60 ? "tarde" : "noche"), n_servicios:S.svcs.length, modo:S.modo});
 });
 
 /* ===================== barra fija ===================== */
@@ -1504,16 +2056,16 @@ function pintarBarra(){
     const {suma, todos} = totPrecio();
     b.hidden = false;
     $("barraT").textContent = S.svcs.length === 1 ? S.svcs[0].n : `${S.svcs.length} servicios`;
-    $("barraS").textContent = fmtDur(totDur()) + (suma ? ` · desde $${suma}${todos ? "" : "+"}` : "");
-    $("barraBtn").textContent = "Continuar";
+    $("barraS").textContent = fmtDur(durReservada()) + (suma ? ` · desde $${suma}${todos ? "" : "+"}` : "");
+    $("barraBtn").textContent = "Ver horas";
     return;
   }
   if(S.pantalla === "scr-hora"){
     if(S.hora == null){ b.hidden = true; return; }
     b.hidden = false;
-    $("barraT").textContent = `${fechaLarga(S.dia)} · ${fmtHora(S.hora)}`;
+    $("barraT").textContent = `${fechaCorta(S.dia)} · ${horaNB(S.hora)}`;
     const t = S.tecHora ? DATA.staff[S.tecHora] : null;
-    $("barraS").textContent = t ? "Con " + t : "Te asignamos técnica";
+    $("barraS").textContent = t ? "Con " + t : "Con cualquier técnica";
     $("barraBtn").textContent = "Continuar";
     return;
   }
@@ -1521,78 +2073,282 @@ function pintarBarra(){
 }
 $("barraBtn").addEventListener("click", () => {
   if(S.pantalla === "scr-svc"){
-    if(!equipo().length){
-      alert("Ninguna técnica hace todos esos servicios juntos. Quita alguno, por favor.");
+    const team = equipo();
+    if(!team.length){
+      error("svcAviso", "Ninguna técnica hace todos esos servicios juntos. Quita uno, por favor.");
       return;
     }
-    S.tec = null;
-    pintarTec();
-    ir("scr-tec");
+    error("svcAviso", "");
+    S.tec = (S.usualTec && team.includes(S.usualTec)) ? S.usualTec : null;
+    abrirHoras();
     return;
   }
-  if(S.pantalla === "scr-hora") abrirConfirmar();
+  if(S.pantalla === "scr-hora" && S.hora != null) abrirConfirmar();
 });
 
-/* ===================== 8. confirmar ===================== */
+/* ===================== confirmar ===================== */
 function filas(pares){
   return pares.filter(p => p[1]).map(p => `<div><dt>${esc(p[0])}</dt><dd>${esc(p[1])}</dd></div>`).join("");
 }
-function abrirConfirmar(){
-  error("errConf","");
+const CORREO_OK = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+/* Pinta "Confirma tu cita" sin cambiar de pantalla. Con sesión, el resumen enseña a nombre de
+   quién va; sin sesión, pide aquí sus datos (nombre, teléfono y, si quiere, correo). */
+function pintarConfirmar(){
+  error("errConf",""); salida("confSalida",""); limpiarCampos();
+  // Si la respuesta de una reserva se perdió, no se ofrece confirmar otra (podría ser la misma dos
+  // veces) hasta que vea sus citas al día con "Ver mis citas".
+  const incierta = !!S.incierta;
+  $("btnConf").hidden = incierta; $("btnVerCitas").hidden = !incierta;
+  $("confBack").hidden = incierta; $("smsSlotConf").hidden = incierta;
   const mover = S.modo === "mover";
+  const con = !!(S.tok && S.me);
   $("confTitulo").innerHTML = mover ? 'Confirma el <em>cambio</em>' : 'Confirma tu <em>cita</em>';
   $("btnConf").textContent = mover ? "Mover mi cita" : "Confirmar mi cita";
-  const dur = mover ? S.moverDur : totDur();
+  $("confDatos").hidden = mover || con;
+  $("confQuien").hidden = mover || !con || incierta;
+  $("confNota").hidden = incierta;
+  if(!con && !mover) copiarDatos();
+  pintarResumenConf();
+  pintarConfNota();
+  if(incierta) error("errConf", S.incierta);
+}
+function pintarResumenConf(){
+  const mover = S.modo === "mover";
+  const con = !!(S.tok && S.me);
+  const dur = durReservada();
   const {suma, todos} = totPrecio();
   const tec = S.tecHora ? DATA.staff[S.tecHora] : (mover ? nombreTec(S.mover.u) : "");
   $("confResumen").innerHTML = filas([
-    ["Servicio", mover ? nombreSvc(S.mover.c, S.mover.t) : titulo()],
-    ["Día",      fechaLarga(S.dia)],
-    ["Hora",     fmtHora(S.hora) + " a " + fmtHora(S.hora + dur)],
-    ["Duración", fmtDur(dur)],
-    ["Técnica",  tec || "Te asignamos la disponible"],
-    ["Desde",    (!mover && suma) ? `$${suma}${todos ? "" : " +"}` : ""],
-    ["A nombre de", `${S.me.fn} ${S.me.ln}`.trim()],
-    ["Teléfono", telVisible(S.me.ph)]
+    ["Servicio",    mover ? nombreSvc(S.mover.c, S.mover.t) : titulo()],
+    ["Día y hora",  `${fechaLarga(S.dia)}, ${horaNB(S.hora)} a ${horaNB(S.hora + dur)}`],
+    ["Técnica",     tec || "La primera disponible"],
+    ["Desde",       (!mover && suma) ? `$${suma}${todos ? "" : " +"}` : ""],
+    ["A nombre de", con ? `${S.me.fn || ""} ${S.me.ln || ""}`.trim() : ""],
+    ["Teléfono",    con ? telVisible(S.me.ph) : ""]
   ]);
-  $("confNota").textContent = mover
-    ? "Tu cita se mueve a la hora nueva y te avisamos por correo. Nadie pierde el turno."
-    : "Te llegará la confirmación por correo. Si necesitas cambiarla, puedes hacerlo desde aquí mismo.";
+}
+/* Sus datos ya quedaron guardados aunque la cita no: el formulario se va y el resumen dice a
+   nombre de quién está. */
+function datosYaGuardados(incierta){
+  if(!(S.tok && S.me) || $("confDatos").hidden) return;
+  $("confDatos").hidden = true;
+  $("confQuien").hidden = !!incierta || S.modo === "mover";
+  pintarResumenConf();
+  pintarConfNota();
+}
+function abrirConfirmar(){
+  pintarConfirmar();
   ir("scr-conf");
+  const mover = S.modo === "mover";
+  medir("confirmar_visto", {con_sesion: S.tok ? 1 : 0, n_servicios:S.svcs.length, modo:S.modo});
+  if(!mover) medirPixel("InitiateCheckout", {num_items:S.svcs.length, value:totPrecio().suma, currency:"USD"});
+}
+/* Lo que ya escribió en "Ya he venido" o en "Es mi primera vez aquí" no se vuelve a pedir. */
+function copiarDatos(){
+  const poner = (id, v) => { const el = $(id); if(el && !el.value && v) el.value = v; };
+  poner("cfFn", $("nvFn").value.trim() || $("inNm").value.trim());
+  poner("cfLn", $("nvLn").value.trim());
+  poner("cfPh", fmtTel($("nvPh").value || $("inPh").value));
+  poner("cfEm", $("nvEm").value.trim());
+}
+/* La confirmación por WhatsApp sale siempre al reservar (34 de 34 desde el 22-sep); al
+   reagendar no se promete, porque el cambio no la dispara. */
+function pintarConfNota(){
+  const mover = S.modo === "mover";
+  const correo = (S.tok && S.me) ? !!S.me.em : !!$("cfEm").value.trim();
+  $("confNota").textContent = mover
+    ? (correo ? "Te avisamos del cambio por correo." : "Tu cita queda en la hora nueva. La ves en «Tus próximas citas».")
+    : (correo ? "Te mandamos la confirmación por WhatsApp y a tu correo. Si necesitas cambiar tu cita, lo haces desde esta misma página."
+              : "Te mandamos la confirmación por WhatsApp. Si necesitas cambiar tu cita, lo haces desde esta misma página.");
+}
+$("cfEm").addEventListener("input", () => { campoError("cfEm", ""); pintarConfNota(); });
+/* El aviso de cada campo va justo debajo de él. En errConf quedaba debajo de las casillas, fuera de
+   la pantalla: ella veía la página saltar hacia arriba sin saber por qué. */
+function campoError(id, msg){
+  const p = $(id + "Err"), el = $(id);
+  if(p){ p.textContent = msg || ""; p.hidden = !msg; }
+  if(el && typeof el.setAttribute === "function"){ if(msg) el.setAttribute("aria-invalid", "true"); else el.removeAttribute("aria-invalid"); }
+}
+function limpiarCampos(){ ["cfFn","cfPh","cfEm"].forEach(id => campoError(id, "")); }
+function validarDatos(){
+  const fn = $("cfFn").value.trim(), ph = tel10($("cfPh").value), em = $("cfEm").value.trim();
+  limpiarCampos();
+  if(fn.length < 2){ campoError("cfFn","Escribe tu nombre."); $("cfFn").focus(); return false; }
+  if(ph.length !== 10){ campoError("cfPh","Escribe los 10 dígitos de tu teléfono."); $("cfPh").focus(); return false; }
+  if(em && !CORREO_OK.test(em)){ campoError("cfEm","Revisa tu correo o déjalo en blanco."); $("cfEm").focus(); return false; }
+  return true;
+}
+/* ¿Sigue en "Confirma tu cita" con lo mismo que confirmó? */
+function mismaSeleccion(sel){
+  return S.pantalla === "scr-conf" && S.modo === sel.modo && S.dia === sel.dia && S.hora === sel.hora &&
+    S.tecHora === sel.tecHora && S.svcs.length === sel.svcs.length && S.svcs.every((s, i) => s === sel.svcs[i]);
+}
+/* Sin sesión: UNA llamada a "new", que ya busca el teléfono y entra si el nombre cuadra, o crea
+   la ficha si no existe. No se reintenta sola. La única repetición es la del correo repetido:
+   yaExiste es un rechazo firme de GHL (no se creó nada) y la segunda va SIN correo, una vez.
+   Una respuesta perdida no se repite: si la ficha alcanzó a crearse, el próximo "new" la
+   encuentra y entra. Devuelve true si quedó con sesión. */
+async function asegurarSesion(){
+  const fn = $("cfFn").value.trim(), ln = $("cfLn").value.trim();
+  const ph = tel10($("cfPh").value), em = $("cfEm").value.trim();
+  S.telOrigen = origenTel(ph);
+  const base = {fn, ln, ph, ...window.tnAttributionParams()};
+  // sin_correo solo cuando hay sesión, y con la misma regla en todos los pasos: si la sesión quedó con correo.
+  const fallo = resultado => medir("datos_resultado", {resultado, donde:"confirmar"});
+  let j;
+  try{
+    j = await api("new", em ? {...base, em} : base);
+    if(!j.ok && j.yaExiste && em){
+      j = await api("new", base);
+      if(j.ok && j.tok) S.correoNoGuardado = true;
+      else if(!j.ok && j.yaExiste){
+        error("errConf", "Ya tenemos un perfil con ese teléfono. Toca «Confirmar mi cita» otra vez en un minuto, o escríbenos por WhatsApp y te la reservamos.");
+        salida("confSalida", enlacesContacto());
+        fallo("error");
+        return false;
+      }
+    }
+  }catch(e){
+    error("errConf", e.message || "No pudimos conectar. Revisa tu internet e inténtalo otra vez.");
+    fallo("error");
+    return false;
+  }
+  if(j.ok && j.tok){
+    abrirSesion(j);
+    medir("datos_resultado", {resultado: j.nuevo === false ? "entro" : "creada", donde:"confirmar", sin_correo: S.me && S.me.em ? 0 : 1});
+    return true;
+  }
+  const msg = String(j.error || "");
+  if(j.nuevo === false && /no coincide/i.test(msg)){
+    // No se dice el nombre ni ningún dato de la otra ficha.
+    error("errConf", "Ese teléfono ya está registrado con otro nombre. Escribe el nombre con el que te registraste la primera vez, o revisa el número.");
+    salida("confSalida", `<button class="btn ghost sm" data-accion="otro-nombre">Escribir otro nombre</button>` + enlacesContacto());
+    fallo("nombre_no_coincide");
+    return false;
+  }
+  if(j.nuevo === false){
+    error("errConf", msg || "No pudimos guardar tus datos en este momento.");
+    salida("confSalida", enlacesContacto());
+    fallo("error");
+    return false;
+  }
+  if(j.yaExiste){
+    error("errConf", "Ya tenemos un perfil con ese teléfono. Toca «Confirmar mi cita» otra vez en un minuto, o escríbenos por WhatsApp y te la reservamos.");
+    salida("confSalida", enlacesContacto());
+  }else if(/Entra con tu teléfono|No se pudo crear tu perfil/.test(msg)){
+    error("errConf", "No pudimos guardar tus datos. Toca «Confirmar mi cita» otra vez.");
+  }else{
+    error("errConf", "No pudimos guardar tus datos en este momento. Escríbenos por WhatsApp y te reservamos.");
+    salida("confSalida", enlacesContacto());
+  }
+  fallo("error");
+  return false;
 }
 $("btnConf").addEventListener("click", async () => {
-  error("errConf","");
-  cargando($("btnConf"), true, "Reservando…");
+  const btn = $("btnConf");
+  if(btn.disabled || S.incierta || !S.svcs.length || !S.dia || S.hora == null) return;
+  error("errConf",""); salida("confSalida","");
+  const mover = S.modo === "mover";
+  // Lo que ella confirmó, copiado ANTES de cualquier espera: si mientras se guardan sus datos toca
+  // atrás y cambia la hora o los servicios, no se reserva otra cosa sin que vuelva a confirmar.
+  const sel = {svcs:S.svcs.slice(), dia:S.dia, hora:S.hora, tecHora:S.tecHora, modo:S.modo, mover:S.mover, moverDur:S.moverDur};
+  S.sesionCerrada = false;
+  if(!mover && !S.tok){
+    // Sin sesión: primero sus datos (una llamada), y solo si quedó con sesión, la reserva.
+    if(!validarDatos()) return;
+    cargando(btn, true, "Guardando tus datos…");
+    let lista = false;
+    try{ lista = await asegurarSesion(); }
+    finally{ if(!lista) cargando(btn, false); }
+    if(!lista) return;
+    if(!mismaSeleccion(sel)){ cargando(btn, false); return; }    // ya no está en lo que confirmó
+    btn.textContent = "Reservando…";
+  }else{
+    cargando(btn, true, "Reservando…");
+  }
+  bloquearSalidas(true);
   try{
-    const mover = S.modo === "mover";
-    const dur = mover ? S.moverDur : totDur();
-    const ini = iso(S.dia, S.hora), fin = iso(S.dia, S.hora + dur);
+    const dur = sel.modo === "mover" ? sel.moverDur : colocar(sel.svcs).total;
+    const ini = iso(sel.dia, sel.hora), fin = iso(sel.dia, sel.hora + dur);
     let j;
     if(mover){
-      j = await api("move", {tok:S.tok, eventId:S.mover.id, start:ini, end:fin, userId:S.tecHora || S.mover.u}, 45000);
+      j = await api("move", {tok:S.tok, eventId:sel.mover.id, start:ini, end:fin, userId:sel.tecHora || sel.mover.u}, 45000);
     }else{
-      j = await api("book", {tok:S.tok, calId:S.svcs[0].id, start:ini, end:fin,
-                             title:titulo(), userId:S.tecHora || "",
+      j = await api("book", {tok:S.tok, calId:sel.svcs[0].id, start:ini, end:fin,
+                             title:tituloGHL(sel.svcs), userId:sel.tecHora || "",
                              ...window.tnAttributionParams()}, 45000);
     }
     if(j.incierto || (j.ok && !mover && (typeof j.id !== "string" || !j.id.trim()))){
-      olvidar();
-      if(S.tok) cargarInicio();
-      return error("errConf", "No pudimos verificar la confirmación. Revisa tus próximas citas antes de repetir.");
+      return reservaIncierta("No pudimos verificar la confirmación. Revisa tus próximas citas antes de repetir.", "incierto");
     }
-    if(!j.ok) return error("errConf", j.error || "No se pudo completar. Inténtalo otra vez.");
+    if(!j.ok) return reservaRechazada(j);
+    Object.assign(S, sel);          // "listo" enseña lo que se reservó, aunque haya tocado algo mientras
     if(j.u && !S.tecHora) S.tecHora = j.u;
     olvidar();
     mostrarOk(mover, ini, fin, dur, j.id);
     // Permiso SMS: DESPUÉS de la cita confirmada, sin esperarlo y sin tocar la reserva.
     if(!mover) enviarPermisosSms(j.id);
   }catch(e){
-    error("errConf", e.message || "No pudimos conectar. Revisa tu internet.");
-    // Si se perdió la respuesta, la cita pudo crearse igual: refrescamos su lista
-    // por lo bajo para que al volver al inicio vea la verdad, no una suposición.
-    olvidar();
-    if(S.tok) cargarInicio();
-  }finally{ cargando($("btnConf"), false); }
+    // Sesión vencida: salir(true) ya dejó lo escogido y su aviso; no se pisa.
+    if(S.sesionCerrada){ medir("reserva_error", {motivo:"sesion", modo:sel.modo}); return; }
+    // Si se perdió la respuesta, la cita pudo crearse igual: no se repite, se dice, y su
+    // lista se refresca por lo bajo para que al volver al inicio vea la verdad.
+    reservaIncierta(e.message || "No pudimos conectar. Revisa tu internet.", "red");
+  }finally{ cargando(btn, false); bloquearSalidas(false); }
+});
+/* No sabemos si quedó: se dice, NO se repite, y el botón de confirmar se va para que no la
+   duplique con otro toque. "Ver mis citas" le enseña la verdad. */
+function reservaIncierta(msg, motivo){
+  olvidar();
+  if(S.tok) cargarInicio();
+  datosYaGuardados(true);
+  S.incierta = msg || "No recibimos la confirmación. Revisa tus próximas citas antes de repetir.";
+  error("errConf", S.incierta);
+  $("btnConf").hidden = true; $("btnVerCitas").hidden = false;
+  $("confNota").hidden = true;          // no prometer una confirmación que no sabemos si salió
+  // Ni "Cambiar la hora", ni las casillas, ni "¿No eres tú?": por ahí se volvía a confirmar la misma
+  // cita. Si vuelve a las horas con el atrás del celular, "Confirma tu cita" tampoco deja (S.incierta).
+  $("confBack").hidden = true; $("smsSlotConf").hidden = true; $("confQuien").hidden = true;
+  S.hora = null; S.tecHora = null;
+  medir("reserva_error", {motivo, modo:S.modo});
+}
+/* Rechazo firme (no se creó nada). GHL puede contestar en inglés: solo pasan tal cual los
+   textos del Worker que ya están en español. */
+const TEXTOS_WORKER = [/^Faltan datos de la cita\.$/, /^Servicio en mantenimiento/, /^No encontramos esa cita en tu cuenta\.$/,
+                       /^Para cambios con menos de/, /^Falta la hora nueva\.$/];
+function reservaRechazada(j){
+  olvidar();
+  datosYaGuardados(false);
+  const msg = String(j.error || "");
+  const mover = S.modo === "mover";
+  const otrasHoras = `<button class="btn sm" data-accion="otras-horas">Ver otras horas</button>`;
+  if(/se acaba de ocupar/i.test(msg)){
+    error("errConf", "Esa hora se acaba de ocupar. Elige otra, por favor.");
+    // Un solo camino: otra hora. "Confirmar mi cita" pediría la misma hora ocupada otra vez.
+    salida("confSalida", `<button class="btn" data-accion="otras-horas">Ver otras horas</button>`);
+    $("btnConf").hidden = true; $("confNota").hidden = true;
+    medir("reserva_error", {motivo:"hora_ocupada", modo:S.modo});
+    return;
+  }
+  error("errConf", TEXTOS_WORKER.some(re => re.test(msg)) ? msg
+    : (mover ? "No pudimos cambiar tu cita a esa hora. Elige otra o escríbenos por WhatsApp."
+             : "No pudimos reservar esa hora. Elige otra o escríbenos por WhatsApp."));
+  salida("confSalida", otrasHoras + enlacesContacto(mover ? "Hola, quiero cambiar mi cita." : ""));
+  medir("reserva_error", {motivo:"otro", modo:S.modo});
+}
+$("confSalida").addEventListener("click", e => {
+  const b = e.target.closest("[data-accion]"); if(!b) return;
+  if(b.dataset.accion === "otro-nombre"){
+    const f = $("cfFn"); f.focus();
+    if(typeof f.select === "function") f.select();
+  }else if(b.dataset.accion === "otras-horas"){
+    volver();          // al llegar a las horas, se recalculan (la disponibilidad cambió)
+  }
+});
+$("btnVerCitas").addEventListener("click", () => {
+  S.pila = [];
+  if(!(S.tok && S.me)){ ir("scr-hola", true); return; }          // la sesión se cerró: que entre y las vea
+  ir("scr-inicio", true); cargarInicio();
 });
 
 /* ===================== 9. listo ===================== */
@@ -1638,32 +2394,50 @@ function conversionReserva(valor, eventId){
 
 function mostrarOk(mover, ini, fin, dur, eventId){
   const nom = mover ? nombreSvc(S.mover.c, S.mover.t) : titulo();
-  const tec = S.tecHora ? DATA.staff[S.tecHora] : "";
+  const tec = S.tecHora ? DATA.staff[S.tecHora] : (mover ? nombreTec(S.mover.u) : "");
   $("okTitulo").innerHTML = mover ? '¡Cita <em>movida</em>!' : '¡Cita <em>confirmada</em>!';
   $("okSub").textContent = "Te esperamos en Trend Nails Salon.";
   $("okSms").hidden = true;
+  // Día y hora salen de lo que se reservó (ini), no de lo que tenga la página en este momento.
+  const dIni = ini.slice(0,10), mIni = minDeISO(ini);
   $("okResumen").innerHTML = filas([
-    ["Servicio", nom],
-    ["Día",      fechaLarga(S.dia)],
-    ["Hora",     fmtHora(S.hora) + " a " + fmtHora(S.hora + dur)],
-    ["Técnica",  tec || "Te asignamos la disponible"]
+    ["Servicio",   nom],
+    ["Día y hora", `${fechaLarga(dIni)}, ${horaNB(mIni)} a ${horaNB(mIni + dur)}`],
+    ["Técnica",    tec || "La primera disponible"]
   ]);
+  const correo = !!(S.me && S.me.em);
+  const aviso = mover
+    ? (correo ? "Te avisamos del cambio por correo." : "")
+    : (S.correoNoGuardado ? "No pudimos guardar tu correo, así que te confirmamos por WhatsApp."
+       : (correo ? "Te enviamos la confirmación por WhatsApp y a tu correo." : "Te enviamos la confirmación por WhatsApp."));
+  $("okAviso").textContent = aviso; $("okAviso").hidden = !aviso;
   $("btnIcs").href = URL.createObjectURL(new Blob([ics(nom, ini, fin)], {type:"text/calendar"}));
   if(!mover) conversionReserva(totPrecio().suma, eventId);
   ir("scr-ok", true);
   S.pila = [];
+  S.hora = null;                    // ya está hecha: al volver a entrar no se reabre en "Confirma tu cita"
 }
+/* Las horas del .ics van en el formato de calendario (20261018T140000Z); con guiones y dos
+   puntos algunos calendarios del celular no las leen. */
 function ics(nom, ini, fin){
-  const z = s => new Date(s).toISOString().replace(/[\u0300-\u036f]/g,"").replace(/\.\d{3}/,"");
+  const z = s => new Date(s).toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
   return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Trend Nails//ES","BEGIN:VEVENT",
     "UID:" + Date.now() + "@trendnails",
     "DTSTAMP:" + z(new Date().toISOString()),
     "DTSTART:" + z(ini), "DTEND:" + z(fin),
     "SUMMARY:" + nom + " · Trend Nails",
-    "LOCATION:Trend Nails Salon, Caguas, PR",
+    "LOCATION:Trend Nails Salon, 47 Av. José Gautier Benítez, Caguas, PR 00725",
     "END:VEVENT","END:VCALENDAR"].join("\r\n");
 }
-$("btnVolver").addEventListener("click", () => { ir("scr-inicio", true); cargarInicio(); });
+$("btnVolver").addEventListener("click", () => {
+  if(!(S.tok && S.me)){
+    // Sin sesión no hay inicio: a los servicios, sin nada escogido.
+    S.pila = []; S.svcs = []; S.tec = null; S.dia = null; S.hora = null; S.tecHora = null;
+    abrirServicios(true);
+    return;
+  }
+  ir("scr-inicio", true); cargarInicio();
+});
 
 /* ===================== permiso de mensajes de texto (SMS) ===================== */
 /* 7-oct-2026, registro A2P. Dos casillas separadas, SIN marcar y opcionales: la reserva
@@ -1791,6 +2565,7 @@ $("modalSi").addEventListener("click", async () => {
     olvidar();
     cargarInicio();
   }catch(e){
+    if(S.sesionCerrada) return;
     $("modalErr").textContent = e.message || "No pudimos conectar."; $("modalErr").hidden = false;
   }finally{ cargando($("modalSi"), false); }
 });
@@ -1799,9 +2574,12 @@ function abrirMover(id){
   const c = S.citas.find(x => x.id === id); if(!c) return;
   const s = SVC[c.c];
   if(!s){
-    alert("Esa cita hay que moverla con el salón. Escríbenos y te ayudamos enseguida.");
+    const f = c.s.slice(0,10), m = minDeISO(c.s);
+    salida("inicioSalida", `<p>Esa cita la cambiamos nosotras. Escríbenos por WhatsApp y te ayudamos enseguida.</p>` +
+      enlacesContacto(`Hola, quiero cambiar mi cita del ${fechaTexto(f)} a las ${fmtHora(m)}.`));
     return;
   }
+  salida("inicioSalida", "");
   S.modo = "mover"; S.mover = c;
   S.moverDur = Math.max(15, Math.round((Date.parse(c.e) - Date.parse(c.s))/60000)) || s.d;
   S.svcs = [s];
@@ -1810,25 +2588,31 @@ function abrirMover(id){
 }
 
 /* ===================== arranque ===================== */
+/* 17-oct-2026: quien llega sin sesión ve los servicios primero y da sus datos al confirmar.
+   En un celular donde ya entró alguien (marca "tn-ya-vino", sin datos personales) o con un
+   enlace prellenado, abre en "Ya he venido" como antes: la clienta conocida no da un toque más. */
 (function inicio(){
-  desmarcarSms();
-  calentar();
-  pintarCats();
+  desmarcarSms(); calentar(); pintarCats();
+  let conocida = false;
   try{
     // Un enlace con identidad nueva nunca entra como la sesión anterior.
     if(window.tnIncomingPrefill){ localStorage.removeItem("tn-sesion"); }
     const g = JSON.parse(localStorage.getItem("tn-sesion") || "null");
     if(!window.tnIncomingPrefill && g && g.tok && g.me && Number.isFinite(g.at) && g.at <= Date.now() && Date.now() - g.at < 11.5*3600*1000){
-      S.tok = g.tok; S.me = g.me;
-      S.telOrigen = "sesion";
-      $("btnSalir").hidden = false;
-      ir("scr-inicio", true);
-      cargarInicio();
-      return;
+      S.tok = g.tok; S.me = g.me; S.telOrigen = "sesion";
+      $("btnSalir").hidden = false; $("btnYaVine").hidden = true;
+      ir("scr-inicio", true); cargarInicio(); return;
     }
+    // Vencida: fuera (guardaba teléfono y correo para siempre) y queda solo la marca.
+    if(g){ localStorage.removeItem("tn-sesion"); localStorage.setItem("tn-ya-vino", "1"); conocida = true; }
+    if(localStorage.getItem("tn-ya-vino")) conocida = true;
   }catch(e){}
-  ir("scr-hola", true);
-  setTimeout(() => { if(S.pantalla === "scr-hola" && window.innerWidth > 700) $("inPh").focus(); }, 200);
+  if(window.tnIncomingPrefill || conocida){
+    ir("scr-hola", true);
+    setTimeout(() => { if(S.pantalla === "scr-hola" && window.innerWidth > 700) $("inPh").focus(); }, 200);
+    return;
+  }
+  abrirServicios(true);          // sin pila
 })();
 </script>
 </body>
