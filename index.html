@@ -549,6 +549,55 @@
   .sms-ya{margin:0; font-size:12.5px; line-height:1.5; color:var(--ink)}
   .sms-op:not([hidden]) ~ .sms-ya:not([hidden]){margin-top:12px; padding-top:12px; border-top:1px solid var(--line-soft)}
   .sms-n a:hover{color:var(--lacquer)}
+
+  /* ---------- "Confirma tu cita" compacta (2-nov-2026) ----------
+     "Confirmar mi cita" quedaba debajo del pliegue en el celular (arriba en 1,238 px en 375x667 y
+     en 1,197 px en 390x844 con los datos y las casillas). Aquí solo cambian el aire y la forma del
+     resumen. Las casillas de textos (A2P) conservan su texto, su letra de 13 px, sus enlaces y su
+     sitio: debajo de los datos y encima del botón. Nada de esto toca lo que se manda al Worker. */
+  #scr-conf > .back{margin-top:2px}
+  #scr-conf > h2{font-size:32px; margin-top:0}
+  #scr-conf > h2::after{margin-top:10px}
+  #scr-conf > .sub{font-size:18px; margin:8px auto 14px}
+  /* Resumen en rejilla: servicio y día a lo ancho; técnica y precio (y nombre y teléfono) lado a
+     lado. Si queda una sola en su fila, va a lo ancho. Las rayas son el hueco de 1 px de la rejilla. */
+  #confResumen{
+    display:grid; grid-template-columns:1fr 1fr; gap:1px; margin-bottom:14px;
+    background:linear-gradient(var(--line-soft), var(--line-soft)), var(--card);
+  }
+  #confResumen div{display:block; grid-column:1 / -1; min-width:0; padding:8px 14px; border:0; background:var(--card)}
+  #confResumen div:nth-child(n+3){grid-column:auto}
+  #confResumen div:nth-child(n+3):nth-child(odd):last-child{grid-column:1 / -1}
+  #confResumen dt{display:block; margin:0 0 2px}
+  #confResumen dd{text-align:left; line-height:1.4; overflow-wrap:anywhere}
+  #confDatos .eyebrow{margin:0 0 8px}
+  #scr-conf .datos-n{margin:0 0 10px}
+  #scr-conf .fld{margin-bottom:10px}
+  #scr-conf label.lbl{margin-bottom:5px}
+  #confDatos input{padding-top:12px; padding-bottom:12px}     /* 46 px de alto: área táctil de 44 o más */
+  #scr-conf .ayuda{margin-top:4px}
+  #scr-conf .sms{margin:4px 0 14px; padding:12px 12px 10px}
+  #scr-conf .sms-t{margin-bottom:8px}
+  #scr-conf .sms-op{gap:10px; line-height:1.45}
+  #scr-conf .sms-op + .sms-op{margin-top:8px; padding-top:8px}
+  #scr-conf .sms-op:not([hidden]) ~ .sms-ya:not([hidden]){margin-top:8px; padding-top:8px}
+  #scr-conf .sms-n{margin-top:8px}
+  #confNota{margin-top:12px}
+  /* El botón se queda pegado abajo, sobre una franja negra, mientras la clienta no ha bajado hasta
+     su sitio; al llegar, se queda en su lugar después de las casillas. Es el mismo botón en el mismo
+     orden del código (lectores de pantalla y teclado igual que antes). Sin clip-path no se pega
+     (la sombra taparía la pantalla) y queda como estaba. */
+  @supports (position:sticky) and ((clip-path:inset(0px)) or (-webkit-clip-path:inset(0px))){
+    #btnConf{
+      position:-webkit-sticky; position:sticky; z-index:20;
+      bottom:calc(12px + env(safe-area-inset-bottom));
+      box-shadow:0 0 0 100vmax var(--paper);
+      -webkit-clip-path:inset(-12px -100vmax calc(-12px - env(safe-area-inset-bottom)));
+      clip-path:inset(-12px -100vmax calc(-12px - env(safe-area-inset-bottom)));
+    }
+    /* Un campo o una casilla que recibe el foco no se esconde detrás de la franja del botón. */
+    html:has(#scr-conf:not([hidden])){scroll-padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+  }
 </style>
 </head>
 <body>
@@ -1023,6 +1072,9 @@ function error(id, msg){
   const e = $(id);
   if(!msg){ e.hidden = true; return; }
   e.textContent = msg; e.hidden = false;
+  // 2-nov-2026: "Confirmar mi cita" va pegado abajo y se puede tocar sin bajar; su aviso (justo
+  // encima del botón, en el código) se trae a la vista para que no quede escondido más abajo.
+  if(id === "errConf" && typeof e.scrollIntoView === "function") e.scrollIntoView({block:"center", behavior:"smooth"});
 }
 /* Como error(), pero admite botones y enlaces (solo HTML armado aquí, nunca texto de afuera). */
 function salida(id, html){
